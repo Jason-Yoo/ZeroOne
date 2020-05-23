@@ -63,7 +63,7 @@ int ModulesDetect::Otsu(Mat &srcImage , int &threshold)
 ///
 int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
 {
-  cout<<"ModulesDetect->bgr2binary process is begin"<< endl;
+ // cout<<"ModulesDetect->bgr2binary process is begin"<< endl;
 
   if (srcImage.empty())
     return -1;
@@ -76,18 +76,21 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
     Mat green_channel = imgChannels.at(1);
     Mat blue_channel = imgChannels.at(0);
     Mat mid_channel=blue_channel-red_channel;
+
     int g_Otsu=0;
     if(Otsu(mid_channel,g_Otsu))
     cout<<"ModulesDetect->Otsu process failed"<< endl;
 
     threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
 
-
+   // imshow("bgr2binary",dstImage);
+   // waitKey(1);
 
   }
  else
   {
-      cvtColor(srcImage, dstImage, COLOR_BGR2GRAY);
+     // cvtColor(srcImage, dstImage, COLOR_BGR2GHSV);
+
       GaussianBlur(dstImage, dstImage, Size(3, 3), 0, 0);
 
       //int g_Otsu=0;
@@ -99,7 +102,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
       int edgeThresh =80;
       Canny(dstImage, dstImage, edgeThresh, edgeThresh * 3, 3);
   }
-  cout<<"ModulesDetect->bgr2binary process successful"<< endl;
+ // cout<<"ModulesDetect->bgr2binary process successful"<< endl;
   return 0;
 }
 ///
@@ -141,6 +144,8 @@ Point ModulesDetect::find_connected(Mat &binary_img)
         }
     binary_img=img_color;
 
+     imshow("find_connected",img_color);
+      waitKey(1);
 
 //    vector<int> tgt_lables;
 //    int area_max = 400, area_min = 100;
@@ -194,7 +199,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)
 ///
 int ModulesDetect::RecognitionFailure(Mat &srcImage)
 {
-    cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
+   // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
 
     Mat RF_image;
 
@@ -226,11 +231,12 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
         leafInfo.ellipseRect = fitEllipse(contours[i]);
 
         int area = leafInfo.ellipseRect.size.area();
-        if (area < 500)
+        if (area < 500 || area > (srcImage.cols*srcImage.rows)/2)
         {
-            modules_center_candidates.push_back(i);   // likely to be center
-           // continue;
+          //  modules_center_candidates.push_back(i);   // likely to be center
+            continue;
         }
+
         if (leafInfo.ellipseRect.size.height > leafInfo.ellipseRect.size.width)
         {
             leafInfo.chang = leafInfo.ellipseRect.size.height;
@@ -245,7 +251,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
         }
 
         float w_div_h = leafInfo.chang / leafInfo.kuan;
-        if (w_div_h < 2)
+        if (w_div_h < 1.5)
         {
             continue;
         }
@@ -279,7 +285,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
         }
 
       }
-    cout<<"ModulesDetect->RecognitionFailure process successful"<< endl;
+  //  cout<<"ModulesDetect->RecognitionFailure process successful"<< endl;
     return 0;
 }
 

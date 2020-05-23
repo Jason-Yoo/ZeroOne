@@ -4,6 +4,7 @@
 #include "GxIAPI.h"
 #include "DxImageProc.h"
 #include <TemplateMatch.h>
+#include "ModulesDetect.h"
 
 #include <thread>
 #include <mutex>

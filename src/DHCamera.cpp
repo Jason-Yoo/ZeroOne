@@ -259,6 +259,7 @@ void *ImageProcess(void* image)
      DHCamera *DH_camera = (DHCamera *)image;
      //Thread running flag setup
      DH_camera->g_ImageProcessFlag = true;
+     ModulesDetect Modules_Detect;
 
      VideoWriter writer;
      int frameRate = 20;
@@ -267,11 +268,12 @@ void *ImageProcess(void* image)
      while(DH_camera->g_ImageProcessFlag)
      {
 
-         if(DH_camera->g_bSaveVedioFlag)
-         writer.write(DH_camera->src_image);
+        // if(DH_camera->g_bSaveVedioFlag)
+       //  writer.write(DH_camera->src_image);
 
          if(DH_camera->src_image.data)
          {
+             Modules_Detect.RecognitionFailure(DH_camera->src_image);
 
              namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
              imshow("DH_camera:",DH_camera->src_image);
