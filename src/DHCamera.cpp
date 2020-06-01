@@ -171,8 +171,26 @@ int DHCamera::Init()
 
 
     //Set Balance White Mode : Continuous
-    emStatus = GXSetEnum(g_hDevice, GX_ENUM_BALANCE_WHITE_AUTO, GX_BALANCE_WHITE_AUTO_CONTINUOUS);
+    emStatus = GXSetEnum(g_hDevice, GX_ENUM_BALANCE_WHITE_AUTO, GX_BALANCE_WHITE_AUTO_ONCE);
     GX_VERIFY_EXIT(emStatus);
+
+    //Set  Exposure
+    // Gets the adjustment range of exposure time.
+  //  GX_FLOAT_RANGE shutterRange;
+   // double dExposureValue = 2.0;
+   // emStatus = GXGetFloatRange(g_hDevice, GX_FLOAT_EXPOSURE_TIME, &shutterRange);
+   // shutterRange.dMin = 9000;
+   // shutterRange.dMax = 15000;
+    // Sets the exposure time to  the minimum.
+   // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, shutterRange.dMin);
+    // Sets the exposure time to the maximum.
+  //  emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, shutterRange.dMax);
+    //Sets the exposure mode to continuous automatic exposure
+  //  emStatus = GXSetEnum(g_hDevice, GX_ENUM_EXPOSURE_AUTO,GX_EXPOSURE_AUTO_ONCE);
+    // Set the exposure delay to 2us
+   // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_DELAY, dExposureValue);
+
+
 
     //Allocate the memory for pixel format transform
     PreForAcquisition();
@@ -261,9 +279,9 @@ void *ImageProcess(void* image)
      DH_camera->g_ImageProcessFlag = true;
      ModulesDetect Modules_Detect;
 
-     VideoWriter writer;
-     int frameRate = 20;
-     writer.open("./uavgp.avi",CV_FOURCC('H', '2', '6', '4'),frameRate, Size(DH_camera->src_image.cols,DH_camera->src_image.rows),1);
+ //    VideoWriter writer;
+ //    int frameRate = 20;
+ //    writer.open("./uavgp.avi",CV_FOURCC('H', '2', '6', '4'),frameRate, Size(DH_camera->src_image.cols,DH_camera->src_image.rows),1);
 
      while(DH_camera->g_ImageProcessFlag)
      {
@@ -274,7 +292,6 @@ void *ImageProcess(void* image)
          if(DH_camera->src_image.data)
          {
              Modules_Detect.RecognitionFailure(DH_camera->src_image);
-
              namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
              imshow("DH_camera:",DH_camera->src_image);
              waitKey(1);
@@ -294,6 +311,7 @@ void *ImageProcess(void* image)
 void *ProcGetImage(void* pParam)
 {
     DHCamera *DH_camera = (DHCamera *)pParam;
+    ModulesDetect Modules_Detect;
     GX_STATUS emStatus = GX_STATUS_SUCCESS;
 
     //Thread running flag setup
@@ -339,6 +357,11 @@ void *ProcGetImage(void* pParam)
             // Image process
             DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
             memcpy( DH_camera->src_image.data, DH_camera->g_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
+
+            Modules_Detect.RecognitionFailure(DH_camera->src_image);
+            namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
+            imshow("DH_camera:",DH_camera->src_image);
+            waitKey(1);
 
             // Print acquisition info each second.
             if (lEnd - lInit >= 1)

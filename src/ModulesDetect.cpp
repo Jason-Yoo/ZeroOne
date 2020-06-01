@@ -54,7 +54,7 @@ int ModulesDetect::Otsu(Mat &srcImage , int &threshold)
     return 0;
 }
 
-/// \brief Dafu_Detector::bgr2binary
+/// \brief ModulesDetect::bgr2binary
 /// input color image and output binary image. It can use 2 methods to acheive that.
 /// \param srcImage   input
 /// \param dstImage    output
@@ -83,9 +83,6 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
 
     threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
 
-   // imshow("bgr2binary",dstImage);
-   // waitKey(1);
-
   }
  else
   {
@@ -106,7 +103,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
   return 0;
 }
 ///
-/// \brief Dafu_Detector::GetPixelLength      计算像素坐标距离
+/// \brief ModulesDetect::GetPixelLength      计算像素坐标距离
 /// \param PixelPointA                       第一个点的像素坐标
 /// \param PixelPointB                       第二个点的像素坐标
 /// \return                                  像素坐标距离
@@ -118,112 +115,122 @@ float ModulesDetect::GetPixelLength(Point PixelPointA, Point PixelPointB)
   PixelLength = sqrtf(PixelLength);
   return PixelLength;
 }
+//希尔排序
+void ShellSort(int* h, size_t len)
+{
+    if(h==NULL) return;
+    if(len<=1) return;
 
+    for(int div=len/2;div>=1;div/=2)
+        for(int k=0;k<div;++k)
+            for(int i=div+k;i<len;i+=div)
+                for(int j=i;j>k;j-=div)
+                    if(h[j]<h[j-div]) swap(h[j],h[j-div]);
+                    else break;
+
+    return;
+}
+
+/// \brief ModulesDetect::find_connected 连通域分析
+/// \return   像素坐标
 Point ModulesDetect::find_connected(Mat &binary_img)
 {
     Mat labels, img_color, stats,centroids;
     Mat binary_inv = ~binary_img;
    // Mat kernel = (Mat_<float>(2, 2) << 2, 7, 10, 0) ;
     int nccomps = cv::connectedComponentsWithStats(binary_inv, labels, stats, centroids);
+
     //去除过小区域，初始化颜色表
     vector<uchar> colors(nccomps);
+    vector<int> Area_line;
     colors[0] = 0; // background pixels remain black.
-    for( int i = 1; i < nccomps; i++ ) {
-        colors[i] = 255;
-        if( stats.at<int>(i, cv::CC_STAT_AREA) < 400 )
-            colors[i] = 0; // small regions are painted with black too.
+
+    vector<int> tgt_lables;
+    int area_max = 400, area_min = 300;
+    for (int j = 0; j < stats.rows; j++)  //x0,y0,width,height,area
+    {
+        int unit_x = stats.at<int>(j,0) ,unit_y= stats.at<int>(j,1);
+        int area = stats.at<int>(j,4);
+        int width = stats.at<int>(j,2), height = stats.at<int>(j,3);
+        float wh_ratio = float(width) / float(height);
+
+        if (unit_x==0 && unit_y == 0) //background
+        {
+
+            continue;
+        }
+        if (area < area_min)
+        {
+            colors[j]=0;
+            continue;
+        }
+        if (wh_ratio < 0.33 || wh_ratio > 3)
+        {
+            colors[j]=0;
+            continue;
+        }
+        colors[j] = 255;
+        tgt_lables.push_back(j);
     }
 
+    //对连通域进行面积排序，保留前3
+//    if(tgt_lables.size() < 1)   return Point(0, 0);
+//    for(int i=1;i<tgt_lables.size();++i){
+//        for(int j=i;j>0;--j){
+//            if( stats.at<uchar>(4,tgt_lables[j]) < stats.at<uchar>(4,tgt_lables[j-1]) )
+//                swap(stats.at<uchar>(4,tgt_lables[j]),stats.at<uchar>(4,tgt_lables[j-1]));
+//        }
+//    }
+//    for (int i=1; i<tgt_lables.size(); i++)
+//    {
+//        if(i>3){
+//            int j =tgt_lables[i];
+//            colors[j]=0;
+//            printf("see whats going on");
+//        }
+
+//    }
+
+//    if (tgt_lables.size() == 1)
+//    {
+
+//        int unit_x = stats.at<uchar>(0,tgt_lables[0]), unit_y = stats.at<uchar>(1,tgt_lables[0]);
+//        int area = stats.at<uchar>(4,tgt_lables[0]);
+//        int width = stats.at<uchar>(2,tgt_lables[0]), height = stats.at<uchar>(3,tgt_lables[0]);
+//        float wh_ratio = float(width) / float(height);
+//        Point tgt_point(unit_x+0.5*width,unit_y+0.5*height);
+
+
+//        return tgt_point;
+//    }
     img_color = Mat::zeros(binary_inv.size(), CV_8UC1);
-    for( int y = 0; y < img_color.rows; y++ )
+    for( int y = 0; y < img_color.rows; y++ ){
         for( int x = 0; x < img_color.cols; x++ )
         {
             int label = labels.at<int>(y, x);
             CV_Assert(0 <= label && label <= nccomps);
             img_color.at<uchar>(y, x) = colors[label];
         }
+    }
+
     binary_img=img_color;
-
-     imshow("find_connected",img_color);
-      waitKey(1);
-
-//    vector<int> tgt_lables;
-//    int area_max = 400, area_min = 100;
-//    for (int j = 0; j < stats.rows; j++)  //x0,y0,width,height,area
-//    {
-//        int unit_x = stats.at<int>(j,0) ,unit_y= stats.at<int>(j,1);
-//        int area = stats.at<int>(j,4);
-//        int width = stats.at<int>(j,2), height = stats.at<int>(j,3);
-//        float wh_ratio = float(width) / float(height);
-
-//        if (unit_x==0&& unit_y == 0) //background
-//        {
-//            continue;
-//        }
-//        if (area < area_min)
-//        {
-//            continue;
-//        }
-//        if (wh_ratio > 3 || wh_ratio < 0.33)
-//        {
-//            continue;
-//        }
-//        tgt_lables.push_back(j);
-//    }
-//    if (tgt_lables.size() == 1)
-//    {
-//        printf("got target");
-//        //int unit_x = stats.at<uchar>(0,tgt_lables[0]), unit_y = stats.at<uchar>(1,tgt_lables[0]);
-//        //int area = stats.at<uchar>(4,tgt_lables[0]);
-//        //int width = stats.at<uchar>(2,tgt_lables[0]), height = stats.at<uchar>(3,tgt_lables[0]);
-//        //float wh_ratio = float(width) / float(height);
-//        //	Point tgt_point(unit_x+0.5*width,unit_y+0.5*height);
-//     //   float center_x = kernel.at<double>(tgt_lables[0], 0);
-//     //   float center_y = kernel.at<double>(tgt_lables[0], 1);
-//     //   Point tgt_point(center_x,center_y );
-//     //   return tgt_point;
-//    }
-//    else
-//    {
-//        printf("see whats going on");
-//        return Point(0, 0);
-//    }
-
     return Point(0, 0);
 }
-
-///
-/// \brief ModulesDetect::RecognitionFailur
-/// \param srcImage
-/// \return
-///
-int ModulesDetect::RecognitionFailure(Mat &srcImage)
+int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
 {
-   // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
-
-    Mat RF_image;
-
-    if(bgr2binary(srcImage,RF_image,1))
-     cout<<"ModulesDetect->bgr2binary process failed"<< endl;
-
-    //连接连通域
-    static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
-    morphologyEx(RF_image, RF_image, MORPH_DILATE, kernel_close);
-
-    find_connected(RF_image);
-
-    detect_frame=RF_image;
     //find Ins_ROI
     vector<vector<Point>> contours;   //每一组Point点集就是一个轮廓
     vector<Vec4i> hierarcy;           //矩形集合
-    vector<int> modules_center_candidates;
+  //  vector<int> modules_center_candidates;
 
-    findContours(RF_image, contours, hierarcy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //找出所有轮廓 包括轮廓关系
+    findContours(srcImage, contours, hierarcy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //找出所有轮廓 包括轮廓关系
     if(contours.size()<=0)
           return -1;
      vector<RotatedRect> box(contours.size()); //定义最小外接矩形集合
-     vector <Point2f> modulesCenter(contours.size());     //modules中心的点
-
+ //    vector <Point2f> modulesCenter(contours.size());     //modules中心的点
+     int MaxArea = 0;
+     int MaxArea_num = 0;
+ //    RotRect Taget_ROI ;
       //绘制轮廓图
       for (int i = 0; i < contours.size(); i++)
       {
@@ -233,7 +240,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
         int area = leafInfo.ellipseRect.size.area();
         if (area < 500 || area > (srcImage.cols*srcImage.rows)/2)
         {
-          //  modules_center_candidates.push_back(i);   // likely to be center
+
             continue;
         }
 
@@ -251,40 +258,92 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
         }
 
         float w_div_h = leafInfo.chang / leafInfo.kuan;
-        if (w_div_h < 1.5)
+        if (w_div_h < 1.5 || w_div_h > 3)
         {
             continue;
         }
+        if (area > MaxArea){
+            MaxArea=area;
+            MaxArea_num =i;
+
+        }
 
         Point2f lf_c_sum(0,0);
-        leafInfo.ellipseRect.points(leafInfo.vertices);
-        float dist_threth = (leafInfo.chang + leafInfo.kuan)/2;
-        for (int i = 0; i < 4; i++)
-        {
-            lf_c_sum += leafInfo.vertices[i];
-            line(srcImage, leafInfo.vertices[i], leafInfo.vertices[(i + 1) % 4], Scalar(0, 255, 0));
-            float edge_length=GetPixelLength(leafInfo.vertices[i], leafInfo.vertices[(i + 1) % 4]);
-            if (edge_length>1.5*leafInfo.kuan)
-            {
-                Point2f temp_vec = Point2f(leafInfo.vertices[i] - leafInfo.vertices[(i + 1) % 4]);
-                leafInfo.vec_chang = temp_vec / norm(temp_vec);
-            }
-
-        }
-        leafInfo.leaf_center = lf_c_sum / 4;
-        leafInfo.externel_rect = leafInfo.ellipseRect.boundingRect();
-
-
-        //求最小外接矩形
-        Point2f rect[4];
-        box[i] = minAreaRect(Mat(contours[i]));
-        box[i].points(rect);
         for (int j = 0; j < 4; j++)
         {
-          line(srcImage, rect[j], rect[(j + 1) % 4], Scalar(0, 0, 255), 1, 8);  //绘制最小外接矩形每条边
+             lf_c_sum += leafInfo.vertices[j];
+        }
+        leafInfo.leaf_center = lf_c_sum / 4;
+
+
+
+//        leafInfo.ellipseRect.points(leafInfo.vertices);
+//        float dist_threth = (leafInfo.chang + leafInfo.kuan)/2;
+//        for (int i = 0; i < 4; i++)
+//        {
+
+//            line(srcImage, leafInfo.vertices[i], leafInfo.vertices[(i + 1) % 4], Scalar(0, 255, 0));
+//            float edge_length=GetPixelLength(leafInfo.vertices[i], leafInfo.vertices[(i + 1) % 4]);
+//            if (edge_length>1.5*leafInfo.kuan)
+//            {
+//                Point2f temp_vec = Point2f(leafInfo.vertices[i] - leafInfo.vertices[(i + 1) % 4]);
+//                leafInfo.vec_chang = temp_vec / norm(temp_vec);
+//            }
+
         }
 
-      }
+       // leafInfo.externel_rect = leafInfo.ellipseRect.boundingRect();
+
+        //求最小外接矩形
+//        Point2f rect[4];
+        TargetRoi = minAreaRect(Mat(contours[MaxArea_num]));
+//        TargetRoi.points(rect);
+//        for (int j = 0; j < 4; j++)
+//        {
+//          line(srcImage, rect[j], rect[(j + 1) % 4], Scalar(0, 0, 255), 3, 8);  //绘制最小外接矩形每条边
+//        }
+        return 1;
+}
+
+///
+/// \brief ModulesDetect::RecognitionFailur
+/// \param srcImage
+/// \return
+///
+int ModulesDetect::RecognitionFailure(Mat &srcImage)
+{
+   // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
+
+    Mat RF_image;
+    RotatedRect TargetRoi;
+    int Targer_Flag = 0;
+
+
+    if(bgr2binary(srcImage,RF_image,1))
+     cout<<"ModulesDetect->bgr2binary process failed"<< endl;
+
+    //连接连通域
+    static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
+    morphologyEx(RF_image, RF_image, MORPH_DILATE, kernel_close);
+
+    find_connected(RF_image);
+    Targer_Flag = Get_TargrtRoi(RF_image,TargetRoi);
+
+    if(Targer_Flag)
+    {
+        //solve pnp problem
+        Point2f Image_point[4];
+        TargetRoi.points(Image_point);
+        for (int j = 0; j < 4; j++)
+        {
+            line(srcImage, Image_point[j], Image_point[(j + 1) % 4], Scalar(0, 0, 255), 5, 8);  //绘制最小外接矩形每条边
+        }
+        Calculate_RT(Image_point);
+    }
+
+    namedWindow("find_connected",WINDOW_AUTOSIZE);
+    imshow("find_connected",RF_image);
+    waitKey(3);
   //  cout<<"ModulesDetect->RecognitionFailure process successful"<< endl;
     return 0;
 }

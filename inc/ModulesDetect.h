@@ -11,6 +11,8 @@
 #include "opencv2/video/tracking.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include <SolveSRPnP.h>
+
 using namespace std;
 using namespace cv;
 
@@ -41,6 +43,7 @@ class ModulesDetect
     int RecognitionFailure(Mat &srcImage);
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
+    int   Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi );
 
     struct LeafInfo
         {

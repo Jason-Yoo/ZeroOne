@@ -24,24 +24,16 @@ class BlueBox
 
 
 };
-
-
-int main()
+void Camera_task()
 {
-    printf("\n");
-    printf("Initializing......");
-//    printf("\n\n");
-
     DHCamera      DH_Camera;
     TemplateMatch Template_Match;
 
     //Device Init
     DH_Camera.Init();
 
-
 //     Device start acquisition
     DH_Camera.Read();
-
 
     //Main loop
     bool bRun = true;
@@ -83,39 +75,71 @@ int main()
         }
 
     }
-
     //Stop TemplateMatch thread
     Template_Match.TemplateMatchFlag = false;
     pthread_join( Template_Match.TemplateMatchThreadID, NULL);
-
     DH_Camera.Stop();
+
+}
+void Vedio_task()
+{
+    printf("*********The video  task  is runing *************** \n");
+    VideoCapture inputVideo;
+    inputVideo.open("DJI_0022.avi");
+    ModulesDetect Modules_Detect;
+    Mat g_srcImage;        //原始图像
+
+       while (1)
+       {
+           if (inputVideo.isOpened() == 0)
+               break;
+           if (inputVideo.isOpened())
+           {
+
+               inputVideo.read(g_srcImage);
+               Modules_Detect.RecognitionFailure(g_srcImage);
+
+           }
+
+           // 创建新窗口
+           namedWindow("Vedio_task", WINDOW_NORMAL);
+           imshow("Vedio_task", g_srcImage);
+           waitKey(5);
+       }
+       waitKey(0);
+}
+
+
+int main()
+{
+    printf("\n");
+    printf("Press [C] or [c] and then press [Enter] to start camera task\n");
+    printf("Press [V] or [v] and then press [Enter] to start video  task\n");
+    printf("Initializing.........");
+    printf("\n\n");
+
+    bool CRun = false;
+    bool VRun = false;
+    while(!CRun)
+    {
+        char StartKey = getchar();
+        switch(StartKey)
+        {
+            case 'C':
+            case 'c':
+                CRun = true;
+                break;
+            case 'V':
+            case 'v':
+                VRun = true;
+                break;
+        }
+        if(CRun) break;
+        if(VRun) break;
+    }
+    if(CRun) Camera_task();
+    if(VRun) Vedio_task();
 
     waitKey(0);
 
 }
-//int main()
-//{
-//    Mat srcimage;
-//    srcimage=imread("bluebox4.bmp");
-//    Point2f image_point[4];
-////    image_point[0] = Point(430,43);
-////    image_point[1] = Point(870,46);
-////    image_point[2] = Point(881,915);
-////    image_point[3] = Point(433,918);
-//    image_point[0] = Point(838,517);
-//    image_point[1] = Point(1003,571);
-//    image_point[2] = Point(765,920);
-//    image_point[3] = Point(584,800);
-//    Calculate_RT(image_point);
-//    int point_size = 1;
-//    Scalar point_color = (0,0,255);
-//    int thickness = 4;
-//    int n;
-//    for(n=0;n<4;n++)
-//    {
-//         circle(srcimage,image_point[n],point_size,point_color,thickness);
-//    }
-//    imshow("src_image",srcimage);
-//    waitKey(0);
-
-//}

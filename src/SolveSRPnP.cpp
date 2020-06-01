@@ -126,21 +126,18 @@ void Calculate_RT(Point2f Image_Points[4])
     distCoeffs << -0.2972, 0.0742, 0.00000, -0.00000, 0.00000;
 
     double t = (double)getTickCount();
-//    for(int i=0;i<100;i++)
-//    {
-     SolveSRPnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector);
-//    }
+    SolveSRPnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector);
     t = ((double)getTickCount() - t) / getTickFrequency();
-//    t = t/100;
 
-    //calculate wish point
-    float threeDim_wish[4][3] = {{0, 0, 25}, {0, 50, 25}, {100, 50, 25}, {100, 0, 25}};
-    //转换为可以函数输入的形式;
-    vector<Point3d> WishPoints;
-    for (int i = 0; i < 4; i++)
-    {
-        WishPoints.push_back(Point3d(threeDim_wish[i][0], threeDim_wish[i][1], threeDim_wish[i][2]));
-    }
+
+    //calculate point for stacking
+//    float threeDim_wish[4][3] = {{0, 0, 25}, {0, 50, 25}, {100, 50, 25}, {100, 0, 25}};
+//    //转换为可以函数输入的形式;
+//    vector<Point3d> WishPoints;
+//    for (int i = 0; i < 4; i++)
+//    {
+//        WishPoints.push_back(Point3d(threeDim_wish[i][0], threeDim_wish[i][1], threeDim_wish[i][2]));
+//    }
 
 
     // 输出角度形式;
@@ -159,29 +156,29 @@ void Calculate_RT(Point2f Image_Points[4])
     cout << "Z=" << tVector.at<double>(2, 0) << endl;
     cout << "********************************************" << endl;
 
-     t = (double)getTickCount();
+//     t = (double)getTickCount();
 //      for(int i=0;i<100;i++)
 //      {
-      solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector,false, CV_ITERATIVE);
+//      solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector,false, CV_ITERATIVE);
 //      }
-     t = ((double)getTickCount() - t) / getTickFrequency();
+//     t = ((double)getTickCount() - t) / getTickFrequency();
 //     t=t/100;
 
      // 输出角度形式;
    //  double pi = 3.1415926;
-     A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
-     B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
-     C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
+//     A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
+//     B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
+//     C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
 
-     cout << "***********solvePnP算法进行位姿态解算**********" << endl;
-     cout << "Opencv中solvePnP算法解算时间=" << t * 1000 << "ms" << endl;
-     cout << "Pitch=" << A << endl;
-     cout << "Yaw  =" << B << endl;
-     cout << "Roll =" << C << endl;
-     cout << "X=" << tVector.at<double>(0, 0) << endl;
-     cout << "Y=" << tVector.at<double>(1, 0) << endl;
-     cout << "Z=" << tVector.at<double>(2, 0) << endl;
-     cout << "******************************************" << endl;
+//     cout << "***********solvePnP算法进行位姿态解算**********" << endl;
+//     cout << "Opencv中solvePnP算法解算时间=" << t * 1000 << "ms" << endl;
+//     cout << "Pitch=" << A << endl;
+//     cout << "Yaw  =" << B << endl;
+//     cout << "Roll =" << C << endl;
+//     cout << "X=" << tVector.at<double>(0, 0) << endl;
+//     cout << "Y=" << tVector.at<double>(1, 0) << endl;
+//     cout << "Z=" << tVector.at<double>(2, 0) << endl;
+//     cout << "******************************************" << endl;
 
 }
 
