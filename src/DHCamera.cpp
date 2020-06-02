@@ -168,28 +168,13 @@ int DHCamera::Init()
         emStatus = GXSetInt(g_hDevice, GX_DS_INT_STREAM_TRANSFER_NUMBER_URB, ACQ_TRANSFER_NUMBER_URB);
         GX_VERIFY_EXIT(emStatus);
     }
-
-
     //Set Balance White Mode : Continuous
     emStatus = GXSetEnum(g_hDevice, GX_ENUM_BALANCE_WHITE_AUTO, GX_BALANCE_WHITE_AUTO_ONCE);
     GX_VERIFY_EXIT(emStatus);
 
     //Set  Exposure
-    // Gets the adjustment range of exposure time.
-  //  GX_FLOAT_RANGE shutterRange;
-   // double dExposureValue = 2.0;
-   // emStatus = GXGetFloatRange(g_hDevice, GX_FLOAT_EXPOSURE_TIME, &shutterRange);
-   // shutterRange.dMin = 9000;
-   // shutterRange.dMax = 15000;
-    // Sets the exposure time to  the minimum.
-   // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, shutterRange.dMin);
-    // Sets the exposure time to the maximum.
-  //  emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, shutterRange.dMax);
-    //Sets the exposure mode to continuous automatic exposure
-  //  emStatus = GXSetEnum(g_hDevice, GX_ENUM_EXPOSURE_AUTO,GX_EXPOSURE_AUTO_ONCE);
-    // Set the exposure delay to 2us
-   // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_DELAY, dExposureValue);
-
+    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 20000.0000);
+    GX_VERIFY_EXIT(emStatus);
 
 
     //Allocate the memory for pixel format transform

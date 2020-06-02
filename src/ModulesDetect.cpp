@@ -164,7 +164,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)
             colors[j]=0;
             continue;
         }
-        if (wh_ratio < 0.33 || wh_ratio > 3)
+        if (wh_ratio < 0.5 || wh_ratio > 2)
         {
             colors[j]=0;
             continue;
@@ -230,7 +230,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
  //    vector <Point2f> modulesCenter(contours.size());     //modules中心的点
      int MaxArea = 0;
      int MaxArea_num = 0;
- //    RotRect Taget_ROI ;
+     vector<RotRect> Target_ROI ;
       //绘制轮廓图
       for (int i = 0; i < contours.size(); i++)
       {
@@ -258,15 +258,15 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
         }
 
         float w_div_h = leafInfo.chang / leafInfo.kuan;
-        if (w_div_h < 1.5 || w_div_h > 3)
+        if (w_div_h > 2)
         {
             continue;
         }
-        if (area > MaxArea){
-            MaxArea=area;
-            MaxArea_num =i;
+//        if (area > MaxArea){
+//            MaxArea=area;
+//            MaxArea_num =i;
 
-        }
+//        }
 
         Point2f lf_c_sum(0,0);
         for (int j = 0; j < 4; j++)
@@ -275,7 +275,11 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
         }
         leafInfo.leaf_center = lf_c_sum / 4;
 
-
+        RotRect Rot_Rect;
+        Rot_Rect.center = leafInfo.leaf_center;
+        Rot_Rect.width  = leafInfo.kuan;
+        Rot_Rect.height  = leafInfo.chang;
+        Target_ROI.push_back(Rot_Rect);
 
 //        leafInfo.ellipseRect.points(leafInfo.vertices);
 //        float dist_threth = (leafInfo.chang + leafInfo.kuan)/2;
@@ -291,6 +295,13 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
 //            }
 
         }
+      Mat ImageRoi;
+      for(int i=0;i < Target_ROI.size();i++)
+      {
+          ImageRoi = srcimage(Rect(Target_ROI[i].c));
+
+      }
+
 
        // leafInfo.externel_rect = leafInfo.ellipseRect.boundingRect();
 
