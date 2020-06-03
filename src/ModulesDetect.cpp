@@ -226,11 +226,11 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
     findContours(srcImage, contours, hierarcy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //找出所有轮廓 包括轮廓关系
     if(contours.size()<=0)
           return -1;
-     vector<RotatedRect> box(contours.size()); //定义最小外接矩形集合
+     vector<Rect> box(contours.size()); //定义最小外接矩形集合
  //    vector <Point2f> modulesCenter(contours.size());     //modules中心的点
      int MaxArea = 0;
      int MaxArea_num = 0;
-     vector<RotRect> Target_ROI ;
+
       //绘制轮廓图
       for (int i = 0; i < contours.size(); i++)
       {
@@ -275,11 +275,9 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
         }
         leafInfo.leaf_center = lf_c_sum / 4;
 
-        RotRect Rot_Rect;
-        Rot_Rect.center = leafInfo.leaf_center;
-        Rot_Rect.width  = leafInfo.kuan;
-        Rot_Rect.height  = leafInfo.chang;
-        Target_ROI.push_back(Rot_Rect);
+
+        box[i] = boundingRect(contours[i]);
+
 
 //        leafInfo.ellipseRect.points(leafInfo.vertices);
 //        float dist_threth = (leafInfo.chang + leafInfo.kuan)/2;
@@ -296,10 +294,37 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
 
         }
       Mat ImageRoi;
-      for(int i=0;i < Target_ROI.size();i++)
+      int numOfblue = 0;            //记录颜色的像素点
+      float blue_rate = 0;                     //要计算的百分率
+      float Max_bluerate = 0;
+      int Max_bluenum = 0;
+      for(int i=0;i < box.size();i++)
       {
-          ImageRoi = srcimage(Rect(Target_ROI[i].c));
 
+          ImageRoi = srcImage(Rect(box[i].x, box[i].y, box[i].width, box[i].height));
+//          vector<Mat> imgChannels;
+//          split(ImageRoi, imgChannels);
+//          Mat red_channel = imgChannels.at(2);
+//          Mat green_channel = imgChannels.at(1);
+//          Mat blue_channel = imgChannels.at(0);
+          for (int m = 0; m < ImageRoi.rows;m++)
+          {
+              for (int n = 0; n<ImageRoi.cols;n++)   //遍历图片的每一个像素点
+              {
+                 if((ImageRoi.at<Vec3b>(m, n)[0] >= 50 && ImageRoi.at<Vec3b>(m, n)[1] <= 50 && ImageRoi.at<Vec3b>(m, n)[2] <= 50))
+
+                         numOfblue++;
+              }
+
+          }
+          blue_rate = (float)numOfblue / (float)(ImageRoi.rows * ImageRoi.cols);
+          if(Max_bluerate < blue_rate)
+          {
+              Max_bluerate = blue_rate;
+              Max_bluenum = i;
+              printf("The rate:%.2f%%\n", Max_bluerate * 100);
+
+          }
       }
 
 
@@ -307,7 +332,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
 
         //求最小外接矩形
 //        Point2f rect[4];
-        TargetRoi = minAreaRect(Mat(contours[MaxArea_num]));
+        TargetRoi = minAreaRect(Mat(contours[Max_bluenum]));
 //        TargetRoi.points(rect);
 //        for (int j = 0; j < 4; j++)
 //        {
@@ -347,7 +372,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
         TargetRoi.points(Image_point);
         for (int j = 0; j < 4; j++)
         {
-            line(srcImage, Image_point[j], Image_point[(j + 1) % 4], Scalar(0, 0, 255), 5, 8);  //绘制最小外接矩形每条边
+            line(srcImage, Image_point[j], Image_point[(j + 1) % 4], Scalar(0, 0, 255), 2, 8);  //绘制最小外接矩形每条边
         }
         Calculate_RT(Image_point);
     }

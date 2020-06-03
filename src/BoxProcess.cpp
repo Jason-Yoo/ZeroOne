@@ -84,6 +84,27 @@ void Vedio_task()
            waitKey(5);
        }
        waitKey(0);
+} 
+void Image_Task()
+{
+     printf("*********The Image task  is runing *************** \n");
+     ModulesDetect Modules_Detect;
+     Mat g_srcImage;        //原始图像
+     g_srcImage = imread("bluebox4.jpg");
+
+     if (g_srcImage.empty())
+     printf("*********Not find a Image in film,Please check ********* ");
+     else
+     {
+
+         Modules_Detect.RecognitionFailure(g_srcImage);
+         // 创建新窗口
+         namedWindow("Image_Task", WINDOW_AUTOSIZE);
+         imshow("Image_Task", g_srcImage);
+
+     }
+     waitKey(0);
+
 }
 
 
@@ -92,11 +113,12 @@ int main()
     printf("\n");
     printf("Press [C] or [c] and then press [Enter] to start camera task\n");
     printf("Press [V] or [v] and then press [Enter] to start video  task\n");
-    printf("Initializing.........");
+    printf("Press [P] or [p] and then press [Enter] to start video  task\n");
     printf("\n\n");
 
     bool CRun = false;
     bool VRun = false;
+    bool PRun = false;
     while(!CRun)
     {
         char StartKey = getchar();
@@ -110,12 +132,19 @@ int main()
             case 'v':
                 VRun = true;
                 break;
+            case 'P':
+            case 'p':
+                PRun = true;
+                break;
         }
+
         if(CRun) break;
         if(VRun) break;
+        if(PRun) break;
     }
     if(CRun) Camera_task();
     if(VRun) Vedio_task();
+    if(PRun) Image_Task();
 
     waitKey(0);
 

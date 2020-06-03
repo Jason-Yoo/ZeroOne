@@ -20,6 +20,7 @@ class RotRect {
 public:
     cv::Point2f center;
     cv::Point2f dir;
+        Point2f Corner[4];
     float width;
     float height;
 
