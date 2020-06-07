@@ -13,9 +13,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
-
-
-#include <TemplateMatch.h>
+#include <inc/TemplateMatch.h>
 
 using namespace cv;
 using namespace std;

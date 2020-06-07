@@ -1,4 +1,4 @@
-#include <TemplateMatch.h>
+#include <inc/TemplateMatch.h>
 
 void TemplateMatch::ImageTracking(Mat image,Mat rectImage)
 {

@@ -2,16 +2,13 @@
 INCLUDEPATH += ${GENICAM_ROOT_V2_3}/library/CPP/include
 INCLUDEPATH += ${GENICAM_ROOT_V2_3}/../../sdk/include
 
-LIBS += -lgxiapi \#-ldximageproc\
-#-L${GENICAM_ROOT_V2_3}/bin/Linux32_i86 \
-#-lGCBase_gcc40_v2_3 -lGenApi_gcc40_v2_3 -llog4cpp_gcc40_v2_3 -lLog_gcc40_v2_3 -lMathParser_gcc40_v2_3
-
+LIBS += -lgxiapi \
 #opencv header
 
 INCLUDEPATH +=usr/local/include \
-usr/local/include/opencv \
-usr/local/include/opencv2 \
-usr/include/eigen3
+              usr/local/include/opencv \
+              usr/local/include/opencv2 \
+              usr/include/eigen3
 
 #opencv lib
 
@@ -28,17 +25,20 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = MerOpenCvwithQt
+TARGET = VideoSave
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        TemplateMatch.cpp \
-        mainwindow.cpp
+SOURCES += \
+           src/main.cpp \
+           src/TemplateMatch.cpp \
+           src/mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    TemplateMatch.h
+HEADERS += inc/mainwindow.h\
+           inc/TemplateMatch.h\
+           inc/GxIAPI.h\
+           inc/DxImageProc.h
+
 
 FORMS    += mainwindow.ui
-
 
