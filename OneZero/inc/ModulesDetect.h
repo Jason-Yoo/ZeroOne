@@ -45,6 +45,7 @@ class ModulesDetect
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
     int   Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi );
+    int Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2f &Image_Point);
 
     struct LeafInfo
         {

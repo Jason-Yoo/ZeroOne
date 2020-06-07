@@ -81,7 +81,9 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
     if(Otsu(mid_channel,g_Otsu))
     cout<<"ModulesDetect->Otsu process failed"<< endl;
 
-    threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+    threshold(mid_channel, dstImage, 50, 255, CV_THRESH_BINARY);
+
+    //imshow("mid_channel",mid_channel);
 
   }
  else
@@ -137,7 +139,6 @@ Point ModulesDetect::find_connected(Mat &binary_img)
 {
     Mat labels, img_color, stats,centroids;
     Mat binary_inv = ~binary_img;
-   // Mat kernel = (Mat_<float>(2, 2) << 2, 7, 10, 0) ;
     int nccomps = cv::connectedComponentsWithStats(binary_inv, labels, stats, centroids);
 
     //去除过小区域，初始化颜色表
@@ -164,7 +165,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)
             colors[j]=0;
             continue;
         }
-        if (wh_ratio < 0.5 || wh_ratio > 2)
+        if (wh_ratio < 0.3 || wh_ratio > 3)
         {
             colors[j]=0;
             continue;
@@ -216,6 +217,85 @@ Point ModulesDetect::find_connected(Mat &binary_img)
     binary_img=img_color;
     return Point(0, 0);
 }
+/**
+* @brief 排序
+* @param inputContours    输入轮廓
+* @param outputContours   输出轮廓
+* @param sortType   排序类型：0-按x排序，1-按y排序，2-按面积排序
+* @param sortOrder   排序方式：true-升序，false-降序
+*
+* @return 返回说明
+*     -<em>false</em> fail
+*     -<em>true</em> succeed
+*/
+void  SortContourPoint(vector<vector<Point>> inputContours, vector<vector<Point>> &outputContours, int sortType, bool sortOrder)
+{
+    vector<Point> tempContoursPoint;
+
+    //计算轮廓矩
+    vector<Moments> mu(inputContours.size());
+    //计算轮廓的质心
+    vector<Point2f> mc(inputContours.size());
+    //计算轮廓的面积
+    double area, area1;
+    //2.2 定义Rect类型的vector容器roRect存放最小外接矩形，初始化大小为contours.size()即轮廓个数
+    vector<RotatedRect> roRect(inputContours.size());
+    //计算轮廓最小外接矩形中心
+    Point center, center1;
+
+    for (int i = 0; i < inputContours.size(); i++)
+    {
+        tempContoursPoint.clear();    //每次循环注意清空
+
+        mu[i] = moments(inputContours[i], false); //轮廓矩
+
+        mc[i] = Point2d(mu[i].m10 / mu[i].m00, mu[i].m01 / mu[i].m00); //轮廓质心
+
+        area = inputContours[i].size(); //轮廓点数
+        area = contourArea(inputContours[i], false); //轮廓的面积
+
+        //旋转矩形主要成员有center、size、 angle、points()
+        roRect[i] = minAreaRect(Mat(inputContours[i]));
+        center = roRect[i].center; //轮廓最小外接矩形中心
+        //outputContours[0] = inputContours[1];
+    }
+
+
+    ///冒泡法
+    for (int i = 0; i < inputContours.size() - 1; i++)          //n个数要进行n-1趟比较
+    {
+        for (int j = 0; j < (inputContours.size() - 1) - i; j++)       //每趟比较n-i次
+        {
+            mu[j] = moments(inputContours[j], false); //轮廓矩
+            mu[j+1] = moments(inputContours[j+1], false); //轮廓矩
+
+            mc[j] = Point2d(mu[j].m10 / mu[j].m00, mu[j].m01 / mu[j].m00); //轮廓质心
+            mc[j+1] = Point2d(mu[j+1].m10 / mu[j+1].m00, mu[j+1].m01 / mu[j+1].m00); //轮廓质心
+
+            area = inputContours[j].size(); //轮廓点数
+            area = contourArea(inputContours[j], false); //轮廓的面积
+            area1 = inputContours[j+1].size(); //轮廓点数
+            area1 = contourArea(inputContours[j+1], false); //轮廓的面积
+
+            //旋转矩形主要成员有center、size、 angle、points()
+            roRect[j] = minAreaRect(Mat(inputContours[j]));
+            center = roRect[j].center; //轮廓最小外接矩形中心
+            roRect[j+1] = minAreaRect(Mat(inputContours[j+1]));
+            center1 = roRect[j+1].center; //轮廓最小外接矩形中心
+
+            if (mc[j].x > mc[j + 1].x)      //依次比较两个相邻的数，将小数放在前面，大数放在后面:升序
+            {
+                tempContoursPoint = inputContours[j];   //temp是局部变量
+                inputContours[j] = inputContours[j + 1];
+                inputContours[j + 1] = tempContoursPoint;
+            }
+        }
+    }
+
+    outputContours = inputContours;
+
+}
+
 int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
 {
     //find Ins_ROI
@@ -262,11 +342,11 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
         {
             continue;
         }
-//        if (area > MaxArea){
-//            MaxArea=area;
-//            MaxArea_num =i;
+        if (area > MaxArea){
+            MaxArea=area;
+            MaxArea_num =i;
 
-//        }
+        }
 
         Point2f lf_c_sum(0,0);
         for (int j = 0; j < 4; j++)
@@ -300,39 +380,49 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,RotatedRect &TargetRoi )
       int Max_bluenum = 0;
       for(int i=0;i < box.size();i++)
       {
+          if(box[i].x == 0 && box[i].y == 0)
+              continue;
+       //   ImageRoi = srcImage(Rect(box[i].x, box[i].y, box[i].width, box[i].height));
+         // Mat imgHSV;
 
-          ImageRoi = srcImage(Rect(box[i].x, box[i].y, box[i].width, box[i].height));
-//          vector<Mat> imgChannels;
-//          split(ImageRoi, imgChannels);
-//          Mat red_channel = imgChannels.at(2);
-//          Mat green_channel = imgChannels.at(1);
-//          Mat blue_channel = imgChannels.at(0);
-          for (int m = 0; m < ImageRoi.rows;m++)
-          {
-              for (int n = 0; n<ImageRoi.cols;n++)   //遍历图片的每一个像素点
-              {
-                 if((ImageRoi.at<Vec3b>(m, n)[0] >= 50 && ImageRoi.at<Vec3b>(m, n)[1] <= 50 && ImageRoi.at<Vec3b>(m, n)[2] <= 50))
+         // cvtColor(ImageRoi, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+          //蓝色的HSV区间
+//          int iLowH = 100;
+//          int iHighH = 140;
 
-                         numOfblue++;
-              }
+//          int iLowS = 90;
+//          int iHighS = 255;
 
-          }
-          blue_rate = (float)numOfblue / (float)(ImageRoi.rows * ImageRoi.cols);
-          if(Max_bluerate < blue_rate)
-          {
-              Max_bluerate = blue_rate;
-              Max_bluenum = i;
-              printf("The rate:%.2f%%\n", Max_bluerate * 100);
+//          int iLowV = 90;
+//          int iHighV = 255;
 
-          }
+//          for (int rows = 0; rows < imgHSV.rows;rows++)
+//          {
+//              for (int cols = 0; cols<imgHSV.cols;cols++)   //遍历图片的每一个像素点
+//              {
+//                  vector<int> colorVec;
+//                  colorVec.push_back(imgHSV.at<Vec3b>(rows,cols)[0]);
+//                  colorVec.push_back(imgHSV.at<Vec3b>(rows,cols)[1]);
+//                  colorVec.push_back(imgHSV.at<Vec3b>(rows,cols)[2]);
+//                  if((colorVec[0]>=iLowH&&colorVec[0]<=iHighH)&&(colorVec[1]>=iLowS&&colorVec[1]<=iHighS)&&(colorVec[2]>=iLowV&&colorVec[2]<=iHighV)){
+
+//                         numOfblue++;
+//                  }
+//              }
+
+//          }
+//          blue_rate = (float)numOfblue / (float)(imgHSV.rows * imgHSV.cols);
+//          if(Max_bluerate < blue_rate)
+//          {
+//              Max_bluerate = blue_rate;
+//              Max_bluenum = i;
+//              printf("The rate:%.2f%%\n", Max_bluerate * 100);
+
+//          }
       }
-
-
-       // leafInfo.externel_rect = leafInfo.ellipseRect.boundingRect();
-
         //求最小外接矩形
 //        Point2f rect[4];
-        TargetRoi = minAreaRect(Mat(contours[Max_bluenum]));
+        TargetRoi = minAreaRect(Mat(contours[MaxArea_num]));
 //        TargetRoi.points(rect);
 //        for (int j = 0; j < 4; j++)
 //        {
@@ -368,13 +458,14 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
     if(Targer_Flag)
     {
         //solve pnp problem
-        Point2f Image_point[4];
-        TargetRoi.points(Image_point);
+        Point2f Image_Point[4];
+      //  Get_ConerPoint(srcImage, TargetRoi, Image_Point[0] );
+        TargetRoi.points(Image_Point);
         for (int j = 0; j < 4; j++)
         {
-            line(srcImage, Image_point[j], Image_point[(j + 1) % 4], Scalar(0, 0, 255), 2, 8);  //绘制最小外接矩形每条边
+            line(srcImage, Image_Point[j], Image_Point[(j + 1) % 4], Scalar(0, 0, 255), 2, 8);  //绘制最小外接矩形每条边
         }
-        Calculate_RT(Image_point);
+      //  Calculate_RT(Image_Point);
     }
 
     namedWindow("find_connected",WINDOW_AUTOSIZE);
@@ -382,5 +473,73 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
     waitKey(3);
   //  cout<<"ModulesDetect->RecognitionFailure process successful"<< endl;
     return 0;
+}
+//围绕矩形中心缩放
+Rect rectCenterScale(Rect rect, Size size)
+{
+    rect = rect + size;
+    Point pt;
+    pt.x = cvRound(size.width / 2.0);
+    pt.y = cvRound(size.height / 2.0);
+    return (rect - pt);
+}
+//*函数功能：求两条直线交点*/
+Point2f getCrossPoint(Vec4i LineA, Vec4i LineB)
+{
+    double ka, kb;
+    ka = (double)(LineA[3] - LineA[1]) / (double)(LineA[2] - LineA[0]); //求出LineA斜率
+    kb = (double)(LineB[3] - LineB[1]) / (double)(LineB[2] - LineB[0]); //求出LineB斜率
+
+    Point2f crossPoint;
+    crossPoint.x = (ka*LineA[0] - LineA[1] - kb*LineB[0] + LineB[1]) / (ka - kb);
+    crossPoint.y = (ka*kb*(LineA[0] - LineB[0]) + ka*LineB[1] - kb*LineA[1]) / (ka - kb);
+    return crossPoint;
+}
+
+
+int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2f &Image_Point)
+{
+    Point2f RotateRect_point[4];
+    Point2f RotateRect_center;
+    Target_Roi.points(RotateRect_point);
+    RotateRect_center = Point(Target_Roi.center.x, Target_Roi.center.y);
+
+
+    Rect Target_Rect = Target_Roi.boundingRect();
+    Size rate(Target_Rect.width / 5, Target_Rect.height / 5);
+    Target_Rect = rectCenterScale(Target_Rect, rate);
+    Mat rect_check = srcImage(Target_Rect);
+    Mat side_image;
+
+    cvtColor(rect_check, rect_check, COLOR_BGR2GRAY);
+    GaussianBlur(rect_check, rect_check, Size(3, 3), 0, 0);
+    //bgr2binary(rect_check,side_image,1);
+    //定义核
+    //Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
+    //进行形态学开运算操作
+   // morphologyEx(side_image, side_image, MORPH_OPEN, element);
+    //边缘检测
+    Canny(rect_check, side_image, 60, 150, 3);
+    /*霍夫直线检测*/
+    vector<Vec4i> Lines;
+    HoughLinesP(side_image, Lines, 1, CV_PI / 360, 200, 100, 10);
+    Vec4i LineStand = Lines[0];
+    Vec4i LineAnother;
+    double ka = (double)(LineStand[1] - LineStand[3]) / (double)(LineStand[0] - LineStand[2]);
+    double kb;
+    for (int i = 1; i < Lines.size(); i++)
+    {
+        double ki = (double)(Lines[i][1] - Lines[i][3]) / (double)(Lines[i][0] - Lines[i][2]);
+        if (ki*ka < 0)
+        {
+            LineAnother = Lines[i];
+            kb = ki;
+        }
+    }
+
+
+    imshow("Get_ConerPoint",side_image);
+    imshow("Target_Rect",rect_check);
+
 }
 

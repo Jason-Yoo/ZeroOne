@@ -89,6 +89,22 @@ void SolveSRPnP(const vector<Point3d> & objectPoints,
         rMatrix = camera_Matrix.clone();
         tVector = camera_Vector.clone();
 }
+void getProjection(Mat & cameraMatrix,Mat & rMatrix,Mat & tVector)
+{
+    //calculate point for stacking
+   float threeDim_wish[4][3] = {{0, 0, 25}, {0, 50, 25}, {100, 50, 25}, {100, 0, 25}};
+    //转换为可以函数输入的形式;
+    vector<Point3d> WishPoints;
+    for (int i = 0; i < 4; i++)
+    {
+        WishPoints.push_back(Point3d(threeDim_wish[i][0], threeDim_wish[i][1], threeDim_wish[i][2]));
+    }
+    Eigen::MatrixXd A = Eigen::MatrixXd::Ones(1, 4);
+  //  Eigen::MatrixXd B = rMatrix * WishPoints + tVector * A;
+   // Eigen::MatrixXd p2d_i = cameraMatrix * B;
+   // p2d_i = p2d_i / repmat(p2d_i(end,:),3,1);
+   // p2d_i = p2d_i(1:2,:);
+}
 void Calculate_RT(Point2f Image_Points[4])
 {
     //定义输出旋转矩阵和平移矩阵
@@ -128,17 +144,6 @@ void Calculate_RT(Point2f Image_Points[4])
     double t = (double)getTickCount();
     SolveSRPnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector);
     t = ((double)getTickCount() - t) / getTickFrequency();
-
-
-    //calculate point for stacking
-//    float threeDim_wish[4][3] = {{0, 0, 25}, {0, 50, 25}, {100, 50, 25}, {100, 0, 25}};
-//    //转换为可以函数输入的形式;
-//    vector<Point3d> WishPoints;
-//    for (int i = 0; i < 4; i++)
-//    {
-//        WishPoints.push_back(Point3d(threeDim_wish[i][0], threeDim_wish[i][1], threeDim_wish[i][2]));
-//    }
-
 
     // 输出角度形式;
     double pi = 3.1415926;

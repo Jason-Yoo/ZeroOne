@@ -62,7 +62,7 @@ void Vedio_task()
 {
     printf("*********The video  task  is runing *************** \n");
     VideoCapture inputVideo;
-    inputVideo.open("DJI_0022.avi");
+    inputVideo.open("uavgp.avi");
     ModulesDetect Modules_Detect;
     Mat g_srcImage;        //原始图像
 
@@ -81,7 +81,7 @@ void Vedio_task()
            // 创建新窗口
            namedWindow("Vedio_task", WINDOW_NORMAL);
            imshow("Vedio_task", g_srcImage);
-           waitKey(5);
+           waitKey(10);
        }
        waitKey(0);
 } 
