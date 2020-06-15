@@ -272,6 +272,9 @@ void MainWindow::on_OpenButton_clicked()
     //Set trigger mode
     status = GXSetEnum(m_hDevice, GX_ENUM_TRIGGER_MODE, GX_TRIGGER_MODE_OFF);
 
+    //Set  Exposur
+    status = GXSetFloat(m_hDevice, GX_FLOAT_EXPOSURE_TIME, 20000.0000);
+
     //注册图像处理回调函数
     status = GXRegisterCaptureCallback(m_hDevice, this, (GXCaptureCallBack)OnFrameCallbackFun);
 

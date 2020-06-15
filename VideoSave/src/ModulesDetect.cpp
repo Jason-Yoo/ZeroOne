@@ -82,24 +82,27 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
     cout<<"ModulesDetect->Otsu process failed"<< endl;
 
     threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
-
-    //imshow("mid_channel",mid_channel);
-
   }
  else
   {
-     // cvtColor(srcImage, dstImage, COLOR_BGR2GHSV);
+      //蓝色的HSV范围
+      int iLowH = 100;
+      int iHighH = 124;
 
-      GaussianBlur(dstImage, dstImage, Size(3, 3), 0, 0);
+      int iLowS = 43;
+      int iHighS = 255;
 
-      //int g_Otsu=0;
-      // if(Otsu(dstImage,g_Otsu))
-      //cout<<"ModulesDetect->Otsu process failed"<< endl;
-      // threshold(dstImage, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+      int iLowV = 46;
+      int iHighV = 255;
+      Mat HSVImage;
+      cvtColor(srcImage, HSVImage, COLOR_BGR2HSV);
+      inRange(HSVImage,Scalar(iLowH,iLowS,iLowV),Scalar(iHighH,iHighS,iHighV),dstImage);          //找寻在要求区间内的颜色
 
-      //Canny
-      int edgeThresh =80;
-      Canny(dstImage, dstImage, edgeThresh, edgeThresh * 3, 3);
+      int g_Otsu=0;
+       if(Otsu(dstImage,g_Otsu))
+      cout<<"ModulesDetect->Otsu process failed"<< endl;
+       threshold(dstImage, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+
   }
  // cout<<"ModulesDetect->bgr2binary process successful"<< endl;
   return 0;
@@ -345,7 +348,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
 
 
         box[i] = boundingRect(contours[i]);
-        rectangle(srcImage, Point(box[i].x, box[i].y), Point(box[i].x + box[i].width, box[i].y + box[i].height), Scalar(255, 0, 0), 2, 8);
+     //   rectangle(srcImage, Point(box[i].x, box[i].y), Point(box[i].x + box[i].width, box[i].y + box[i].height), Scalar(255, 0, 0), 2, 8);
 
 
 //        leafInfo.ellipseRect.points(leafInfo.vertices);
@@ -367,31 +370,48 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
       float blue_rate = 0;                     //要计算的百分率
       float Max_bluerate = 0;
       int Max_bluenum = 0;
+
+      //蓝色的HSV范围
+      int iLowH = 100;
+      int iHighH = 124;
+
+      int iLowS = 43;
+      int iHighS = 255;
+
+      int iLowV = 46;
+      int iHighV = 255;
+
       for(int i=0;i < box.size();i++)
       {
           if(box[i].x == 0 && box[i].y == 0)
               continue;
           ImageRoi = srcImage(Rect(box[i].x, box[i].y, box[i].width, box[i].height));
+          Mat HsvImage ;
+          ImageRoi.copyTo(HsvImage);
+          cvtColor(HsvImage, HsvImage, CV_BGR2HSV);//CV_BGR2HSV
           numOfblue = 0;
-          for(int m = 0; m < ImageRoi.rows; m++)
+
+          for(int m = 0; m < HsvImage.rows; m++)
           {
-              for(int n = 0; n < ImageRoi.cols; n++)
+              for(int n = 0; n < HsvImage.cols; n++)
               {
-                  if(ImageRoi.at<Vec3b>(m,n)[0] > 200 && ImageRoi.at<Vec3b>(m,n)[1] < 10 && ImageRoi.at<Vec3b>(m,n)[2] < 10)
+
+                  if((HsvImage.at<Vec3b>(m,n)[0] >= iLowH && HsvImage.at<Vec3b>(m,n)[0] <= iHighH) &&
+                     (HsvImage.at<Vec3b>(m,n)[1] >= iLowS && HsvImage.at<Vec3b>(m,n)[1] <= iHighS ) &&
+                     (HsvImage.at<Vec3b>(m,n)[2] >= iLowV && HsvImage.at<Vec3b>(m,n)[2] <= iHighV ) )
+
                     numOfblue++;
               }
           }
 
-          blue_rate = (float)numOfblue / (float)(ImageRoi.rows * ImageRoi.cols);
+          blue_rate = (float)numOfblue / (float)(HsvImage.rows * HsvImage.cols);
           if(Max_bluerate < blue_rate)
           {
               Max_bluerate = blue_rate;
               Max_bluenum = i;
-
-
           }
       }
-      if(Max_bluerate > 0)
+      if(Max_bluerate > 0.5)
       {
             printf("The rate:%.2f%%\n", Max_bluerate * 100);
             TargetRoi = minAreaRect(Mat(contours[MaxArea_num]));
@@ -429,7 +449,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
     {
         //solve pnp problem
         Point2f Image_Point[4];
-      //  Get_ConerPoint(srcImage, TargetRoi, Image_Point[0] );
+       // Get_ConerPoint(srcImage, TargetRoi, Image_Point[0] );
         TargetRoi.points(Image_Point);
         for (int j = 0; j < 4; j++)
         {
@@ -474,42 +494,64 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2
     Target_Roi.points(RotateRect_point);
     RotateRect_center = Point(Target_Roi.center.x, Target_Roi.center.y);
 
+    int  RotateRect_k[4];
+    for(int i = 0;i < 4; i++ )
+    {
+        RotateRect_k[i] = (RotateRect_point[i].y-RotateRect_point[i+1].y)/(RotateRect_point[i].x-RotateRect_point[i+1].x);
+        cout << "RotateRect_k: " << RotateRect_k[i]  << endl;
+    }
 
     Rect Target_Rect = Target_Roi.boundingRect();
     Size rate(Target_Rect.width / 5, Target_Rect.height / 5);
     Target_Rect = rectCenterScale(Target_Rect, rate);
     Mat rect_check = srcImage(Target_Rect);
-    Mat side_image;
+    Mat ROI_image;
+    rect_check.copyTo(ROI_image);
+    cvtColor(ROI_image, ROI_image, COLOR_BGR2GRAY);
+    GaussianBlur(ROI_image, ROI_image, Size(3, 3), 0, 0);
 
-    cvtColor(rect_check, rect_check, COLOR_BGR2GRAY);
-    GaussianBlur(rect_check, rect_check, Size(3, 3), 0, 0);
+
     //bgr2binary(rect_check,side_image,1);
     //定义核
     //Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
     //进行形态学开运算操作
    // morphologyEx(side_image, side_image, MORPH_OPEN, element);
+
     //边缘检测
-    Canny(rect_check, side_image, 60, 150, 3);
-    /*霍夫直线检测*/
+    Mat canny_image;
+    Canny(ROI_image, canny_image, 60, 150, 3);
+    //霍夫直线检测
     vector<Vec4i> Lines;
-    HoughLinesP(side_image, Lines, 1, CV_PI / 360, 200, 100, 10);
+    HoughLinesP(canny_image, Lines, 1, CV_PI / 360, 50, 50, 10);
     Vec4i LineStand = Lines[0];
     Vec4i LineAnother;
     double ka = (double)(LineStand[1] - LineStand[3]) / (double)(LineStand[0] - LineStand[2]);
     double kb;
-    for (int i = 1; i < Lines.size(); i++)
+
+//    for (int i = 1; i < Lines.size(); i++)
+//    {
+//        double ki = (double)(Lines[i][1] - Lines[i][3]) / (double)(Lines[i][0] - Lines[i][2]);
+//        if (ki*ka < 0)
+//        {
+//            LineAnother = Lines[i];
+//            kb = ki;
+//        }
+//    }
+
+    // draw line
+    for (size_t i = 0; i < Lines.size(); i++)
     {
-        double ki = (double)(Lines[i][1] - Lines[i][3]) / (double)(Lines[i][0] - Lines[i][2]);
-        if (ki*ka < 0)
-        {
-            LineAnother = Lines[i];
-            kb = ki;
-        }
+        cv::Vec4i& linex = Lines[i];
+        int dx=linex[2]-linex[0];
+        int dy=linex[2]-linex[1];
+        double angle = atan2(double(dy),dx) * 180 /CV_PI;
+        //if (abs(angle) <= 20)
+        //    continue;
+
+        line(rect_check, cv::Point(linex[0], linex[1]), cv::Point(linex[2], linex[3]), cv::Scalar(255, 0, 0), 1);
     }
 
-
-    imshow("Get_ConerPoint",side_image);
-    imshow("Target_Rect",rect_check);
+    return 1;
 
 }
 

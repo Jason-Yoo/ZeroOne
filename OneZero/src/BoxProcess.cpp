@@ -104,6 +104,7 @@ void Image_Task()
          imshow("Image_Task", g_srcImage);
 
      }
+
      waitKey(0);
 
 }
@@ -114,7 +115,7 @@ int main()
     printf("\n");
     printf("Press [C] or [c] and then press [Enter] to start camera task\n");
     printf("Press [V] or [v] and then press [Enter] to start video  task\n");
-    printf("Press [P] or [p] and then press [Enter] to start video  task\n");
+    printf("Press [P] or [p] and then press [Enter] to start image  task\n");
     printf("\n\n");
 
     bool CRun = false;

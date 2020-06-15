@@ -173,7 +173,7 @@ int DHCamera::Init()
     GX_VERIFY_EXIT(emStatus);
 
     //Set  Exposure
-    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 20000.0000);
+    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 25000.0000);
     GX_VERIFY_EXIT(emStatus);
 
 
