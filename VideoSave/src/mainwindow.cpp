@@ -1,5 +1,6 @@
 #include "inc/mainwindow.h"
 #include "ui_mainwindow.h"
+#include "inc/ModulesDetect.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,7 +21,8 @@ MainWindow::~MainWindow()
 void MainWindow::draw_SrcImageSlots()
 
 {
-    imshow("SrcImage", m_image);
+
+   imshow("SrcImage", m_image);
 }
 void MainWindow::draw_DstImageSlots()
 
@@ -180,8 +182,11 @@ void MainWindow::on_TempleteButton_clicked()
      // namedWindow("rectImage");
      // imshow("rectImage",rectImage);
 
+
+
+
      //draw image
-     draw_DstImageSignal();
+    // draw_DstImageSignal();
 
 }
 
@@ -206,6 +211,9 @@ void  MainWindow::OnFrameCallbackFun(GX_FRAME_CALLBACK_PARAM* pFrame)
 
     if(main->g_bSaveVedioFlag)
      main->writer.write(main->m_image);
+
+
+    main->Modules_Detect.RecognitionFailure(main->m_image);
 
     //Image process
   //  main->ImageProcess();

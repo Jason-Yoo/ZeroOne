@@ -1,4 +1,4 @@
-#include "ModulesDetect.h"
+#include "inc/ModulesDetect.h"
 
 /// \brief ModulesDetect::Otsu
 /// \param srcImage   input
@@ -438,9 +438,9 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
       //  Calculate_RT(Image_Point);
     }
 
-    namedWindow("find_connected",WINDOW_AUTOSIZE);
-    imshow("find_connected",grayImage);
-    waitKey(3);
+   // namedWindow("find_connected",WINDOW_AUTOSIZE);
+   // imshow("find_connected",grayImage);
+  //  waitKey(3);
   //  cout<<"ModulesDetect->RecognitionFailure process successful"<< endl;
     return 0;
 }

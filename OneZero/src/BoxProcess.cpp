@@ -55,6 +55,7 @@ void Camera_task()
     //Stop TemplateMatch thread
     Template_Match.TemplateMatchFlag = false;
     pthread_join( Template_Match.TemplateMatchThreadID, NULL);
+    //Stop DH_Camera thread
     DH_Camera.Stop();
 
 }
@@ -62,7 +63,7 @@ void Vedio_task()
 {
     printf("*********The video  task  is runing *************** \n");
     VideoCapture inputVideo;
-    inputVideo.open("uavgp.avi");
+    inputVideo.open("data/uavgp.avi");
     ModulesDetect Modules_Detect;
     Mat g_srcImage;        //原始图像
 
@@ -90,7 +91,7 @@ void Image_Task()
      printf("*********The Image task  is runing *************** \n");
      ModulesDetect Modules_Detect;
      Mat g_srcImage;        //原始图像
-     g_srcImage = imread("bluebox4.jpg");
+     g_srcImage = imread("data/bluebox4.jpg");
 
      if (g_srcImage.empty())
      printf("*********Not find a Image in film,Please check ********* ");

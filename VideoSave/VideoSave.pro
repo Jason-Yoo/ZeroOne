@@ -32,12 +32,14 @@ TEMPLATE = app
 SOURCES += \
            src/main.cpp \
            src/TemplateMatch.cpp \
-           src/mainwindow.cpp
+           src/mainwindow.cpp \
+           src/ModulesDetect.cpp
 
 HEADERS += inc/mainwindow.h\
            inc/TemplateMatch.h\
            inc/GxIAPI.h\
-           inc/DxImageProc.h
+           inc/DxImageProc.h\
+           inc/ModulesDetect.h
 
 
 FORMS    += mainwindow.ui

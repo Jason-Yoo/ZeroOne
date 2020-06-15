@@ -14,6 +14,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
 #include <inc/TemplateMatch.h>
+#include <inc/ModulesDetect.h>
 
 using namespace cv;
 using namespace std;
@@ -57,8 +58,9 @@ public:
     double maxValude;  //模板匹配result最大值
     Point minPoint;    //模板匹配result最小值位置
     Point maxPoint;    //模板匹配result最大值位置
-     RotatedRect check_box;
-     VideoWriter writer;
+    RotatedRect check_box;
+    VideoWriter writer;
+    ModulesDetect Modules_Detect;
 
 
 

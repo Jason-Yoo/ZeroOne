@@ -11,8 +11,6 @@
 #include "opencv2/video/tracking.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <SolveSRPnP.h>
-
 using namespace std;
 using namespace cv;
 

@@ -307,6 +307,9 @@ void *ProcGetImage(void* pParam)
     time_t lEnd;
     uint32_t ui32FrameCount = 0;
 
+    VideoWriter writer;
+    int frameRate = 20;
+    writer.open("./uavgp.avi",CV_FOURCC('H', '2', '6', '4'),frameRate, Size(DH_camera->src_image.cols,DH_camera->src_image.rows),1);
 
     while(DH_camera->g_bAcquisitionFlag)
     {
@@ -339,14 +342,18 @@ void *ProcGetImage(void* pParam)
             ui32FrameCount++;
             time (&lEnd);
 
+            
             // Image process
             DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
             memcpy( DH_camera->src_image.data, DH_camera->g_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
 
-            Modules_Detect.RecognitionFailure(DH_camera->src_image);
-            namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
-            imshow("DH_camera:",DH_camera->src_image);
-            waitKey(1);
+           // Modules_Detect.RecognitionFailure(DH_camera->src_image);
+            //namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
+            //imshow("DH_camera:",DH_camera->src_image);
+            //waitKey(1);
+             if(DH_camera->g_bSaveVedioFlag)
+             writer.write(DH_camera->src_image);
+
 
             // Print acquisition info each second.
             if (lEnd - lInit >= 1)
