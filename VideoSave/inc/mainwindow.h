@@ -42,6 +42,8 @@ public:
     Mat m_image;
     Mat UndistortImage;
     Mat rectImage;
+    Mat DstImage;
+
     void ShowErrorString(GX_STATUS emErrorStatus);
     static  void  OnFrameCallbackFun(GX_FRAME_CALLBACK_PARAM* pFrame);
     static  void  on_mouse(int EVENT, int x, int y, int flags, void* userdata);

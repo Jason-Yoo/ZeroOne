@@ -27,7 +27,7 @@ void MainWindow::draw_SrcImageSlots()
 void MainWindow::draw_DstImageSlots()
 
 {
-    imshow("rectImage", rectImage);
+    imshow("DstImage", DstImage);
 }
 void  MainWindow::ImageProcess()
 {
@@ -182,9 +182,6 @@ void MainWindow::on_TempleteButton_clicked()
      // namedWindow("rectImage");
      // imshow("rectImage",rectImage);
 
-
-
-
      //draw image
     // draw_DstImageSignal();
 
@@ -213,12 +210,13 @@ void  MainWindow::OnFrameCallbackFun(GX_FRAME_CALLBACK_PARAM* pFrame)
      main->writer.write(main->m_image);
 
 
-    main->Modules_Detect.RecognitionFailure(main->m_image);
+    main->Modules_Detect.Bluebox_Detection(main->m_image,main->DstImage,2);
 
     //Image process
   //  main->ImageProcess();
     //draw image
     main->draw_SrcImageSignal();
+    main->draw_DstImageSignal();
 
 }
 
@@ -281,7 +279,9 @@ void MainWindow::on_OpenButton_clicked()
     //发送开采命令
     status = GXSendCommand(m_hDevice, GX_COMMAND_ACQUISITION_START);
 
+    //dc design
     g_bSaveVedioFlag = false;
+    Modules_Detect.ROI_TrackFlag = false;
     int frameRate = 40;
     writer.open("./uavgp.avi",CV_FOURCC('H', '2', '6', '4'),frameRate, Size(m_image.cols,m_image.rows),1);
 

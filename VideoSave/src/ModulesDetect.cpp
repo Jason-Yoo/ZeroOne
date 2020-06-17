@@ -58,7 +58,7 @@ int ModulesDetect::Otsu(Mat &srcImage , int &threshold)
 /// input color image and output binary image. It can use 2 methods to acheive that.
 /// \param srcImage   input
 /// \param dstImage    output
-/// \param method --1: split channels --2: use canny
+/// \param method --1: split channels --2: use HSV
 /// \return
 ///
 int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
@@ -66,7 +66,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
  // cout<<"ModulesDetect->bgr2binary process is begin"<< endl;
 
   if (srcImage.empty())
-    return -1;
+    return 0;
   if(method==1)
   {
     //method 1: split channels and substract
@@ -101,9 +101,10 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
       int g_Otsu=0;
        if(Otsu(dstImage,g_Otsu))
       cout<<"ModulesDetect->Otsu process failed"<< endl;
-       threshold(dstImage, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+       threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);
 
   }
+  //imshow("Otsu process ",dstImage);
  // cout<<"ModulesDetect->bgr2binary process successful"<< endl;
   return 0;
 }
@@ -120,22 +121,6 @@ float ModulesDetect::GetPixelLength(Point PixelPointA, Point PixelPointB)
   PixelLength = sqrtf(PixelLength);
   return PixelLength;
 }
-//希尔排序
-void ShellSort(int* h, size_t len)
-{
-    if(h==NULL) return;
-    if(len<=1) return;
-
-    for(int div=len/2;div>=1;div/=2)
-        for(int k=0;k<div;++k)
-            for(int i=div+k;i<len;i+=div)
-                for(int j=i;j>k;j-=div)
-                    if(h[j]<h[j-div]) swap(h[j],h[j-div]);
-                    else break;
-
-    return;
-}
-
 /// \brief ModulesDetect::find_connected 连通域分析
 /// \return   像素坐标
 Point ModulesDetect::find_connected(Mat &binary_img)
@@ -168,7 +153,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)
             colors[j]=0;
             continue;
         }
-        if (wh_ratio < 0.3 || wh_ratio > 3)
+        if (wh_ratio > 4)
         {
             colors[j]=0;
             continue;
@@ -178,7 +163,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)
     }
 
     //对连通域进行面积排序，保留前3
-//    if(tgt_lables.size() < 1)   return Point(0, 0);
+//    if(tgt_lables.size() < 1)
 //    for(int i=1;i<tgt_lables.size();++i){
 //        for(int j=i;j>0;--j){
 //            if( stats.at<uchar>(4,tgt_lables[j]) < stats.at<uchar>(4,tgt_lables[j-1]) )
@@ -234,7 +219,7 @@ void  SortContourPoint(vector<vector<Point>> inputContours, vector<vector<Point>
     //计算轮廓最小外接矩形中心
     Point center, center1;
 
-    for (int i = 0; i < inputContours.size(); i++)
+    for (uint i = 0; i < inputContours.size(); i++)
     {
         tempContoursPoint.clear();    //每次循环注意清空
 
@@ -253,9 +238,9 @@ void  SortContourPoint(vector<vector<Point>> inputContours, vector<vector<Point>
 
 
     ///冒泡法
-    for (int i = 0; i < inputContours.size() - 1; i++)          //n个数要进行n-1趟比较
+    for (uint i = 0; i < inputContours.size() - 1; i++)          //n个数要进行n-1趟比较
     {
-        for (int j = 0; j < (inputContours.size() - 1) - i; j++)       //每趟比较n-i次
+        for (uint j = 0; j < (inputContours.size() - 1) - i; j++)       //每趟比较n-i次
         {
             mu[j] = moments(inputContours[j], false); //轮廓矩
             mu[j+1] = moments(inputContours[j+1], false); //轮廓矩
@@ -292,24 +277,21 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
     //find Ins_ROI
     vector<vector<Point>> contours;   //每一组Point点集就是一个轮廓
     vector<Vec4i> hierarcy;           //矩形集合
-  //  vector<int> modules_center_candidates;
+
 
     findContours(grayImage, contours, hierarcy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //找出所有轮廓 包括轮廓关系
     if(contours.size()<=0)
-          return -1;
+          return 0;
      vector<Rect> box(contours.size()); //定义最小外接矩形集合
- //    vector <Point2f> modulesCenter(contours.size());     //modules中心的点
-     int MaxArea = 0;
-     int MaxArea_num = 0;
-
+//   vector <Point2f> modulesCenter(contours.size());     //modules中心的点
       //绘制轮廓图
-      for (int i = 0; i < contours.size(); i++)
+      for (uint i = 0; i < contours.size(); i++)
       {
         LeafInfo leafInfo;
         leafInfo.ellipseRect = fitEllipse(contours[i]);
 
         int area = leafInfo.ellipseRect.size.area();
-        if (area < 500 || area > (grayImage.cols*grayImage.rows)/2)
+        if (area < 300 || area > (grayImage.cols*grayImage.rows)/2)
         {
 
             continue;
@@ -333,12 +315,6 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
         {
             continue;
         }
-        if (area > MaxArea){
-            MaxArea=area;
-            MaxArea_num =i;
-
-        }
-
         Point2f lf_c_sum(0,0);
         for (int j = 0; j < 4; j++)
         {
@@ -348,26 +324,12 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
 
 
         box[i] = boundingRect(contours[i]);
-     //   rectangle(srcImage, Point(box[i].x, box[i].y), Point(box[i].x + box[i].width, box[i].y + box[i].height), Scalar(255, 0, 0), 2, 8);
-
-
-//        leafInfo.ellipseRect.points(leafInfo.vertices);
-//        float dist_threth = (leafInfo.chang + leafInfo.kuan)/2;
-//        for (int i = 0; i < 4; i++)
-//        {
-
-//            line(srcImage, leafInfo.vertices[i], leafInfo.vertices[(i + 1) % 4], Scalar(0, 255, 0));
-//            float edge_length=GetPixelLength(leafInfo.vertices[i], leafInfo.vertices[(i + 1) % 4]);
-//            if (edge_length>1.5*leafInfo.kuan)
-//            {
-//                Point2f temp_vec = Point2f(leafInfo.vertices[i] - leafInfo.vertices[(i + 1) % 4]);
-//                leafInfo.vec_chang = temp_vec / norm(temp_vec);
-//            }
+        //rectangle(srcImage, Point(box[i].x, box[i].y), Point(box[i].x + box[i].width, box[i].y + box[i].height), Scalar(255, 0, 0), 2, 8);
 
         }
       Mat ImageRoi;
       int numOfblue = 0;            //记录颜色的像素点
-      float blue_rate = 0;                     //要计算的百分率
+      float blue_rate = 0;          //要计算的百分率
       float Max_bluerate = 0;
       int Max_bluenum = 0;
 
@@ -381,7 +343,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
       int iLowV = 46;
       int iHighV = 255;
 
-      for(int i=0;i < box.size();i++)
+      for(uint i=0;i < box.size();i++)
       {
           if(box[i].x == 0 && box[i].y == 0)
               continue;
@@ -411,59 +373,18 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
               Max_bluenum = i;
           }
       }
-      if(Max_bluerate > 0.5)
+      if(Max_bluerate >= 0.4)
       {
             printf("The rate:%.2f%%\n", Max_bluerate * 100);
-            TargetRoi = minAreaRect(Mat(contours[MaxArea_num]));
+            TargetRoi = minAreaRect(Mat(contours[Max_bluenum]));
+         //   ImageRoi = srcImage(Rect(box[Max_bluenum].x, box[Max_bluenum].y, box[Max_bluenum].width, box[Max_bluenum].height));
+         //   imshow("ImageRoi",ImageRoi);
             return 1;
       }
-
-       return 0;
+      return 0;
 }
 
-///
-/// \brief ModulesDetect::RecognitionFailur
-/// \param srcImage
-/// \return
-///
-int ModulesDetect::RecognitionFailure(Mat &srcImage)
-{
-   // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
 
-    Mat grayImage;
-    RotatedRect TargetRoi;
-    int Targer_Flag = 0;
-
-
-    if(bgr2binary(srcImage,grayImage,1))
-     cout<<"ModulesDetect->bgr2binary process failed"<< endl;
-
-    //连接连通域
-    static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
-    morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
-
-    find_connected(grayImage);
-    Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
-
-    if(Targer_Flag)
-    {
-        //solve pnp problem
-        Point2f Image_Point[4];
-       // Get_ConerPoint(srcImage, TargetRoi, Image_Point[0] );
-        TargetRoi.points(Image_Point);
-        for (int j = 0; j < 4; j++)
-        {
-            line(srcImage, Image_Point[j], Image_Point[(j + 1) % 4], Scalar(0, 0, 255), 2, 8);  //绘制最小外接矩形每条边
-        }
-      //  Calculate_RT(Image_Point);
-    }
-
-   // namedWindow("find_connected",WINDOW_AUTOSIZE);
-   // imshow("find_connected",grayImage);
-  //  waitKey(3);
-  //  cout<<"ModulesDetect->RecognitionFailure process successful"<< endl;
-    return 0;
-}
 //围绕矩形中心缩放
 Rect rectCenterScale(Rect rect, Size size)
 {
@@ -487,35 +408,49 @@ Point2f getCrossPoint(Vec4i LineA, Vec4i LineB)
 }
 
 
-int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2f &Image_Point)
+int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector<Point2f> &Image_Point)
 {
     Point2f RotateRect_point[4];
     Point2f RotateRect_center;
     Target_Roi.points(RotateRect_point);
     RotateRect_center = Point(Target_Roi.center.x, Target_Roi.center.y);
 
-    int  RotateRect_k[4];
     for(int i = 0;i < 4; i++ )
     {
-        RotateRect_k[i] = (RotateRect_point[i].y-RotateRect_point[i+1].y)/(RotateRect_point[i].x-RotateRect_point[i+1].x);
-        cout << "RotateRect_k: " << RotateRect_k[i]  << endl;
+        RotateRect_point[i] = RotateRect_point[i] - RotateRect_center;
+
+    }
+    double  RotateRect_k[4];
+    for(int i = 0;i < 4; i++ )
+    {
+        RotateRect_k[i] = (double)(RotateRect_point[i].y-RotateRect_point[(i + 1) % 4].y)/(double)(RotateRect_point[i].x-RotateRect_point[(i + 1) % 4].x);
+        //   cout << "RotateRect_c"   << i <<":"<<RotateRect_point[i]<< endl;
+        cout << "RotateRect_k"  << i <<":"<< RotateRect_k[i]   << endl;
     }
 
+
     Rect Target_Rect = Target_Roi.boundingRect();
-    Size rate(Target_Rect.width / 5, Target_Rect.height / 5);
-    Target_Rect = rectCenterScale(Target_Rect, rate);
+    // Size rate(Target_Rect.width / 5, Target_Rect.height / 5);
+    // Target_Rect = rectCenterScale(Target_Rect, rate);
+    if(Target_Rect.x < 0) Target_Rect.x = 0;
+    if(Target_Rect.y < 0) Target_Rect.y = 0;
+    if(Target_Rect.x+Target_Rect.width >= srcImage.cols)
+    {
+        Target_Rect.width = srcImage.cols-Target_Rect.x-1;
+    }
+    if(Target_Rect.y+Target_Rect.height >= srcImage.rows)
+    {
+        Target_Rect.height = srcImage.rows-Target_Rect.y-1;
+    }
+    //blue rect box in srcImage
+   // rectangle(srcImage, Point(Target_Rect.x, Target_Rect.y), Point(Target_Rect.x + Target_Rect.width, Target_Rect.y + Target_Rect.height), Scalar(255, 0, 0), 2, 8);
+
+
     Mat rect_check = srcImage(Target_Rect);
     Mat ROI_image;
     rect_check.copyTo(ROI_image);
     cvtColor(ROI_image, ROI_image, COLOR_BGR2GRAY);
     GaussianBlur(ROI_image, ROI_image, Size(3, 3), 0, 0);
-
-
-    //bgr2binary(rect_check,side_image,1);
-    //定义核
-    //Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
-    //进行形态学开运算操作
-   // morphologyEx(side_image, side_image, MORPH_OPEN, element);
 
     //边缘检测
     Mat canny_image;
@@ -523,20 +458,6 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2
     //霍夫直线检测
     vector<Vec4i> Lines;
     HoughLinesP(canny_image, Lines, 1, CV_PI / 360, 50, 50, 10);
-    Vec4i LineStand = Lines[0];
-    Vec4i LineAnother;
-    double ka = (double)(LineStand[1] - LineStand[3]) / (double)(LineStand[0] - LineStand[2]);
-    double kb;
-
-//    for (int i = 1; i < Lines.size(); i++)
-//    {
-//        double ki = (double)(Lines[i][1] - Lines[i][3]) / (double)(Lines[i][0] - Lines[i][2]);
-//        if (ki*ka < 0)
-//        {
-//            LineAnother = Lines[i];
-//            kb = ki;
-//        }
-//    }
 
     // draw line
     for (size_t i = 0; i < Lines.size(); i++)
@@ -544,14 +465,174 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2
         cv::Vec4i& linex = Lines[i];
         int dx=linex[2]-linex[0];
         int dy=linex[2]-linex[1];
-        double angle = atan2(double(dy),dx) * 180 /CV_PI;
-        //if (abs(angle) <= 20)
-        //    continue;
-
-        line(rect_check, cv::Point(linex[0], linex[1]), cv::Point(linex[2], linex[3]), cv::Scalar(255, 0, 0), 1);
+        line(rect_check, cv::Point(linex[0], linex[1]), cv::Point(linex[2], linex[3]), cv::Scalar(0, 255, 0), 1);
     }
+
+    // k value filter
+   // vector<Vec4i> line1_buff(Lines.size());
+   // vector<Vec4i> line2_buff(Lines.size());
+    vector<Point> line1_points;
+    vector<Point> line2_points;
+    double line1_k = (RotateRect_k[0]+RotateRect_k[2])/2;
+    double line2_k = (RotateRect_k[1]+RotateRect_k[3])/2;
+
+    for (uint i = 1; i < Lines.size(); i++)
+    {
+        double ki = (double)(Lines[i][1] - Lines[i][3]) / (double)(Lines[i][0] - Lines[i][2]);
+        if(ki > line1_k*0.7 && ki < line1_k*1.3)
+        {
+          //  line1_buff[i] = Lines[i];
+            line1_points.push_back(Point(Lines[i][0],Lines[i][1]));
+            line1_points.push_back(Point(Lines[i][2],Lines[i][3]));
+
+        }
+
+        if(ki > line2_k*0.7 && ki < line2_k*1.3)
+        {
+           //  line2_buff[i] = Lines[i];
+             line2_points.push_back(Point(Lines[i][0],Lines[i][1]));
+             line2_points.push_back(Point(Lines[i][2],Lines[i][3]));
+
+        }
+
+    }
+    for (uint i = 0; i < line1_points.size(); i++)
+    {
+        circle(rect_check, line1_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+    }
+    for (uint i = 0; i < line2_points.size(); i++)
+    {
+        circle(rect_check, line2_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+    }
+
+
+//    Vec4f line1_para;
+//    fitLine(line1_points, line1_para, DIST_L2, 0, 1e-2, 1e-2);
+
+//    Vec4f line2_para;
+//    fitLine(line2_points, line2_para, DIST_L2, 0, 1e-2, 1e-2);
+
+//    std::cout << "line_para = " << line1_para << std::endl;
+
+//    //求出直线上的两个点
+//    double k_line = line1_para[1]/line1_para[0];
+ //   Point p1(0,k_line*(0 - line1_para[2]) + line1_para[3]);
+ //   Point p2(ROI_image.cols - 1,k_line*(ROI_image.cols - 1 - line1_para[2]) + line1_para[3]);
+
+     //显示拟合出的直线
+ //   line(ROI_image,p1,p2,Scalar(0,0,255),2);
+
+
 
     return 1;
 
+}
+int ModulesDetect::Bluebox_Detection(Mat &srcImage,Mat &DstImage,int method)
+{
+
+    RotatedRect TargetRoi;
+
+    if(method == 1)
+    {
+        if(ROI_TrackFlag)
+        {
+            Size rate(ROI_TrackRect.width / 4, ROI_TrackRect.height / 4);
+            ROI_TrackRect = rectCenterScale(ROI_TrackRect, rate);
+           if(ROI_TrackRect.x < 0) ROI_TrackRect.x = 0;
+           if(ROI_TrackRect.y < 0) ROI_TrackRect.y = 0;
+           if(ROI_TrackRect.x+ROI_TrackRect.width >= srcImage.cols)
+           {
+               ROI_TrackRect.width = srcImage.cols-ROI_TrackRect.x-1;
+           }
+           if(ROI_TrackRect.y+ROI_TrackRect.height >= srcImage.rows)
+           {
+               ROI_TrackRect.height = srcImage.rows-ROI_TrackRect.y-1;
+           }
+
+           rectangle(srcImage, Point(ROI_TrackRect.x, ROI_TrackRect.y), Point(ROI_TrackRect.x + ROI_TrackRect.width, ROI_TrackRect.y + ROI_TrackRect.height), Scalar(0, 255, 0), 2, 8);
+           Mat ROI_check = srcImage(ROI_TrackRect);
+           if(RecognitionFailure(ROI_check,TargetRoi))
+           {
+               ROI_TrackRect = TargetRoi.boundingRect();
+
+           }
+           else
+               ROI_TrackFlag = false;
+
+        }
+        else
+        {
+            if(RecognitionFailure(srcImage,TargetRoi))
+            {
+                ROI_TrackFlag = true;
+                ROI_TrackRect = TargetRoi.boundingRect();
+            }
+
+
+        }
+    }
+    if(method == 2)
+    {
+        RecognitionFailure(srcImage,TargetRoi);
+    }
+    DstImage = detect_frame;
+
+    return 0;
+}
+///
+/// \brief ModulesDetect::RecognitionFailur
+/// \param srcImage
+/// \return
+///
+int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
+{
+   // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
+
+    Mat grayImage;
+  //  RotatedRect TargetRoi;
+    int Targer_Flag = 0;
+
+
+    if(bgr2binary(srcImage,grayImage,2))
+     cout<<"ModulesDetect->bgr2binary process failed"<< endl;
+    //连接连通域
+    static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
+    morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
+    detect_frame = grayImage;
+    find_connected(grayImage);
+
+    Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
+    if(Targer_Flag)
+    {
+
+
+        //find image points
+        vector<Point2f> Image_Point;
+        Get_ConerPoint(srcImage, TargetRoi, Image_Point);
+        for(uint i = 0; i < Image_Point.size(); i++)
+        {
+          //  circle(srcImage, Image_Point[i], 3, Scalar(255,0,0),-1); //第五个参数我设为-1，表明这是个实点。
+
+        }
+
+        //solve pnp problem
+      //  Calculate_RT(Image_Point);
+
+        //line the TargetRoi with red box
+        Point2f TargetRoi_Points[4];
+        TargetRoi.points(TargetRoi_Points);
+        for (int j = 0; j < 4; j++)
+        {
+            line(srcImage, TargetRoi_Points[j], TargetRoi_Points[(j + 1) % 4], Scalar(0, 0, 255), 1, 8);  //绘制最小外接矩形每条边
+        }
+        return 1;
+
+
+    }
+    else
+    {
+           cout<<"Hard to find the TargetRoi,please check Get_TargrtRoi process"<< endl;
+    }
+    return 0;
 }
 

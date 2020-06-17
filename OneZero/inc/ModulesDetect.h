@@ -11,8 +11,6 @@
 #include "opencv2/video/tracking.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include <SolveSRPnP.h>
-
 using namespace std;
 using namespace cv;
 
@@ -45,8 +43,7 @@ class ModulesDetect
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
     int  Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );
-    int  Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, Point2f &Image_Point);
-
+    int  Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector<Point2f> &Image_Point);
     struct LeafInfo
         {
           RotatedRect ellipseRect;
