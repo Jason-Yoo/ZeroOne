@@ -423,7 +423,10 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
     double  RotateRect_k[4];
     for(int i = 0;i < 4; i++ )
     {
-        RotateRect_k[i] = (double)(RotateRect_point[i].y-RotateRect_point[(i + 1) % 4].y)/(double)(RotateRect_point[i].x-RotateRect_point[(i + 1) % 4].x);
+        double dy = (double)(RotateRect_point[i].y-RotateRect_point[(i + 1) % 4].y);
+        double dx = (double)(RotateRect_point[i].x-RotateRect_point[(i + 1) % 4].x);
+        if(dx == 0)  dx = 1;
+        RotateRect_k[i] = dy/dx;
         //   cout << "RotateRect_c"   << i <<":"<<RotateRect_point[i]<< endl;
         cout << "RotateRect_k"  << i <<":"<< RotateRect_k[i]   << endl;
     }
@@ -463,47 +466,58 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
     for (size_t i = 0; i < Lines.size(); i++)
     {
         cv::Vec4i& linex = Lines[i];
-        int dx=linex[2]-linex[0];
-        int dy=linex[2]-linex[1];
         line(rect_check, cv::Point(linex[0], linex[1]), cv::Point(linex[2], linex[3]), cv::Scalar(0, 255, 0), 1);
     }
 
     // k value filter
-   // vector<Vec4i> line1_buff(Lines.size());
-   // vector<Vec4i> line2_buff(Lines.size());
-    vector<Point> line1_points;
-    vector<Point> line2_points;
+    vector<Vec4i> lineL_buff;
+    vector<Vec4i> lineR_buff;
+    vector<Vec4i> lineU_buff;
+    vector<Vec4i> lineD_buff;
+   // vector<Point> line1_points;
+   // vector<Point> line2_points;
     double line1_k = (RotateRect_k[0]+RotateRect_k[2])/2;
     double line2_k = (RotateRect_k[1]+RotateRect_k[3])/2;
 
     for (uint i = 1; i < Lines.size(); i++)
     {
-        double ki = (double)(Lines[i][1] - Lines[i][3]) / (double)(Lines[i][0] - Lines[i][2]);
+        Lines[i][0] = Lines[i][0] - RotateRect_center.x;
+        Lines[i][1] = Lines[i][1] - RotateRect_center.y;
+        Lines[i][2] = Lines[i][2] - RotateRect_center.x;
+        Lines[i][3] = Lines[i][3] - RotateRect_center.y;
+        double dy = (double)(Lines[i][1] - Lines[i][3]);
+        double dx = (double)(Lines[i][0] - Lines[i][2]);
+        if(dx == 0) dx = 1;
+        double ki =  dy / dx;
+
         if(ki > line1_k*0.7 && ki < line1_k*1.3)
         {
-          //  line1_buff[i] = Lines[i];
-            line1_points.push_back(Point(Lines[i][0],Lines[i][1]));
-            line1_points.push_back(Point(Lines[i][2],Lines[i][3]));
+            if(Lines[i][0] < 0 && Lines[i][1] > 0 )
+
+              lineL_buff.push_back(Lines[i]);
+       //     line1_points.push_back(Point(Lines[i][0],Lines[i][1]));
+       //     line1_points.push_back(Point(Lines[i][2],Lines[i][3]));
 
         }
 
         if(ki > line2_k*0.7 && ki < line2_k*1.3)
         {
-           //  line2_buff[i] = Lines[i];
-             line2_points.push_back(Point(Lines[i][0],Lines[i][1]));
-             line2_points.push_back(Point(Lines[i][2],Lines[i][3]));
+            lineU_buff.push_back(Lines[i]);
+           //  line2_points.push_back(Point(Lines[i][0],Lines[i][1]));
+           //  line2_points.push_back(Point(Lines[i][2],Lines[i][3]));
 
         }
+        //line3_buff.push_back(Lines[i]);
 
     }
-    for (uint i = 0; i < line1_points.size(); i++)
-    {
-        circle(rect_check, line1_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
-    }
-    for (uint i = 0; i < line2_points.size(); i++)
-    {
-        circle(rect_check, line2_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
-    }
+//    for (uint i = 0; i < line1_points.size(); i++)
+//    {
+//        circle(rect_check, line1_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+//    }
+//    for (uint i = 0; i < line2_points.size(); i++)
+//    {
+//        circle(rect_check, line2_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+//    }
 
 
 //    Vec4f line1_para;
@@ -598,8 +612,9 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
     //连接连通域
     static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
     morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
+
+   // find_connected(grayImage);
     detect_frame = grayImage;
-    find_connected(grayImage);
 
     Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
     if(Targer_Flag)

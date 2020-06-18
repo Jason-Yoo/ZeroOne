@@ -548,7 +548,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage)
     static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
     morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
 
-    find_connected(grayImage);
+    //find_connected(grayImage);
     Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
 
     if(Targer_Flag)
