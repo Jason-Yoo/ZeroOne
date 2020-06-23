@@ -126,8 +126,8 @@ float ModulesDetect::GetPixelLength(Point PixelPointA, Point PixelPointB)
 Point ModulesDetect::find_connected(Mat &binary_img)
 {
     Mat labels, img_color, stats,centroids;
-    Mat binary_inv = ~binary_img;
-    int nccomps = cv::connectedComponentsWithStats(binary_inv, labels, stats, centroids);
+    //Mat binary_inv = ~binary_img;
+    int nccomps = cv::connectedComponentsWithStats(binary_img, labels, stats, centroids);
 
     //去除过小区域，初始化颜色表
     vector<uchar> colors(nccomps);
@@ -135,13 +135,13 @@ Point ModulesDetect::find_connected(Mat &binary_img)
     colors[0] = 0; // background pixels remain black.
 
     vector<int> tgt_lables;
-    int area_max = 400, area_min = 300;
+    int  area_min = 300;
     for (int j = 0; j < stats.rows; j++)  //x0,y0,width,height,area
     {
         int unit_x = stats.at<int>(j,0) ,unit_y= stats.at<int>(j,1);
         int area = stats.at<int>(j,4);
-        int width = stats.at<int>(j,2), height = stats.at<int>(j,3);
-        float wh_ratio = float(width) / float(height);
+//        int width = stats.at<int>(j,2), height = stats.at<int>(j,3);
+//        float wh_ratio = float(width) / float(height);
 
         if (unit_x==0 && unit_y == 0) //background
         {
@@ -153,13 +153,13 @@ Point ModulesDetect::find_connected(Mat &binary_img)
             colors[j]=0;
             continue;
         }
-        if (wh_ratio > 4)
-        {
-            colors[j]=0;
-            continue;
-        }
+//        if (wh_ratio > 4)
+//        {
+//            colors[j]=0;
+//            continue;
+//        }
         colors[j] = 255;
-        tgt_lables.push_back(j);
+//        tgt_lables.push_back(j);
     }
 
     //对连通域进行面积排序，保留前3
@@ -180,7 +180,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)
 
 //    }
 
-    img_color = Mat::zeros(binary_inv.size(), CV_8UC1);
+    img_color = Mat::zeros(binary_img.size(), CV_8UC1);
     for( int y = 0; y < img_color.rows; y++ ){
         for( int x = 0; x < img_color.cols; x++ )
         {
@@ -406,35 +406,75 @@ Point2f getCrossPoint(Vec4i LineA, Vec4i LineB)
     crossPoint.y = (ka*kb*(LineA[0] - LineB[0]) + ka*LineB[1] - kb*LineA[1]) / (ka - kb);
     return crossPoint;
 }
+int ModulesDetect::RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angle)
+{
+    //其中圆心（a,b),  圆上一点坐标(x0,y0), 旋转角度α
+    //那么旋转后的坐标 x=a+(x0-a)cosα-(y0-b)sinα ,    y=b+(x0-a)sinα+(y0-b)cosα
+    float a = 0;
+    float b = 0;
+    float x0 = ptSrc.x;
+    float y0 = ptSrc.y;
+    ptRotation.x = a + (x0-a) * cos(angle * M_PI / 180) - (y0-b) * sin(angle * M_PI / 180);
+    ptRotation.y = b + (x0-a) * sin(angle * M_PI / 180) + (y0-b) * cos(angle * M_PI / 180);
+    return 1;
 
-
+}
 int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector<Point2f> &Image_Point)
 {
     Point2f RotateRect_point[4];
     Point2f RotateRect_center;
     Target_Roi.points(RotateRect_point);
     RotateRect_center = Point(Target_Roi.center.x, Target_Roi.center.y);
+    double RotateRect_degree = Target_Roi.angle;
+   // cout << "RotateRect_degree: "  << RotateRect_degree << endl;
+    //Mat RotateRect_rotm = getRotationMatrix2D(RotateRect_center, RotateRect_degree, 1.0);
 
+    //use the RotateRect_point as image point
+    double distance_03 = GetPixelLength(RotateRect_point[0],RotateRect_point[3]);
+    double distance_01 = GetPixelLength(RotateRect_point[0],RotateRect_point[1]);
+    if(distance_01 > distance_03)
+    {
+        Point2f point =  RotateRect_point[0];
+        RotateRect_point[0] = RotateRect_point[1];
+        RotateRect_point[1] = RotateRect_point[2];
+        RotateRect_point[2] = RotateRect_point[3];
+        RotateRect_point[3] = point;
+    }
     for(int i = 0;i < 4; i++ )
     {
-        RotateRect_point[i] = RotateRect_point[i] - RotateRect_center;
-
+        Image_Point.push_back(RotateRect_point[i]);
     }
+
+    //use the HoughLines to get image point
+    Point2f ptRotation[4];
+    for(int i = 0;i < 4; i++ )
+    {
+        RotateRect_point[i].x = RotateRect_point[i].x - RotateRect_center.x;
+        RotateRect_point[i].y = -(RotateRect_point[i].y - RotateRect_center.y);
+        RotatePoint(RotateRect_point[i],ptRotation[i],RotateRect_degree);
+    }
+
+
     double  RotateRect_k[4];
     for(int i = 0;i < 4; i++ )
     {
         double dy = (double)(RotateRect_point[i].y-RotateRect_point[(i + 1) % 4].y);
         double dx = (double)(RotateRect_point[i].x-RotateRect_point[(i + 1) % 4].x);
+     //   double dy = (double)(ptRotation[i].y-ptRotation[(i + 1) % 4].y);
+      //  double dx = (double)(ptRotation[i].x-ptRotation[(i + 1) % 4].x);
+
         if(dx == 0)  dx = 1;
         RotateRect_k[i] = dy/dx;
+        if(abs(RotateRect_k[i]) > 200) RotateRect_k[i]=200;
+        if(abs(RotateRect_k[i]) < 0.00001) RotateRect_k[i]=0;
         //   cout << "RotateRect_c"   << i <<":"<<RotateRect_point[i]<< endl;
         cout << "RotateRect_k"  << i <<":"<< RotateRect_k[i]   << endl;
     }
 
 
     Rect Target_Rect = Target_Roi.boundingRect();
-    // Size rate(Target_Rect.width / 5, Target_Rect.height / 5);
-    // Target_Rect = rectCenterScale(Target_Rect, rate);
+  //  Size rate(Target_Rect.width / 5, Target_Rect.height / 5);
+  //  Target_Rect = rectCenterScale(Target_Rect, rate);
     if(Target_Rect.x < 0) Target_Rect.x = 0;
     if(Target_Rect.y < 0) Target_Rect.y = 0;
     if(Target_Rect.x+Target_Rect.width >= srcImage.cols)
@@ -457,10 +497,10 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
 
     //边缘检测
     Mat canny_image;
-    Canny(ROI_image, canny_image, 60, 150, 3);
+    Canny(ROI_image, canny_image, 50, 150, 3);
     //霍夫直线检测
     vector<Vec4i> Lines;
-    HoughLinesP(canny_image, Lines, 1, CV_PI / 360, 50, 50, 10);
+    HoughLinesP(canny_image, Lines, 1, CV_PI / 360, 50, 10, 10);
 
     // draw line
     for (size_t i = 0; i < Lines.size(); i++)
@@ -474,50 +514,54 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
     vector<Vec4i> lineR_buff;
     vector<Vec4i> lineU_buff;
     vector<Vec4i> lineD_buff;
-   // vector<Point> line1_points;
-   // vector<Point> line2_points;
-    double line1_k = (RotateRect_k[0]+RotateRect_k[2])/2;
-    double line2_k = (RotateRect_k[1]+RotateRect_k[3])/2;
+    vector<Point> line1_points;
+    vector<Point> line2_points;
+    //double line1_k = (RotateRect_k[0]+RotateRect_k[2])/2;
+    //double line2_k = (RotateRect_k[1]+RotateRect_k[3])/2;
+    double line1_k = RotateRect_k[0];
+    double line2_k = RotateRect_k[1];
 
     for (uint i = 1; i < Lines.size(); i++)
     {
-        Lines[i][0] = Lines[i][0] - RotateRect_center.x;
-        Lines[i][1] = Lines[i][1] - RotateRect_center.y;
-        Lines[i][2] = Lines[i][2] - RotateRect_center.x;
-        Lines[i][3] = Lines[i][3] - RotateRect_center.y;
+       // Lines[i][0] = Lines[i][0] - RotateRect_center.x;
+      //  Lines[i][1] = -(Lines[i][1] - RotateRect_center.y);
+     //   Lines[i][2] = Lines[i][2] - RotateRect_center.x;
+   //     Lines[i][3] = -(Lines[i][3] - RotateRect_center.y);
         double dy = (double)(Lines[i][1] - Lines[i][3]);
         double dx = (double)(Lines[i][0] - Lines[i][2]);
-        if(dx == 0) dx = 1;
+        if(dx == 0)  dx = 1;
         double ki =  dy / dx;
 
-        if(ki > line1_k*0.7 && ki < line1_k*1.3)
+        if(ki > line1_k*0.5 && ki < line1_k*1.5)
         {
-            if(Lines[i][0] < 0 && Lines[i][1] > 0 )
 
-              lineL_buff.push_back(Lines[i]);
-       //     line1_points.push_back(Point(Lines[i][0],Lines[i][1]));
-       //     line1_points.push_back(Point(Lines[i][2],Lines[i][3]));
+            //  lineL_buff.push_back(Lines[i]);
+            line1_points.push_back(Point(Lines[i][0],Lines[i][1]));
+            line1_points.push_back(Point(Lines[i][2],Lines[i][3]));
 
         }
 
-        if(ki > line2_k*0.7 && ki < line2_k*1.3)
+        if(ki > line2_k*0.5 && ki < line2_k*1.5)
         {
-            lineU_buff.push_back(Lines[i]);
-           //  line2_points.push_back(Point(Lines[i][0],Lines[i][1]));
-           //  line2_points.push_back(Point(Lines[i][2],Lines[i][3]));
+           // lineU_buff.push_back(Lines[i]);
+             line2_points.push_back(Point(Lines[i][0],Lines[i][1]));
+             line2_points.push_back(Point(Lines[i][2],Lines[i][3]));
 
         }
         //line3_buff.push_back(Lines[i]);
 
     }
-//    for (uint i = 0; i < line1_points.size(); i++)
-//    {
-//        circle(rect_check, line1_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
-//    }
-//    for (uint i = 0; i < line2_points.size(); i++)
-//    {
-//        circle(rect_check, line2_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
-//    }
+    for (uint i = 0; i < line1_points.size(); i++)
+    {
+      //  float distance = GetPixelLength(line1_points[i],line1_points[i+1]);
+
+        circle(rect_check, line1_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+    }
+    for (uint i = 0; i < line2_points.size(); i++)
+    {
+        circle(rect_check, line2_points[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+    }
+
 
 
 //    Vec4f line1_para;
@@ -589,7 +633,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage,Mat &DstImage,int method)
     {
         RecognitionFailure(srcImage,TargetRoi);
     }
-    DstImage = detect_frame;
+   // DstImage = detect_frame;
 
     return 0;
 }
@@ -613,20 +657,18 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
     static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
     morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
 
-   // find_connected(grayImage);
+    find_connected(grayImage);
     detect_frame = grayImage;
 
     Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
     if(Targer_Flag)
     {
-
-
         //find image points
         vector<Point2f> Image_Point;
         Get_ConerPoint(srcImage, TargetRoi, Image_Point);
         for(uint i = 0; i < Image_Point.size(); i++)
         {
-          //  circle(srcImage, Image_Point[i], 3, Scalar(255,0,0),-1); //第五个参数我设为-1，表明这是个实点。
+            circle(srcImage, Image_Point[i], 3, Scalar(255,0,0),-1); //第五个参数我设为-1，表明这是个实点。
 
         }
 

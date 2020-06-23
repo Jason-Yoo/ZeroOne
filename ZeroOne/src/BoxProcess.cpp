@@ -75,7 +75,7 @@ void Vedio_task()
            {
 
                inputVideo.read(g_srcImage);
-               Modules_Detect.RecognitionFailure(g_srcImage);
+               //Modules_Detect.RecognitionFailure(g_srcImage);
 
            }
 
@@ -98,7 +98,7 @@ void Image_Task()
      else
      {
 
-         Modules_Detect.RecognitionFailure(g_srcImage);
+         //Modules_Detect.RecognitionFailure(g_srcImage);
          // 创建新窗口
          namedWindow("Image_Task", WINDOW_AUTOSIZE);
          imshow("Image_Task", g_srcImage);

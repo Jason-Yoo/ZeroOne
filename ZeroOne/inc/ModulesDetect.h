@@ -37,13 +37,21 @@ class ModulesDetect
 {
   public:
 
+    Mat detect_frame;
+
+    bool ROI_TrackFlag;
+    Rect ROI_TrackRect;
+
     int bgr2binary(Mat &srcImage, Mat &dstImage, int method);
     int Otsu(Mat &srcImage , int &threshold );
-    int RecognitionFailure(Mat &srcImage);
+
+    int RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi);
+    int Bluebox_Detection(Mat &srcImage,int method);
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
     int  Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );
     int  Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector<Point2f> &Image_Point);
+    int  RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angle);
     struct LeafInfo
         {
           RotatedRect ellipseRect;
@@ -56,7 +64,7 @@ class ModulesDetect
           Point target_pix;
         };
 
-    Mat detect_frame;
+
 
 };
 

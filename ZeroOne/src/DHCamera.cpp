@@ -276,7 +276,8 @@ void *ImageProcess(void* image)
 
          if(DH_camera->src_image.data)
          {
-             Modules_Detect.RecognitionFailure(DH_camera->src_image);
+
+             Modules_Detect.Bluebox_Detection(DH_camera->src_image,2);
              namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
              imshow("DH_camera:",DH_camera->src_image);
              waitKey(1);
