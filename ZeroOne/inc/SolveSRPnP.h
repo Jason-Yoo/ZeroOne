@@ -20,7 +20,7 @@ void SolveSRPnP(const vector<Point3d> & objectPoints,
         Mat & rMatrix,
         Mat & tVector);
 
-void Calculate_RT(Point2f Image_Points[4]);
+void Calculate_RT(vector<Point2f> &Image_Points);
 
 #endif // SOLVESRPNP_H
 

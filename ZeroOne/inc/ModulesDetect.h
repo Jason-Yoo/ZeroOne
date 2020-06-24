@@ -11,6 +11,8 @@
 #include "opencv2/video/tracking.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include <SolveSRPnP.h>
+
 using namespace std;
 using namespace cv;
 
@@ -38,9 +40,9 @@ class ModulesDetect
   public:
 
     Mat detect_frame;
-
     bool ROI_TrackFlag;
     Rect ROI_TrackRect;
+    double BoxPosition[6];
 
     int bgr2binary(Mat &srcImage, Mat &dstImage, int method);
     int Otsu(Mat &srcImage , int &threshold );
@@ -63,6 +65,7 @@ class ModulesDetect
           bool istarget=false;
           Point target_pix;
         };
+
 
 
 

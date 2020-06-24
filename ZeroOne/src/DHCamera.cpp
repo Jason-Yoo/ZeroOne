@@ -173,7 +173,7 @@ int DHCamera::Init()
     GX_VERIFY_EXIT(emStatus);
 
     //Set  Exposure
-    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 25000.0000);
+    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 13000.0000);
     GX_VERIFY_EXIT(emStatus);
 
 
@@ -263,6 +263,7 @@ void *ImageProcess(void* image)
      //Thread running flag setup
      DH_camera->g_ImageProcessFlag = true;
      ModulesDetect Modules_Detect;
+     Modules_Detect.ROI_TrackFlag = false;
 
  //    VideoWriter writer;
  //    int frameRate = 20;
@@ -277,7 +278,12 @@ void *ImageProcess(void* image)
          if(DH_camera->src_image.data)
          {
 
+             double t = (double)getTickCount();
+
              Modules_Detect.Bluebox_Detection(DH_camera->src_image,2);
+             t = ((double)getTickCount() - t) / getTickFrequency();
+             //double fps = 1.0/t;
+             cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
              namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
              imshow("DH_camera:",DH_camera->src_image);
              waitKey(1);

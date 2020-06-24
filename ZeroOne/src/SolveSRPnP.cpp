@@ -105,16 +105,15 @@ void getProjection(Mat & cameraMatrix,Mat & rMatrix,Mat & tVector)
    // p2d_i = p2d_i / repmat(p2d_i(end,:),3,1);
    // p2d_i = p2d_i(1:2,:);
 }
-void Calculate_RT(Point2f Image_Points[4])
+void Calculate_RT(vector<Point2f> &Image_Points,double BoxPosition[6])
 {
     //定义输出旋转矩阵和平移矩阵
     Mat rMatrix;
     Mat tVector;
 
     //世界坐标 cm
-    float threeDim[4][3] = {{0, 0, 0}, {0, 50, 0}, {100, 50, 0}, {100, 0, 0}};
-
-
+  //  float threeDim[4][3] = {{0, 0, 0}, {0, 50, 0}, {100, 50, 0}, {100, 0, 0}};
+    float threeDim[4][3] = {{0, 0, 0}, {0, 19.5, 0}, {28.5, 19.5, 0}, {28.5, 0, 0}};
 
     //转换为可以函数输入的形式;
     vector<Point3d> objectPoints;
@@ -141,39 +140,44 @@ void Calculate_RT(Point2f Image_Points[4])
     Mat_<double> distCoeffs(1, 5);
     distCoeffs << -0.2972, 0.0742, 0.00000, -0.00000, 0.00000;
 
-    double t = (double)getTickCount();
-    SolveSRPnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector);
-    t = ((double)getTickCount() - t) / getTickFrequency();
+//    double t = (double)getTickCount();
+//    SolveSRPnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector);
+//    t = ((double)getTickCount() - t) / getTickFrequency();
 
-    // 输出角度形式;
-    double pi = 3.1415926;
-    double A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
-    double B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
-    double C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
+//    // 输出角度形式;
+//    double pi = 3.1415926;
+//    double A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
+//    double B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
+//    double C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
 
-    cout << "*********Use SRPnP method to solve PNP problem************" << endl;
-    cout << "SRPnP method time=" << t * 1000 << "ms" << endl;
-    cout << "Pitch=" << A << endl;
-    cout << "Yaw  =" << B << endl;
-    cout << "Roll = " << C << endl;
-    cout << "X=" << tVector.at<double>(0, 0) << endl;
-    cout << "Y=" << tVector.at<double>(1, 0) << endl;
-    cout << "Z=" << tVector.at<double>(2, 0) << endl;
-    cout << "********************************************" << endl;
+//    cout << "*********Use SRPnP method to solve PNP problem************" << endl;
+//    cout << "SRPnP method time=" << t * 1000 << "ms" << endl;
+//    cout << "Pitch=" << A << endl;
+//    cout << "Yaw  =" << B << endl;
+//    cout << "Roll = " << C << endl;
+//    cout << "X=" << tVector.at<double>(0, 0) << endl;
+//    cout << "Y=" << tVector.at<double>(1, 0) << endl;
+//    cout << "Z=" << tVector.at<double>(2, 0) << endl;
+//    cout << "********************************************" << endl;
 
-//     t = (double)getTickCount();
-//      for(int i=0;i<100;i++)
-//      {
-//      solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector,false, CV_ITERATIVE);
-//      }
-//     t = ((double)getTickCount() - t) / getTickFrequency();
-//     t=t/100;
+     double t = (double)getTickCount();
+     solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector,false, CV_ITERATIVE);
+     t = ((double)getTickCount() - t) / getTickFrequency();
 
-     // 输出角度形式;
-   //  double pi = 3.1415926;
-//     A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
-//     B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
-//     C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
+     //
+     double pi = 3.1415926;
+     BoxPosition[0] = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
+     BoxPosition[1] = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
+     BoxPosition[2] = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
+     BoxPosition[3] = tVector.at<double>(0, 0);
+     BoxPosition[4] = tVector.at<double>(1, 0);
+     BoxPosition[5] = tVector.at<double>(2, 0);
+
+//     // 输出角度形式;
+
+//     double A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
+//     double B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
+//     double C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
 
 //     cout << "***********solvePnP算法进行位姿态解算**********" << endl;
 //     cout << "Opencv中solvePnP算法解算时间=" << t * 1000 << "ms" << endl;

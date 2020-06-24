@@ -126,7 +126,6 @@ float ModulesDetect::GetPixelLength(Point PixelPointA, Point PixelPointB)
 Point ModulesDetect::find_connected(Mat &binary_img)
 {
     Mat labels, img_color, stats,centroids;
-    //Mat binary_inv = ~binary_img;
     int nccomps = cv::connectedComponentsWithStats(binary_img, labels, stats, centroids);
 
     //去除过小区域，初始化颜色表
@@ -283,7 +282,6 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
     if(contours.size()<=0)
           return 0;
      vector<Rect> box(contours.size()); //定义最小外接矩形集合
-//   vector <Point2f> modulesCenter(contours.size());     //modules中心的点
       //绘制轮廓图
       for (uint i = 0; i < contours.size(); i++)
       {
@@ -375,7 +373,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
       }
       if(Max_bluerate >= 0.4)
       {
-            printf("The rate:%.2f%%\n", Max_bluerate * 100);
+          //  printf("The rate:%.2f%%\n", Max_bluerate * 100);
             TargetRoi = minAreaRect(Mat(contours[Max_bluenum]));
          //   ImageRoi = srcImage(Rect(box[Max_bluenum].x, box[Max_bluenum].y, box[Max_bluenum].width, box[Max_bluenum].height));
          //   imshow("ImageRoi",ImageRoi);
@@ -580,8 +578,6 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
      //显示拟合出的直线
  //   line(ROI_image,p1,p2,Scalar(0,0,255),2);
 
-
-
     return 1;
 
 }
@@ -592,7 +588,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage,int method)
 
     if(method == 1)
     {
-        if(ROI_TrackFlag)
+        if(ROI_TrackFlag && TargetRoi.center.x >= 0 && TargetRoi.center.y >= 0)
         {
             Size rate(ROI_TrackRect.width / 4, ROI_TrackRect.height / 4);
             ROI_TrackRect = rectCenterScale(ROI_TrackRect, rate);
@@ -673,7 +669,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
         }
 
         //solve pnp problem
-      //  Calculate_RT(Image_Point);
+        Calculate_RT(Image_Point,BoxPosition);
 
         //line the TargetRoi with red box
         Point2f TargetRoi_Points[4];

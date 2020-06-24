@@ -4,7 +4,7 @@
 void Camera_task()
 {
     DHCamera      DH_Camera;
-    TemplateMatch Template_Match;
+  //  TemplateMatch Template_Match;
 
     //Device Init
     DH_Camera.Init();
@@ -53,8 +53,8 @@ void Camera_task()
 
     }
     //Stop TemplateMatch thread
-    Template_Match.TemplateMatchFlag = false;
-    pthread_join( Template_Match.TemplateMatchThreadID, NULL);
+   // Template_Match.TemplateMatchFlag = false;
+   // pthread_join( Template_Match.TemplateMatchThreadID, NULL);
     //Stop DH_Camera thread
     DH_Camera.Stop();
 
@@ -75,7 +75,7 @@ void Vedio_task()
            {
 
                inputVideo.read(g_srcImage);
-               //Modules_Detect.RecognitionFailure(g_srcImage);
+               Modules_Detect.Bluebox_Detection(g_srcImage,2);
 
            }
 
@@ -98,7 +98,7 @@ void Image_Task()
      else
      {
 
-         //Modules_Detect.RecognitionFailure(g_srcImage);
+         Modules_Detect.Bluebox_Detection(g_srcImage,2);
          // 创建新窗口
          namedWindow("Image_Task", WINDOW_AUTOSIZE);
          imshow("Image_Task", g_srcImage);
