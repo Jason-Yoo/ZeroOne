@@ -92,42 +92,42 @@ int DHCamera::Init()
     }
 
     //DC_design
-       printf("\n");
-       printf("Press [a] or [A] and then press [Enter] to start acquisition\n");
-       printf("Press [s] or [S] and then press [Enter] to show image from camera\n");
-       printf("Press [x] or [X] and then press [Enter] to Exit the Program\n");
-       printf("\n");
+//       printf("\n");
+//       printf("Press [a] or [A] and then press [Enter] to start acquisition\n");
+//       printf("Press [s] or [S] and then press [Enter] to show image from camera\n");
+//       printf("Press [x] or [X] and then press [Enter] to Exit the Program\n");
+//       printf("\n");
 
-       char chStartKey = 0;
-       bool bWaitStart = true;
-       while (bWaitStart)
-       {
-           chStartKey = getchar();
-           switch(chStartKey)
-           {
-               //press 'a' and [Enter] to start acquisition;
-               //press 'x' and [Enter] to exit.
-               case 'a':
-               case 'A':
-                   //Start to acquisition
-                   bWaitStart = false;
-                   break;
-               case 'S':
-               case 's':
-                   printf("<Please start acquisiton before show image!>\n");
-                   break;
-               case 'x':
-               case 'X':
-                   //App exit
-                   GXCloseDevice(g_hDevice);
-                   g_hDevice = NULL;
-                   GXCloseLib();
-                   printf("<App exit!>\n");
-                   return 0;
-               default:
-                   break;
-           }
-       }
+//       char chStartKey = 0;
+//       bool bWaitStart = true;
+//       while (bWaitStart)
+//       {
+//           chStartKey = getchar();
+//           switch(chStartKey)
+//           {
+//               //press 'a' and [Enter] to start acquisition;
+//               //press 'x' and [Enter] to exit.
+//               case 'a':
+//               case 'A':
+//                   //Start to acquisition
+//                   bWaitStart = false;
+//                   break;
+//               case 'S':
+//               case 's':
+//                   printf("<Please start acquisiton before show image!>\n");
+//                   break;
+//               case 'x':
+//               case 'X':
+//                   //App exit
+//                   GXCloseDevice(g_hDevice);
+//                   g_hDevice = NULL;
+//                   GXCloseLib();
+//                   printf("<App exit!>\n");
+//                   return 0;
+//               default:
+//                   break;
+//           }
+//       }
 
     emStatus = GXGetInt(g_hDevice, GX_INT_PAYLOAD_SIZE, &g_nPayloadSize);
     GX_VERIFY(emStatus);
@@ -227,18 +227,7 @@ int DHCamera::Read()
 
 
 }
-int DHCamera::Set_fps(int fps_mode)
-{
-
-}
-///
-/// \brief DHCamera::GetFrame_B
-/// \param frame
-/// \param is_color
-/// true if we want bgr img
-/// \return
-///
-int DHCamera::GetFrame()
+int DHCamera::ProcessFrame()
 {
 
             int nRet = pthread_create(&g_ImageProcessThreadID, NULL, ImageProcess, this);
@@ -265,24 +254,16 @@ void *ImageProcess(void* image)
      ModulesDetect Modules_Detect;
      Modules_Detect.ROI_TrackFlag = false;
 
- //    VideoWriter writer;
- //    int frameRate = 20;
- //    writer.open("./uavgp.avi",CV_FOURCC('H', '2', '6', '4'),frameRate, Size(DH_camera->src_image.cols,DH_camera->src_image.rows),1);
-
      while(DH_camera->g_ImageProcessFlag)
      {
-
-        // if(DH_camera->g_bSaveVedioFlag)
-       //  writer.write(DH_camera->src_image);
 
          if(DH_camera->src_image.data)
          {
 
              double t = (double)getTickCount();
-
-             Modules_Detect.Bluebox_Detection(DH_camera->src_image,2);
+             Modules_Detect.Bluebox_Detection(DH_camera->src_image,DH_camera->BoxPosition,2);
              t = ((double)getTickCount() - t) / getTickFrequency();
-             //double fps = 1.0/t;
+
              cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
              namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
              imshow("DH_camera:",DH_camera->src_image);
@@ -295,7 +276,6 @@ void *ImageProcess(void* image)
          }
 
      }
-
      printf("<ImageProcess thread Exit!>\n");
 
 }

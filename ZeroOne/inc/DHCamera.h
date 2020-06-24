@@ -50,13 +50,14 @@ public:
     IplImage                * iplImage = NULL;
     Mat                      src_image;
 
+    vector<Point3d>          BoxPosition{vector<Point3d>(2)};;
+
    // Mat_<double>            cameraMatrix;
    // Mat_<double>            distCoeffs;
 
   int    Init();
   int    Play();
   int    Read();
-  int    GetFrame(Mat& frame,bool is_color);
   int    Stop();
   int    Uninit();
   int    SetExposureTime(bool auto_exp, double exp_time = 10000);
@@ -68,7 +69,7 @@ public:
   int    SetWBMode(bool auto_wb = true);
   int    GetWBMode(bool & auto_wb);
   int    SetOnceWB();
-  int    GetFrame();
+  int    ProcessFrame();
   int    Set_fps(int fps_mode);
   int    PreForAcquisition();
   int    UnPreForAcquisition();

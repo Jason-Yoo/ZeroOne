@@ -105,7 +105,7 @@ void getProjection(Mat & cameraMatrix,Mat & rMatrix,Mat & tVector)
    // p2d_i = p2d_i / repmat(p2d_i(end,:),3,1);
    // p2d_i = p2d_i(1:2,:);
 }
-void Calculate_RT(vector<Point2f> &Image_Points,double BoxPosition[6])
+void Calculate_RT(vector<Point2f> &Image_Points, vector<Point3d> &BoxPosition)
 {
     //定义输出旋转矩阵和平移矩阵
     Mat rMatrix;
@@ -164,30 +164,30 @@ void Calculate_RT(vector<Point2f> &Image_Points,double BoxPosition[6])
      solvePnP(objectPoints, imagePoints, cameraMatrix, distCoeffs, rMatrix, tVector,false, CV_ITERATIVE);
      t = ((double)getTickCount() - t) / getTickFrequency();
 
-     //
+     //update BoxPosition
      double pi = 3.1415926;
-     BoxPosition[0] = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
-     BoxPosition[1] = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
-     BoxPosition[2] = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
-     BoxPosition[3] = tVector.at<double>(0, 0);
-     BoxPosition[4] = tVector.at<double>(1, 0);
-     BoxPosition[5] = tVector.at<double>(2, 0);
+     BoxPosition[0].x = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
+     BoxPosition[0].y = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
+     BoxPosition[0].z = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
+     BoxPosition[1].x = tVector.at<double>(0, 0);
+     BoxPosition[1].y = tVector.at<double>(1, 0);
+     BoxPosition[1].z = tVector.at<double>(2, 0);
 
 //     // 输出角度形式;
-
+//     double pi = 3.1415926;
 //     double A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
 //     double B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
 //     double C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
 
-//     cout << "***********solvePnP算法进行位姿态解算**********" << endl;
-//     cout << "Opencv中solvePnP算法解算时间=" << t * 1000 << "ms" << endl;
-//     cout << "Pitch=" << A << endl;
-//     cout << "Yaw  =" << B << endl;
-//     cout << "Roll =" << C << endl;
-//     cout << "X=" << tVector.at<double>(0, 0) << endl;
-//     cout << "Y=" << tVector.at<double>(1, 0) << endl;
-//     cout << "Z=" << tVector.at<double>(2, 0) << endl;
-//     cout << "******************************************" << endl;
+     cout << "***********solvePnP算法进行位姿态解算**********" << endl;
+     cout << "Opencv中solvePnP算法解算时间=" << t * 1000 << "ms" << endl;
+     cout << "Pitch=" << BoxPosition[0] << endl;
+     cout << "Yaw  =" << BoxPosition[1] << endl;
+     cout << "Roll =" << BoxPosition[2] << endl;
+     cout << "X=" << BoxPosition[3] << endl;
+     cout << "Y=" << BoxPosition[4] << endl;
+     cout << "Z=" << BoxPosition[5] << endl;
+     cout << "******************************************" << endl;
 
 }
 

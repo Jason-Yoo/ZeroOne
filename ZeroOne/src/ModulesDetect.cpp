@@ -581,10 +581,11 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
     return 1;
 
 }
-int ModulesDetect::Bluebox_Detection(Mat &srcImage,int method)
+int ModulesDetect::Bluebox_Detection(Mat &srcImage,vector<Point3d> &BoxPosition,int method)
 {
 
     RotatedRect TargetRoi;
+    vector<Point2f> Image_Point;
 
     if(method == 1)
     {
@@ -605,7 +606,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage,int method)
 
            rectangle(srcImage, Point(ROI_TrackRect.x, ROI_TrackRect.y), Point(ROI_TrackRect.x + ROI_TrackRect.width, ROI_TrackRect.y + ROI_TrackRect.height), Scalar(0, 255, 0), 2, 8);
            Mat ROI_check = srcImage(ROI_TrackRect);
-           if(RecognitionFailure(ROI_check,TargetRoi))
+           if(RecognitionFailure(ROI_check,TargetRoi,Image_Point))
            {
                ROI_TrackRect = TargetRoi.boundingRect();
 
@@ -616,10 +617,13 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage,int method)
         }
         else
         {
-            if(RecognitionFailure(srcImage,TargetRoi))
+            if(RecognitionFailure(srcImage,TargetRoi,Image_Point))
             {
                 ROI_TrackFlag = true;
                 ROI_TrackRect = TargetRoi.boundingRect();
+            }
+            else {
+                RecognitionFailure(srcImage,TargetRoi,Image_Point);
             }
 
 
@@ -627,9 +631,21 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage,int method)
     }
     if(method == 2)
     {
-        RecognitionFailure(srcImage,TargetRoi);
-    }
+        if(RecognitionFailure(srcImage,TargetRoi,Image_Point))
+        {
+            // solve pnp problem
+            Calculate_RT(Image_Point, BoxPosition);
+        }
+        else
+        {
+            for(uint i=0 ;i < BoxPosition.size();i++)
+            {
+                BoxPosition[i] = {0};
+            }
 
+        }
+
+    }
 
     return 0;
 }
@@ -638,7 +654,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage,int method)
 /// \param srcImage
 /// \return
 ///
-int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
+int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vector<Point2f> &Image_Point)
 {
    // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
 
@@ -660,16 +676,12 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
     if(Targer_Flag)
     {
         //find image points
-        vector<Point2f> Image_Point;
         Get_ConerPoint(srcImage, TargetRoi, Image_Point);
         for(uint i = 0; i < Image_Point.size(); i++)
         {
-            circle(srcImage, Image_Point[i], 3, Scalar(255,0,0),-1); //第五个参数我设为-1，表明这是个实点。
+            circle(srcImage, Image_Point[i], 3, Scalar(255,0,0),-1);
 
         }
-
-        //solve pnp problem
-        Calculate_RT(Image_Point,BoxPosition);
 
         //line the TargetRoi with red box
         Point2f TargetRoi_Points[4];
@@ -679,8 +691,6 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi)
             line(srcImage, TargetRoi_Points[j], TargetRoi_Points[(j + 1) % 4], Scalar(0, 0, 255), 1, 8);  //绘制最小外接矩形每条边
         }
         return 1;
-
-
     }
     else
     {
