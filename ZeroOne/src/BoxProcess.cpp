@@ -130,6 +130,9 @@ int VisualRecognition_Box(DHCamera &DH_Camera,Point3d &BoxPosition,int mode)
             BoxPosition.x = DH_Camera.BoxPosition[1].x;
             BoxPosition.y = DH_Camera.BoxPosition[1].y;
             BoxPosition.z = DH_Camera.BoxPosition[1].z;
+            cout << "X=" << BoxPosition.x << endl;
+            cout << "Y=" << BoxPosition.y << endl;
+            cout << "Z=" << BoxPosition.z << endl;
         }
 
     }

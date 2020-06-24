@@ -1,1 +1,1 @@
-nuaa_uavgp_tx2
+run on tx2

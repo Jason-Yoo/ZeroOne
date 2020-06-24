@@ -466,7 +466,7 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector
         if(abs(RotateRect_k[i]) > 200) RotateRect_k[i]=200;
         if(abs(RotateRect_k[i]) < 0.00001) RotateRect_k[i]=0;
         //   cout << "RotateRect_c"   << i <<":"<<RotateRect_point[i]<< endl;
-        cout << "RotateRect_k"  << i <<":"<< RotateRect_k[i]   << endl;
+        //cout << "RotateRect_k"  << i <<":"<< RotateRect_k[i]   << endl;
     }
 
 
@@ -694,7 +694,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vecto
     }
     else
     {
-           cout<<"Hard to find the TargetRoi,please check Get_TargrtRoi process"<< endl;
+          // cout<<"Hard to find the TargetRoi,please check Get_TargrtRoi process"<< endl;
     }
     return 0;
 }
