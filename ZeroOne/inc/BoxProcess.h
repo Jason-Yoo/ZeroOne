@@ -16,7 +16,6 @@
 
 #include "ModulesDetect.h"
 #include <DHCamera.h>
-#include <TemplateMatch.h>
 #include <SolveSRPnP.h>
 
 using namespace std;

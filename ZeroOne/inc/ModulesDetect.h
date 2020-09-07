@@ -2,7 +2,7 @@
 #define MODULESDETECT_H
 
 #include <iostream>
-
+#include<algorithm>
 #include <stdio.h>
 #include "stdlib.h"
 
@@ -11,6 +11,9 @@
 #include "opencv2/video/tracking.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/highgui/highgui_c.h>
 #include <SolveSRPnP.h>
 
 using namespace std;
@@ -48,11 +51,11 @@ class ModulesDetect
     int Otsu(Mat &srcImage , int &threshold );
 
     int  RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vector<Point2f> &Image_Point);
-    int  Bluebox_Detection(Mat &srcImage,vector<Point3d> &BoxPosition,int method);
+    int  Bluebox_Detection(Mat &srcImage);
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
     int  Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );
-    int  Get_ConerPoint(Mat &srcImage, RotatedRect Target_Roi, vector<Point2f> &Image_Point);
+    int  Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vector<Point2f> &Image_Point);
     int  RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angle);
 
     struct LeafInfo

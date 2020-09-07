@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="ZeroOne" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\share\;CMake Files\..\..\..\..\usr\local\share\OpenCV\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/nvidia/Desktop/test5send/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="edit_cache">
+         <Option working_dir="/home/nvidia/Desktop/test5send/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/nvidia/Desktop/test5send/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ZeroOne">
+         <Option output="/home/nvidia/Desktop/test5send/build/ZeroOne" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/nvidia/Desktop/test5send/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DOPENCV_TRAITS_ENABLE_DEPRECATED" />
+            <Add directory="/home/nvidia/Desktop/test5send/ZeroOne" />
+            <Add directory="/home/nvidia/Desktop/test5send/inc" />
+            <Add directory="/usr/include/eigen3/Eigen" />
+            <Add directory="/usr/local/include" />
+            <Add directory="/usr/local/include/opencv" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 ZeroOne" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ZeroOne/fast">
+         <Option output="/home/nvidia/Desktop/test5send/build/ZeroOne" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/nvidia/Desktop/test5send/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DOPENCV_TRAITS_ENABLE_DEPRECATED" />
+            <Add directory="/home/nvidia/Desktop/test5send/ZeroOne" />
+            <Add directory="/home/nvidia/Desktop/test5send/inc" />
+            <Add directory="/usr/include/eigen3/Eigen" />
+            <Add directory="/usr/local/include" />
+            <Add directory="/usr/local/include/opencv" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 ZeroOne/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/nvidia/Desktop/test5send/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/BoxProcess.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/DHCamera.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/ModulesDetect.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/SRPnP.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/SolveSRPnP.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/math/arun.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/src/math/roots.cpp">
+         <Option target="ZeroOne"/>
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/../../../../usr/local/share/OpenCV/OpenCVConfig-version.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\share\OpenCV\" />
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/../../../../usr/local/share/OpenCV/OpenCVConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\share\OpenCV\" />
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/../../../../usr/local/share/OpenCV/OpenCVModules.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\share\OpenCV\" />
+      </Unit>
+      <Unit filename="/home/nvidia/Desktop/test5send/../../../../usr/local/share/OpenCV/OpenCVModules-release.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\share\OpenCV\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

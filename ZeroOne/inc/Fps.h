@@ -112,6 +112,7 @@ private:
     struct timespec  tvEnd;
 };
 
+
 //--------------------------------------------------------------------------------
 /**
 \file     The CFps class is used to calculate the frame rate.

@@ -3,7 +3,6 @@
 
 #include "GxIAPI.h"
 #include "DxImageProc.h"
-#include <TemplateMatch.h>
 #include "ModulesDetect.h"
 
 #include <thread>
@@ -73,7 +72,10 @@ public:
   int    Set_fps(int fps_mode);
   int    PreForAcquisition();
   int    UnPreForAcquisition();
+
   void   GetErrorString(GX_STATUS emErrorStatus);
+
+
 
   GX_STATUS GX_VERIFY(GX_STATUS emStatus);
   GX_STATUS GX_VERIFY_EXIT(GX_STATUS emStatus);
@@ -82,7 +84,11 @@ public:
 
 };
 
-void *ProcGetImage(void* pParam);
-void *ImageProcess(void* image);
+void *ProcGetImage(void* pParam);           //图像获取线程函数
+void *ImageProcess(void* image);            //图像处理线程函数
 
+
+
+//void bgr2binary(Mat &srcImage, Mat &dstImage, int method);//lingai
+//void Otsu(Mat &srcImage , int &threshold) ;//lingai
 #endif

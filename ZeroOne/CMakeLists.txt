@@ -9,14 +9,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(${PROJECT_NAME}
-    inc
-    usr/include/Eigen3
+      inc
+#    /usr/include/Eigen3
+     /usr/include/eigen3/Eigen
     )
 
 add_executable(${PROJECT_NAME}
     src/DHCamera.cpp
     src/BoxProcess.cpp
-    src/TemplateMatch.cpp
     src/SRPnP.cpp
     src/math/arun.cpp
     src/math/roots.cpp

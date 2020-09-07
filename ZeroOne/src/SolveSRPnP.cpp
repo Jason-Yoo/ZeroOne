@@ -1,5 +1,4 @@
 #include <SolveSRPnP.h>
-
 void SolveSRPnP(const vector<Point3d> & objectPoints,
         const vector<Point2d> & imagePoints,
         const Mat & cameraMatrix,
@@ -112,8 +111,8 @@ void Calculate_RT(vector<Point2f> &Image_Points, vector<Point3d> &BoxPosition)
     Mat tVector;
 
     //世界坐标 cm
-  //  float threeDim[4][3] = {{0, 0, 0}, {0, 50, 0}, {100, 50, 0}, {100, 0, 0}};
-    float threeDim[4][3] = {{0, 0, 0}, {0, 19.5, 0}, {28.5, 19.5, 0}, {28.5, 0, 0}};
+    float threeDim[4][3] = {{0, 0, 0}, {0, 50, 0}, {100, 50, 0}, {100, 0, 0}};
+   // float threeDim[4][3] = {{0, 0, 0}, {0, 19.5, 0}, {28.5, 19.5, 0}, {28.5, 0, 0}};
 
     //转换为可以函数输入的形式;
     vector<Point3d> objectPoints;
@@ -174,20 +173,20 @@ void Calculate_RT(vector<Point2f> &Image_Points, vector<Point3d> &BoxPosition)
      BoxPosition[1].z = tVector.at<double>(2, 0);
 
 //     // 输出角度形式;
-//     double pi = 3.1415926;
-//     double A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
-//     double B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
-//     double C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
+     //double pi = 3.1415926;
+     double A = atan(rMatrix.at<double>(1, 2) / rMatrix.at<double>(2, 2)) * 180 / pi;
+     double B = asin(-rMatrix.at<double>(0, 2)) * 180 / pi;
+     double C = atan(rMatrix.at<double>(0, 1) / rMatrix.at<double>(0, 0)) * 180 / pi;
 
 //     cout << "***********solvePnP算法进行位姿态解算**********" << endl;
 //     cout << "Opencv中solvePnP算法解算时间=" << t * 1000 << "ms" << endl;
-//     cout << "Pitch=" << BoxPosition[0].x << endl;
-//     cout << "Yaw  =" << BoxPosition[0].y << endl;
-//     cout << "Roll =" << BoxPosition[0].z << endl;
-//     cout << "X=" << BoxPosition[1].x << endl;
-//     cout << "Y=" << BoxPosition[1].y << endl;
-//     cout << "Z=" << BoxPosition[1].z << endl;
-//     cout << "******************************************" << endl;
+     cout << "Pitch=" << BoxPosition[0].x << endl;
+     cout << "Yaw  =" << BoxPosition[0].y << endl;
+     cout << "Roll =" << BoxPosition[0].z << endl;
+     cout << "X=" << BoxPosition[1].x << endl;
+     cout << "Y=" << BoxPosition[1].y << endl;
+     cout << "Z=" << BoxPosition[1].z << endl;
+     cout << "******************************************" << endl;
 
 }
 
