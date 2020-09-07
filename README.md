@@ -8,8 +8,7 @@ daheng_camera_driver
 
 Eigen 
 
-software qt creator
-
 ZeroOne for image process at daheng camera 
 
-VideoSave for avi save  at daheng camera
+2020.09.07  add UDP for image transmission
+
