@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/nvidia/Desktop/new_code/test5send/src/BoxProcess.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp
 BoxProcess.h
-/home/nvidia/Desktop/new_code/test5send/src/BoxProcess.h
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.h
 sys/select.h
 -
 unistd.h
@@ -30,9 +30,9 @@ cstring
 iostream
 -
 
-/home/nvidia/Desktop/new_code/test5send/src/DHCamera.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp
 DHCamera.h
-/home/nvidia/Desktop/new_code/test5send/src/DHCamera.h
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.h
 stdlib.h
 -
 stdio.h
@@ -60,11 +60,11 @@ iostream
 opencv2/opencv.hpp
 -
 
-/home/nvidia/Desktop/new_code/test5send/src/ModulesDetect.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp
 ModulesDetect.h
-/home/nvidia/Desktop/new_code/test5send/src/ModulesDetect.h
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.h
 
-/home/nvidia/Desktop/new_code/test5send/src/SRPnP.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp
 SRPnP.hpp
 -
 roots.hpp
@@ -72,17 +72,17 @@ roots.hpp
 arun.hpp
 -
 iostream
-/home/nvidia/Desktop/new_code/test5send/src/iostream
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/iostream
 
-/home/nvidia/Desktop/new_code/test5send/src/SolveSRPnP.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp
 SolveSRPnP.h
 -
 
-/home/nvidia/Desktop/new_code/test5send/src/math/arun.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp
 arun.hpp
 -
 
-/home/nvidia/Desktop/new_code/test5send/src/math/roots.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp
 roots.hpp
 -
 complex
@@ -1437,8 +1437,6 @@ ModulesDetect.h
 inc/ModulesDetect.h
 DHCamera.h
 -
-TemplateMatch.h
--
 SolveSRPnP.h
 -
 
@@ -1447,8 +1445,6 @@ GxIAPI.h
 inc/GxIAPI.h
 DxImageProc.h
 inc/DxImageProc.h
-TemplateMatch.h
--
 ModulesDetect.h
 inc/ModulesDetect.h
 thread
@@ -1522,16 +1518,6 @@ opencv2/opencv.hpp
 eigen3/Eigen/Dense
 -
 SRPnP.hpp
--
-
-inc/TemplateMatch.h
-opencv2/opencv.hpp
--
-opencv2/core/utility.hpp
--
-opencv2/videoio.hpp
--
-opencv2/highgui.hpp
 -
 
 inc/arun.hpp

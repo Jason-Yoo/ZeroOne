@@ -73,7 +73,7 @@ int DHCamera::Init()
 
     //枚举设备，并建立设备列表
     printf("ENUM CAMERA DEVICES...\n");
-     emStatus = GXUpdateDeviceList(&ui32DeviceNum, 1000);
+    emStatus = GXUpdateDeviceList(&ui32DeviceNum, 1000);
     if(emStatus != GX_STATUS_SUCCESS)
     {
         GetErrorString(emStatus);
@@ -163,18 +163,19 @@ int DHCamera::Init()
 
     GX_VERIFY_EXIT(emStatus);
     //Set  Exposure
-    //emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
+   // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
     emStatus = GXSetEnum(g_hDevice,GX_ENUM_BALANCE_WHITE_AUTO,GX_BALANCE_WHITE_AUTO_CONTINUOUS);   //设 置 连 续 自 动 白 平 衡
     emStatus = GXSetEnum(g_hDevice, GX_ENUM_EXPOSURE_AUTO, GX_EXPOSURE_AUTO_CONTINUOUS);
     GX_VERIFY_EXIT(emStatus);
 
-   //Set  GAMMA
+    //Set  GAMMA
     emStatus = GXSetBool(g_hDevice, GX_BOOL_GAMMA_ENABLE, true);
     GX_GAMMA_MODE_ENTRY nValue;
     nValue = GX_GAMMA_SELECTOR_USER;
     emStatus = GXSetEnum(g_hDevice, GX_ENUM_GAMMA_MODE, nValue);
-    double dColorParam = 0.1;
+    double dColorParam = 1;
     emStatus = GXSetFloat(g_hDevice, GX_FLOAT_GAMMA_PARAM, dColorParam);
+
 
     //Allocate the memory for pixel format transform
     PreForAcquisition();
@@ -191,41 +192,41 @@ int DHCamera::Uninit()
 int DHCamera::Read()
 {
 
-        //Device start acquisition
-        emStatus = GXStreamOn(g_hDevice);   // 开采,包括流开采和设备开采。  [in] g_hDevice 设备句柄
-        if(emStatus != GX_STATUS_SUCCESS)
-        {
-            //Release the memory allocated
-            // 释放已经分配的内存
-            UnPreForAcquisition();
-            GX_VERIFY_EXIT(emStatus);
-        }
+    //Device start acquisition
+    emStatus = GXStreamOn(g_hDevice);   // 开采,包括流开采和设备开采。  [in] g_hDevice 设备句柄
+    if(emStatus != GX_STATUS_SUCCESS)
+    {
+        //Release the memory allocated
+        // 释放已经分配的内存
+        UnPreForAcquisition();
+        GX_VERIFY_EXIT(emStatus);
+    }
 
-        int64_t width,height;
-        emStatus = GXGetInt(g_hDevice,GX_INT_WIDTH,&width);
-        emStatus = GXGetInt(g_hDevice,GX_INT_HEIGHT,&height);
-        src_image.create(height,width,CV_8UC3);
+    int64_t width,height;
+    emStatus = GXGetInt(g_hDevice,GX_INT_WIDTH,&width);
+    emStatus = GXGetInt(g_hDevice,GX_INT_HEIGHT,&height);
+    src_image.create(height,width,CV_8UC3);
 
 
-        int nRet = pthread_create(&g_nAcquisitonThreadID, NULL, ProcGetImage, this);
-        if(nRet != 0)
-        {
-            //Release the memory allocated
-            // 释放已经分配的内存
-            UnPreForAcquisition();
+    int nRet = pthread_create(&g_nAcquisitonThreadID, NULL, ProcGetImage, this);
+    if(nRet != 0)
+    {
+        //Release the memory allocated
+        // 释放已经分配的内存
+        UnPreForAcquisition();
 
-            GXCloseDevice(g_hDevice);
-            g_hDevice = NULL;
-            GXCloseLib();     //关闭设备库,释放资源。当停止 GxIAPI 对设备进行的所有控制之后,必须调用此接口来释放资源,与GXInitLib 对应。
+        GXCloseDevice(g_hDevice);
+        g_hDevice = NULL;
+        GXCloseLib();     //关闭设备库,释放资源。当停止 GxIAPI 对设备进行的所有控制之后,必须调用此接口来释放资源,与GXInitLib 对应。
 
-            printf("<Failed to create the acquisition thread, App Exit!>\n");
-            exit(nRet);
-        }
-        else
-        {
-            printf("<Create the acquisition thread is successful, App Exit!>\n");
+        printf("<Failed to create the acquisition thread, App Exit!>\n");
+        exit(nRet);
+    }
+    else
+    {
+        printf("<Create the acquisition thread is successful, App Exit!>\n");
 
-        }
+    }
 
 }
 
@@ -234,47 +235,44 @@ int DHCamera::Read()
 int DHCamera::ProcessFrame()
 {
     cout << "in chu li" << endl;
-//   ×××××××××××××××××××××××××××图像处理线程×××××××××××××××××××××××× //
-            int nRet = pthread_create(&g_ImageProcessThreadID, NULL, ImageProcess, this);
-            if(nRet != 0)
-            {
+    //   ×××××××××××××××××××××××××××图像处理线程×××××××××××××××××××××××× //
+    int nRet = pthread_create(&g_ImageProcessThreadID, NULL, ImageProcess, this);
+    if(nRet != 0)
+    {
 
-                printf("<Failed to create the ImageProcess thread, App Exit!>\n");
-                exit(nRet);
-            }
-            else
-            {
-                printf("<create the ImageProcess thread success!>\n");
-            }
+        printf("<Failed to create the ImageProcess thread, App Exit!>\n");
+        exit(nRet);
+    }
+    else
+    {
+        printf("<create the ImageProcess thread success!>\n");
+    }
 
-          return 0;
+    return 0;
 
 }
 
 void *ImageProcess(void* image)      // 图像处理线程函数
 {
-     DHCamera *DH_camera = (DHCamera *)image;
+    DHCamera *DH_camera = (DHCamera *)image;
 
-     //Thread running flag setup    
-     DH_camera->g_ImageProcessFlag = true;      //线程运行标志启动
-     ModulesDetect Modules_Detect;
-     Modules_Detect.ROI_TrackFlag = false;
+    //Thread running flag setup
+    DH_camera->g_ImageProcessFlag = true;      //线程运行标志启动
+    ModulesDetect Modules_Detect;
+    Modules_Detect.ROI_TrackFlag = false;
 
-     //*******************
-     int sockfd;
-     int counter = 0;  //  给陈舟用作调试用
-     int port_out = 12322;
-
-     Mat image_ChenZhou;
+    //*******************
+    int sockfd;
+    int counter = 0;  //  给陈舟用作调试用
+    int port_out = 12322;
 
     // 设置图片传输相关参数
-    char sendData[500000];
-    std::vector<uchar> imgData;
-    int imgSize;
+
+
     // 创建socket
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if(-1==sockfd){
-       // return false;
+        // return false;
         puts("Failed to create socket");
     }
     // 设置地址与端口
@@ -282,48 +280,78 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     socklen_t          addr_len=sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port   = htons(port_out);
-    addr.sin_addr.s_addr = inet_addr("192.168.101.180");
+    addr.sin_addr.s_addr = inet_addr("192.168.101.163");
     //pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;//创建互斥锁并初始化
     //pthread_mutex_lock(&g_ImageProcessThreadID);//对线程上锁，此时其他线程阻塞等待该线程释放锁
 
     while(DH_camera->g_ImageProcessFlag)
     {
-         if(DH_camera->src_image.data)     
-         {
-             Mat tupian(DH_camera->src_image);
+        if(DH_camera->src_image.data)
+        {
+            Mat srcimage(DH_camera->src_image);
 
-             double t = (double)getTickCount();
-             Modules_Detect.Bluebox_Detection(tupian);   //输入为原始图像，输出为位姿
-             t = ((double)getTickCount() - t) / getTickFrequency();
-             cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
+            double t = (double)getTickCount();
+            Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
+            t = ((double)getTickCount() - t) / getTickFrequency();
+         //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
 
-             namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
-             imshow("DH_camera:",tupian);
-             waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
+            double fps = 1.0/t ;
+            char string[10];      // 用于存放帧率的字符串
 
-             
-             resize(tupian, tupian ,cv::Size(480, 320));
-             imencode(".jpg",tupian, imgData);
-             imgSize = imgData.size();
-             for (int i = 0; i != imgSize; ++i)
-             {
-                 sendData[i] = imgData[i];
-             }
-             //发送编码后的图像
-             sendto(sockfd, sendData, imgSize, 0, (sockaddr*)&addr, addr_len);
-             counter = counter+1;
-             cout << "Sended" << counter << endl;
-             // imwrite("DH_Camera1.jpg",DH_camera->src_image);    //将结果图像保存到当前目录下
+            //sprintf(string, "%.2f", DH_camera->ui32FPS); // 帧率保留两位小数
+            sprintf(string, "%.2f", fps); // 帧率保留两位小数
+            std::string fpsString("FPS:");
+            fpsString += string; // 在"FPS:"后加入帧率数值字符串
+            putText(srcimage,               // 图像矩阵
+                    fpsString,                // string型文字内容
+                    Point(20, 50),         // 文字坐标，以左下角为原点
+                    CV_FONT_HERSHEY_COMPLEX_SMALL, // 字体类型
+                    1.8,                      // 字体大小
+                    cv::Scalar(0, 0, 255));   // 字体颜色（B,G,R）
 
-          
-         }
-         else
-         {
-             printf("<Image data is NULL,Please check the Image get process!>\n");
-         }
-     }
-     close(sockfd);
-     printf("<ImageProcess thread Exit!>\n");
+
+            t = (double)getTickCount();
+            Mat tupian ;
+            char sendData[65535];
+            std::vector<uchar> imgData;
+            vector<int> quality;
+            int imgSize;
+
+            //resize(srcimage, tupian ,cv::Size(480, 320));
+            resize(srcimage, tupian ,cv::Size(320, 256));
+            quality.push_back(CV_IMWRITE_JPEG_CHROMA_QUALITY);
+            quality.push_back(10);
+            imencode(".jpg",tupian, imgData,quality);
+            imgSize = imgData.size();
+            if(imgSize <= 65535)
+            {
+                for (int i = 0; i != imgSize; ++i)
+                {
+                    sendData[i] = imgData[i];
+                }
+                //发送编码后的图像
+                sendto(sockfd, sendData, imgSize, 0, (sockaddr*)&addr, addr_len);
+            }
+            else
+            {
+                cout<<"imgSize = "<<  imgSize  << endl;
+            }
+            memset(&sendData,0,sizeof(sendData));
+
+            namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
+            imshow("DH_camera:",srcimage);
+            waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
+
+
+
+        }
+        else
+        {
+            printf("<Image data is NULL,Please check the Image get process!>\n");
+        }
+    }
+    close(sockfd);
+    printf("<ImageProcess thread Exit!>\n");
 }
 
 
@@ -345,43 +373,12 @@ void *ProcGetImage(void* pParam)
     time_t lEnd;
     uint32_t ui32FrameCount = 0;
 
-     // ******************UDP初始化*******××**************** //
-    /*
-    int sockfd;
-    int counter = 0;  //  给陈舟用作调试用
-    int port_out = 12322;
-
-    Mat image_ChenZhou;
-
-    // 设置图片传输相关参数
-    char sendData[500000];
-    std::vector<uchar> imgData;
-    int imgSize;
-    // 创建socket
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if(-1==sockfd){
-       // return false;
-        puts("Failed to create socket");
-    }
-    // 设置地址与端口
-    struct sockaddr_in addr;
-    socklen_t          addr_len=sizeof(addr);
-    // Time out
-    //struct timeval tv;
-    //tv.tv_sec  = 0;
-    //tv.tv_usec = 200000;  // 200 ms
-    //setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(struct timeval));
-    */
-   // *******************UDP初始化_END*************××××*********//
-
-
     while(DH_camera->g_bAcquisitionFlag)
     {
         if(!ui32FrameCount)
         {
             time(&lInit);
         }
-        double t = (double)getTickCount();
         // Get a frame from Queue
         // 从队列中读取一帧
         emStatus = GXDQBuf(DH_camera->g_hDevice, &pFrameBuffer, 1000);   //在开始采集之后,通过此接口可以获取一副图像(零拷贝)
@@ -412,15 +409,12 @@ void *ProcGetImage(void* pParam)
             // Image process        DxRaw8toRGB24:该函数用于将 Bayer 图像转换为 RGB 图像。
             DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
             memcpy( DH_camera->src_image.data, DH_camera->g_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
-
-      
-             t = ((double)getTickCount() - t) / getTickFrequency();
-             cout<<"huoqu time = "<< t*1000 << "ms" << endl;
             // Print acquisition info each second.
             if (lEnd - lInit >= 1)
             {
-                printf("<Successful acquisition: FrameCount: %u Width: %d Height: %d FrameID: %llu>\n",
-                ui32FrameCount, pFrameBuffer->nWidth, pFrameBuffer->nHeight, pFrameBuffer->nFrameID);
+
+                printf("<Successful acquisition: FrameCount: %u Width: %d Height: %d FrameID: %lu>\n",
+                       ui32FrameCount, pFrameBuffer->nWidth, pFrameBuffer->nHeight, pFrameBuffer->nFrameID);
                 ui32FrameCount = 0;
 
             }
@@ -437,7 +431,7 @@ void *ProcGetImage(void* pParam)
 
     }
 
- //   close(sockfd);
+    //   close(sockfd);
     printf("<Acquisition thread Exit!>\n");
 }
 //  ×××××××××××××××××××××××××××××××××××××××××××××××××××  //

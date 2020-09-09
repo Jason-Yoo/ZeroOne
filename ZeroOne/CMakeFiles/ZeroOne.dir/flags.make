@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/nvidia/Desktop/new_code/test5send/ZeroOne -I/home/nvidia/Desktop/new_code/test5send/inc -I/usr/include/eigen3/Eigen -isystem /usr/local/include -isystem /usr/local/include/opencv 
+CXX_INCLUDES = -I/home/nvidia/Desktop/ZeroOne/ZeroOne/ZeroOne -I/home/nvidia/Desktop/ZeroOne/ZeroOne/inc -I/usr/include/eigen3/Eigen -isystem /usr/local/include -isystem /usr/local/include/opencv 
 

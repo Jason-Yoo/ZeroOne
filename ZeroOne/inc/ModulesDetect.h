@@ -47,16 +47,20 @@ class ModulesDetect
     Rect ROI_TrackRect;
 
 
+    bool is_stand,is_parallel;
+
     int bgr2binary(Mat &srcImage, Mat &dstImage, int method);
     int Otsu(Mat &srcImage , int &threshold );
 
     int  RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vector<Point2f> &Image_Point);
     int  Bluebox_Detection(Mat &srcImage);
+    int  dcBluebox_Detection(Mat &srcImage);
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
     int  Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );
     int  Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vector<Point2f> &Image_Point);
     int  RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angle);
+    int  judgeBoxState(vector<Point2f> &Image_Point , float UavHeight);
 
     struct LeafInfo
         {

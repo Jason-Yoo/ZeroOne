@@ -1,4 +1,4 @@
-# Install script for directory: /home/nvidia/Desktop/new_code/test5send
+# Install script for directory: /home/nvidia/Desktop/ZeroOne/ZeroOne
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/nvidia/Desktop/new_code/test5send/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/nvidia/Desktop/ZeroOne/ZeroOne/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

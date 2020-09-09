@@ -21,6 +21,8 @@ class DHCamera {
 public:
 
     uint32_t                  ui32DeviceNum = 0;
+    uint32_t                  ui32FPS = 0;
+
     GX_STATUS                 emStatus;
 
     GX_DEV_HANDLE             g_hDevice = NULL;                     ///< Device handle

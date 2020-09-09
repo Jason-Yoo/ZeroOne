@@ -144,7 +144,6 @@ CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: inc/GxIAPI.h
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: inc/ModulesDetect.h
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: inc/SRPnP.hpp
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: inc/SolveSRPnP.h
-CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: inc/TemplateMatch.h
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: inc/types.hpp
 
 CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: src/DHCamera.cpp
@@ -289,7 +288,6 @@ CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: inc/GxIAPI.h
 CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: inc/ModulesDetect.h
 CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: inc/SRPnP.hpp
 CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: inc/SolveSRPnP.h
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: inc/TemplateMatch.h
 CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: inc/types.hpp
 
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o: src/ModulesDetect.cpp

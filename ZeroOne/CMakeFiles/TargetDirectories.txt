@@ -1,3 +1,3 @@
-/home/nvidia/Desktop/new_code/test5send/CMakeFiles/rebuild_cache.dir
-/home/nvidia/Desktop/new_code/test5send/CMakeFiles/ZeroOne.dir
-/home/nvidia/Desktop/new_code/test5send/CMakeFiles/edit_cache.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/CMakeFiles/rebuild_cache.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/CMakeFiles/ZeroOne.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/CMakeFiles/edit_cache.dir

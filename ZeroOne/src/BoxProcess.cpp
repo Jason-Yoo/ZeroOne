@@ -23,7 +23,7 @@ int VisualRecognition_Init(DHCamera &DH_Camera)
     DH_Camera.Read();   // 内有图片获取的线程
 
     //start image process    开始图像处理线程
-   DH_Camera.ProcessFrame();
+    DH_Camera.ProcessFrame();
 
     return 1;
 
@@ -33,9 +33,26 @@ int main()
 {
     DHCamera  DH_Camera;
     Point3d   BoxPosition;
+    char chStartKey = 0;
+    bool bWaitStart = true;
 
     VisualRecognition_Init(DH_Camera);    //相机初始化、图像获取、图像处理线程
 
-    while(1);
+    while(bWaitStart)
+    {
+        chStartKey = getchar();
+        switch(chStartKey)
+        {
+        case 'x':
+        case 'X':
+            bWaitStart = false;
+            break;
+        default:
+            break;
+        }
+
+    }
+
+    DH_Camera.Stop();
 
 }
