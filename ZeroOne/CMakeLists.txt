@@ -5,6 +5,15 @@ project(ZeroOne LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#设置库文件文件输出目录
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+
+#递归获取目录下所有的C文件
+file(GLOB_RECURSE c_files ${PROJECT_SOURCE_DIR}/src/*.cpp)
+
+#生成动态库
+add_library(ZeroOneVision  SHARED  ${c_files})
+
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -23,6 +32,8 @@ add_executable(${PROJECT_NAME}
     src/SolveSRPnP.cpp
     src/ModulesDetect.cpp
     )
+
+
 
 #设置opencv的位置
 #set(OpenCV_DIR /home/nvidia/opencv/new_build)

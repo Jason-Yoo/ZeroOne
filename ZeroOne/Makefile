@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named ZeroOneVision
+
+# Build rule for target.
+ZeroOneVision: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ZeroOneVision
+.PHONY : ZeroOneVision
+
+# fast build rule for target.
+ZeroOneVision/fast:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/build
+.PHONY : ZeroOneVision/fast
+
+#=============================================================================
 # Target rules for targets named ZeroOne
 
 # Build rule for target.
@@ -129,6 +142,7 @@ src/BoxProcess.o: src/BoxProcess.cpp.o
 
 # target to build an object file
 src/BoxProcess.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/BoxProcess.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o
 .PHONY : src/BoxProcess.cpp.o
 
@@ -138,6 +152,7 @@ src/BoxProcess.i: src/BoxProcess.cpp.i
 
 # target to preprocess a source file
 src/BoxProcess.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/BoxProcess.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.i
 .PHONY : src/BoxProcess.cpp.i
 
@@ -147,6 +162,7 @@ src/BoxProcess.s: src/BoxProcess.cpp.s
 
 # target to generate assembly for a file
 src/BoxProcess.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/BoxProcess.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.s
 .PHONY : src/BoxProcess.cpp.s
 
@@ -156,6 +172,7 @@ src/DHCamera.o: src/DHCamera.cpp.o
 
 # target to build an object file
 src/DHCamera.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/DHCamera.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o
 .PHONY : src/DHCamera.cpp.o
 
@@ -165,6 +182,7 @@ src/DHCamera.i: src/DHCamera.cpp.i
 
 # target to preprocess a source file
 src/DHCamera.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/DHCamera.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i
 .PHONY : src/DHCamera.cpp.i
 
@@ -174,6 +192,7 @@ src/DHCamera.s: src/DHCamera.cpp.s
 
 # target to generate assembly for a file
 src/DHCamera.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/DHCamera.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s
 .PHONY : src/DHCamera.cpp.s
 
@@ -183,6 +202,7 @@ src/ModulesDetect.o: src/ModulesDetect.cpp.o
 
 # target to build an object file
 src/ModulesDetect.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/ModulesDetect.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o
 .PHONY : src/ModulesDetect.cpp.o
 
@@ -192,6 +212,7 @@ src/ModulesDetect.i: src/ModulesDetect.cpp.i
 
 # target to preprocess a source file
 src/ModulesDetect.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/ModulesDetect.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.i
 .PHONY : src/ModulesDetect.cpp.i
 
@@ -201,6 +222,7 @@ src/ModulesDetect.s: src/ModulesDetect.cpp.s
 
 # target to generate assembly for a file
 src/ModulesDetect.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/ModulesDetect.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.s
 .PHONY : src/ModulesDetect.cpp.s
 
@@ -210,6 +232,7 @@ src/SRPnP.o: src/SRPnP.cpp.o
 
 # target to build an object file
 src/SRPnP.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SRPnP.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o
 .PHONY : src/SRPnP.cpp.o
 
@@ -219,6 +242,7 @@ src/SRPnP.i: src/SRPnP.cpp.i
 
 # target to preprocess a source file
 src/SRPnP.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SRPnP.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i
 .PHONY : src/SRPnP.cpp.i
 
@@ -228,6 +252,7 @@ src/SRPnP.s: src/SRPnP.cpp.s
 
 # target to generate assembly for a file
 src/SRPnP.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SRPnP.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s
 .PHONY : src/SRPnP.cpp.s
 
@@ -237,6 +262,7 @@ src/SolveSRPnP.o: src/SolveSRPnP.cpp.o
 
 # target to build an object file
 src/SolveSRPnP.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o
 .PHONY : src/SolveSRPnP.cpp.o
 
@@ -246,6 +272,7 @@ src/SolveSRPnP.i: src/SolveSRPnP.cpp.i
 
 # target to preprocess a source file
 src/SolveSRPnP.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i
 .PHONY : src/SolveSRPnP.cpp.i
 
@@ -255,6 +282,7 @@ src/SolveSRPnP.s: src/SolveSRPnP.cpp.s
 
 # target to generate assembly for a file
 src/SolveSRPnP.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s
 .PHONY : src/SolveSRPnP.cpp.s
 
@@ -264,6 +292,7 @@ src/math/arun.o: src/math/arun.cpp.o
 
 # target to build an object file
 src/math/arun.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o
 .PHONY : src/math/arun.cpp.o
 
@@ -273,6 +302,7 @@ src/math/arun.i: src/math/arun.cpp.i
 
 # target to preprocess a source file
 src/math/arun.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.i
 .PHONY : src/math/arun.cpp.i
 
@@ -282,6 +312,7 @@ src/math/arun.s: src/math/arun.cpp.s
 
 # target to generate assembly for a file
 src/math/arun.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.s
 .PHONY : src/math/arun.cpp.s
 
@@ -291,6 +322,7 @@ src/math/roots.o: src/math/roots.cpp.o
 
 # target to build an object file
 src/math/roots.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o
 .PHONY : src/math/roots.cpp.o
 
@@ -300,6 +332,7 @@ src/math/roots.i: src/math/roots.cpp.i
 
 # target to preprocess a source file
 src/math/roots.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.i
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.i
 .PHONY : src/math/roots.cpp.i
 
@@ -309,6 +342,7 @@ src/math/roots.s: src/math/roots.cpp.s
 
 # target to generate assembly for a file
 src/math/roots.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.s
 	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.s
 .PHONY : src/math/roots.cpp.s
 
@@ -319,8 +353,9 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... ZeroOne"
 	@echo "... edit_cache"
+	@echo "... ZeroOneVision"
+	@echo "... ZeroOne"
 	@echo "... src/BoxProcess.o"
 	@echo "... src/BoxProcess.i"
 	@echo "... src/BoxProcess.s"
