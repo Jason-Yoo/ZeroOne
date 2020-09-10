@@ -34,20 +34,24 @@ void BoxProcess::GetimagePoints(DHCamera & DH_Camera , int16_t VisionMessage[])
     VisionMessage[2] = 0x90;
     VisionMessage[3] = 0xA1;
     VisionMessage[4] = 0xA3;
-    VisionMessage[5] = 0x01;
+    VisionMessage[5] = 0x01; //ID
     uint num = 6;
+    int16_t sum=0;
     for(uint i = 0 ; i < 7 ; i++)
     {
-        VisionMessage[num]   = 0;
-        VisionMessage[num+1] = int16_t(DH_Camera.Modules_Detect.ImagePoint[i].x);
-        VisionMessage[num+2] = 0;
-        VisionMessage[num+3] = int16_t(DH_Camera.Modules_Detect.ImagePoint[i].y);
-        num = num+4;
+        VisionMessage[num]   = int16_t(DH_Camera.Modules_Detect.ImagePoint[i].x);
+        VisionMessage[num+1] = int16_t(DH_Camera.Modules_Detect.ImagePoint[i].y);
+
+        sum =  sum+ VisionMessage[num]+ VisionMessage[num+1];
+        num = num+2;
         cout<<"imagePoints "<< i << " =" << DH_Camera.Modules_Detect.ImagePoint[i] <<endl;
 
     }
-    VisionMessage[32] = 1;//01 pingfang
-    for(uint i = 0 ; i < 33; i++)
+    VisionMessage[19] = 1;  //01 pingfang
+    VisionMessage[20] = sum;
+    VisionMessage[21] = 0;
+    VisionMessage[22] = 0x0d;
+    for(uint i = 0 ; i < 23; i++)
     {
          cout<<"VisionMessage "<< i << " =" << int16_t(VisionMessage[i]) <<endl;
     }
@@ -82,7 +86,7 @@ int main()
     DHCamera  DH_Camera;
     char chStartKey = 0;
     bool bWaitStart = true;
-    int16_t VisionMessage[33] = {0};
+    int16_t VisionMessage[23] = {0};
     Box_Process.VisualRecognition_Init(DH_Camera);    //相机初始化、图像获取、图像处理线程
 
     while(bWaitStart)

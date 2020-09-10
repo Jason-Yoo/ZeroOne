@@ -214,10 +214,9 @@ Point ModulesDetect::find_connected(Mat &binary_img)    //无损滤波
 
     //去除过小区域，初始化颜色表
     vector<uchar> colors(nccomps);
-    vector<int> Area_line;
     colors[0] = 0; // background pixels remain black.
 
-    vector<int> tgt_lables;
+
     int  area_min = 300;
     for (int j = 0; j < stats.rows; j++)  //x0,y0,width,height,area
     {
@@ -236,11 +235,6 @@ Point ModulesDetect::find_connected(Mat &binary_img)    //无损滤波
             colors[j]=0;
             continue;
         }
-//        if (wh_ratio > 4)
-//        {
-//            colors[j]=0;
-//            continue;
-//        }
         colors[j] = 255;
 //        tgt_lables.push_back(j);
     }
@@ -882,10 +876,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
     vector<Rect> boundRect(contours.size());
     vector<RotatedRect> box(contours.size());
     Point2f rect[4];
-    //cout << "strat_for_soon" << endl;
-    //char width[20], height[20];
     float angle_rotation;
-    float angle_rotation1;
     int d_x;
     int d_y;
     String sd_x,sd_y;
