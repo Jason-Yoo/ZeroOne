@@ -801,11 +801,11 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vecto
 }
 
 
-int ModulesDetect::dcBluebox_Detection(Mat &srcImage)
+int ModulesDetect::dcBluebox_Detection(Mat &srcImage,vector<Point2f> &Image_Point)
 {
 
     RotatedRect TargetRoi;
-    vector<Point2f> Image_Point;
+   // vector<Point2f> Image_Point;
     float AngleRotation;
     int d_x,d_y,Boxcenter_x,Boxcenter_y;
     String sd_x,sd_y,sBoxcenter_x,sBoxcenter_y,sAngleRotation;
@@ -910,10 +910,6 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
         circle(srcImage, Point(rect[3].x, rect[3].y), 3, Scalar(79, 79, 79), 8);
         line(srcImage,  Point(640,512),  Point(box[0].center.x, box[0].center.y), Scalar(0, 0, 255), 2, 8);
         //rectangle(dstImg, Point(boundRect[i].x, boundRect[i].y), Point(boundRect[i].x + boundRect[i].width, boundRect[i].y + boundRect[i].height), Scalar(0, 255, 0), 2, 8);
-        for (int j = 0; j < 4; j++)
-        {
-            line(srcImage, rect[j], rect[(j + 1) % 4], Scalar(0, 0, 255), 2, 8);
-        }
 
         //z_s是左上，z_x是左下，y_s是右上，y_x是右下，zx_x是中心x值，zx_y是中心y值
         String z_s_x,z_s_y,z_x_x,z_x_y,y_s_x,y_s_y,y_x_x,y_x_y,zx_x,zx_y;
@@ -937,6 +933,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
 
         sd_x = std::to_string(d_x);
         sd_y = std::to_string(d_y);
+
 
         if ((box[0].size.width / box[0].size.height) < 1)
         {
@@ -979,8 +976,8 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
         {
             String angle1;
 
-            angle_rotation1 = box[0].angle; //负数，顺时针旋
-            angle1=std::to_string(float(angle_rotation1));
+            angle_rotation = box[0].angle; //负数，顺时针旋
+            angle1=std::to_string(float(angle_rotation));
             putText(srcImage, "angle1", Point2f(100, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
             putText(srcImage, angle1,  Point2f(250, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
 
@@ -1011,6 +1008,15 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
             putText(srcImage, sd_y,  Point2f(340, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
       }
+
+        for (int j = 1; j < 5; j++)
+        {
+            ImagePoint[j]  = Point(rect[j-1].x, rect[j-1].y);
+            line(srcImage, rect[j-1], rect[(j) % 4], Scalar(0, 0, 255), 2, 8);
+        }
+        ImagePoint[0]  = Point(box[0].center.x, box[0].center.y);
+        ImagePoint[5]  = Point(d_x, d_y);
+        ImagePoint[6]  = Point(angle_rotation, 0);
 
     }
     return 0;

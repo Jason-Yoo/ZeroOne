@@ -43,16 +43,17 @@ DHCamera::DHCamera()
     g_pRgbBuffer[1] = NULL;
     updated = false;
 
+
     //相机内参数
-    Mat_<double> cameraMatrix(3, 3);
-    double fx = 736.1196;
-    double fy = 739.3896;
-    double Cx = 648.7056;
-    double Cy = 512.9957;
-    cameraMatrix << fx, 0, Cx, 0, fy, Cy, 0, 0, 1;
-    //畸变系数;
-    Mat_<double> distCoeffs(1, 5);
-    distCoeffs << -0.2972, 0.0742, 0.00000, -0.00000, 0.00000;
+//    Mat_<double> cameraMatrix(3, 3);
+//    double fx = 736.1196;
+//    double fy = 739.3896;
+//    double Cx = 648.7056;
+//    double Cy = 512.9957;
+//    cameraMatrix << fx, 0, Cx, 0, fy, Cy, 0, 0, 1;
+//    //畸变系数;
+//    Mat_<double> distCoeffs(1, 5);
+//    distCoeffs << -0.2972, 0.0742, 0.00000, -0.00000, 0.00000;
 }
 
 //   ××××××××××××相机初始化××××××××××××××××××××××   //
@@ -234,7 +235,6 @@ int DHCamera::Read()
 //****************开始图像处理****************************//
 int DHCamera::ProcessFrame()
 {
-    cout << "in chu li" << endl;
     //   ×××××××××××××××××××××××××××图像处理线程×××××××××××××××××××××××× //
     int nRet = pthread_create(&g_ImageProcessThreadID, NULL, ImageProcess, this);
     if(nRet != 0)
@@ -255,20 +255,16 @@ int DHCamera::ProcessFrame()
 void *ImageProcess(void* image)      // 图像处理线程函数
 {
     DHCamera *DH_camera = (DHCamera *)image;
-
+   // ModulesDetect        Modules_Detect;
     //Thread running flag setup
     DH_camera->g_ImageProcessFlag = true;      //线程运行标志启动
-    ModulesDetect Modules_Detect;
-    Modules_Detect.ROI_TrackFlag = false;
+    DH_camera->Modules_Detect.ROI_TrackFlag = false;
+  //  Modules_Detect.ROI_TrackFlag = false;
+
 
     //*******************
     int sockfd;
-    int counter = 0;  //  给陈舟用作调试用
     int port_out = 12322;
-
-    // 设置图片传输相关参数
-
-
     // 创建socket
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if(-1==sockfd){
@@ -286,14 +282,22 @@ void *ImageProcess(void* image)      // 图像处理线程函数
 
     while(DH_camera->g_ImageProcessFlag)
     {
+
+
         if(DH_camera->src_image.data)
         {
             Mat srcimage(DH_camera->src_image);
 
             double t = (double)getTickCount();
-            Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
+            DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
+            //Modules_Detect.Bluebox_Detection(srcimage,Image_Point);   //输入为原始图像，输出为位姿
             t = ((double)getTickCount() - t) / getTickFrequency();
          //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
+//            for(uint i = 0 ; i < Image_Point.size();i++)
+//            {
+//                DH_camera->Modules_Detect.ImagePoint[i] = Image_Point[i];
+//            }
+
 
             double fps = 1.0/t ;
             char string[10];      // 用于存放帧率的字符串
@@ -338,17 +342,19 @@ void *ImageProcess(void* image)      // 图像处理线程函数
             }
             memset(&sendData,0,sizeof(sendData));
 
-            namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
-            imshow("DH_camera:",srcimage);
-            waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
-
-
+            if(DH_camera->g_ImageShowFlag)
+            {
+                namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
+                imshow("DH_camera:",srcimage);
+                waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
+            }
 
         }
         else
         {
             printf("<Image data is NULL,Please check the Image get process!>\n");
         }
+
     }
     close(sockfd);
     printf("<ImageProcess thread Exit!>\n");
@@ -362,7 +368,6 @@ void *ProcGetImage(void* pParam)
 {
 
     DHCamera *DH_camera = (DHCamera *)pParam;
-    ModulesDetect Modules_Detect;
     GX_STATUS emStatus = GX_STATUS_SUCCESS;
 
     //Thread running flag setup
@@ -478,6 +483,7 @@ int DHCamera::UnPreForAcquisition()
 
 int DHCamera::Stop()
 {
+    printf("<DHCamera  Stop  process!>\n");
 
     //Stop Acquisition thread
     g_bAcquisitionFlag = false;

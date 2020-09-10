@@ -14,6 +14,9 @@ file(GLOB_RECURSE c_files ${PROJECT_SOURCE_DIR}/src/*.cpp)
 #生成动态库
 add_library(ZeroOneVision  SHARED  ${c_files})
 
+INSTALL (TARGETS ZeroOneVision ZeroOneVision LIBRARY DESTINATION lib)
+
+
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations

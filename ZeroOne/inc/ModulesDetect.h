@@ -45,6 +45,7 @@ class ModulesDetect
     Mat detect_frame;
     bool ROI_TrackFlag;
     Rect ROI_TrackRect;
+    Point2f ImagePoint[20];
 
 
     bool is_stand,is_parallel;
@@ -54,7 +55,7 @@ class ModulesDetect
 
     int  RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vector<Point2f> &Image_Point);
     int  Bluebox_Detection(Mat &srcImage);
-    int  dcBluebox_Detection(Mat &srcImage);
+    int  dcBluebox_Detection(Mat &srcImage,vector<Point2f> &Image_Point);
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
     int  Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );

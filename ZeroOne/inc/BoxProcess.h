@@ -21,11 +21,22 @@
 using namespace std;
 using namespace cv;
 
-class BlueBox
+class BoxProcess
 {
 
+public:
+
+  int VisualRecognition_Init(DHCamera &DH_Camera);
+  void GetimagePoints(DHCamera &DH_Camera ,int16_t VisionMessage[]);
+  void GetboxPosition(DHCamera &DH_Camera ,Point3d  boxPosition);
+  int  GetCamareStop(DHCamera &DH_Camera);
+  void GetImageshow(DHCamera &DH_Camera);
+  void GetImage0ff(DHCamera &DH_Camera);
 
 };
+
+
+
 
 #endif // BOXPROCESS_H
 

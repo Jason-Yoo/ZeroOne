@@ -20,6 +20,8 @@ class DHCamera {
 
 public:
 
+    ModulesDetect             Modules_Detect;
+
     uint32_t                  ui32DeviceNum = 0;
     uint32_t                  ui32FPS = 0;
 
@@ -34,6 +36,8 @@ public:
 
     bool                      g_ImageProcessFlag = false;
     pthread_t                 g_ImageProcessThreadID = 1;
+
+    bool                      g_ImageShowFlag = false;
 
     unsigned char*            g_pRGBImageBuf = NULL;               ///< Memory for RAW8toRGB24
     unsigned char*            g_pRaw8Image = NULL;                 ///< Memory for RAW16toRAW8
@@ -50,39 +54,38 @@ public:
     mutex                   mutex1;
     IplImage                * iplImage = NULL;
     Mat                      src_image;
+    Point3d                 BoxPosition;
 
-    vector<Point3d>          BoxPosition{vector<Point3d>(2)};;
+    // Mat_<double>            cameraMatrix;
+    // Mat_<double>            distCoeffs;
 
-   // Mat_<double>            cameraMatrix;
-   // Mat_<double>            distCoeffs;
+    int    Init();
+    int    Play();
+    int    Read();
+    int    Stop();
+    int    Uninit();
+    int    SetExposureTime(bool auto_exp, double exp_time = 10000);
+    double GetExposureTime();
+    int    SetLargeResolution(bool if_large_resolution);
+    Size   GetResolution();
+    int    SetGain(double gain);
+    double GetGain();
+    int    SetWBMode(bool auto_wb = true);
+    int    GetWBMode(bool & auto_wb);
+    int    SetOnceWB();
+    int    ProcessFrame();
+    int    Set_fps(int fps_mode);
+    int    PreForAcquisition();
+    int    UnPreForAcquisition();
 
-  int    Init();
-  int    Play();
-  int    Read();
-  int    Stop();
-  int    Uninit();
-  int    SetExposureTime(bool auto_exp, double exp_time = 10000);
-  double GetExposureTime();
-  int    SetLargeResolution(bool if_large_resolution);
-  Size   GetResolution();
-  int    SetGain(double gain);
-  double GetGain();
-  int    SetWBMode(bool auto_wb = true);
-  int    GetWBMode(bool & auto_wb);
-  int    SetOnceWB();
-  int    ProcessFrame();
-  int    Set_fps(int fps_mode);
-  int    PreForAcquisition();
-  int    UnPreForAcquisition();
-
-  void   GetErrorString(GX_STATUS emErrorStatus);
-
+    void   GetErrorString(GX_STATUS emErrorStatus);
 
 
-  GX_STATUS GX_VERIFY(GX_STATUS emStatus);
-  GX_STATUS GX_VERIFY_EXIT(GX_STATUS emStatus);
 
-  DHCamera();
+    GX_STATUS GX_VERIFY(GX_STATUS emStatus);
+    GX_STATUS GX_VERIFY_EXIT(GX_STATUS emStatus);
+
+    DHCamera();
 
 };
 
