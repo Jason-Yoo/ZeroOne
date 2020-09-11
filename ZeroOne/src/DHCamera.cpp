@@ -100,7 +100,8 @@ int DHCamera::Init()
         GXCloseLib();
         return emStatus;
     }
-    printf("DONE\n");
+    printf("Open first device\n");
+
 
     //Get the type of Bayer conversion. whether is a color camera.
     // 查询当前相机是否支持某功能
@@ -170,16 +171,99 @@ int DHCamera::Init()
     GX_VERIFY_EXIT(emStatus);
 
     //Set  GAMMA
-    emStatus = GXSetBool(g_hDevice, GX_BOOL_GAMMA_ENABLE, true);
-    GX_GAMMA_MODE_ENTRY nValue;
-    nValue = GX_GAMMA_SELECTOR_USER;
-    emStatus = GXSetEnum(g_hDevice, GX_ENUM_GAMMA_MODE, nValue);
-    double dColorParam = 1;
-    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_GAMMA_PARAM, dColorParam);
+//    emStatus = GXSetBool(g_hDevice, GX_BOOL_GAMMA_ENABLE, true);
+//    GX_GAMMA_MODE_ENTRY nValue;
+//    nValue = GX_GAMMA_SELECTOR_USER;
+//    emStatus = GXSetEnum(g_hDevice, GX_ENUM_GAMMA_MODE, nValue);
+//    double dColorParam = 1;
+//    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_GAMMA_PARAM, dColorParam);
 
 
     //Allocate the memory for pixel format transform
     PreForAcquisition();
+
+    if(ui32DeviceNum >= 2)
+    {
+        // 打开第2个设备
+        emStatus = GXOpenDeviceByIndex(2, &g2_hDevice);
+        if(emStatus != GX_STATUS_SUCCESS)
+        {
+            GetErrorString(emStatus);
+            GXCloseLib();
+            return emStatus;
+        }
+        printf("Open second device\n");
+
+        // 查询当前相机是否支持某功能
+        emStatus = GXIsImplemented(g2_hDevice, GX_ENUM_PIXEL_COLOR_FILTER, &g2_bColorFilter);
+        GX_VERIFY_EXIT(emStatus);
+
+        //This app only support color cameras
+        if (!g2_bColorFilter)
+        {
+            printf("<This app only support color cameras! App Exit!>\n");
+            GXCloseDevice(g2_hDevice);
+            g2_hDevice = NULL;
+            GXCloseLib();
+            return 0;
+        }
+        else
+        {     //若当前设备为彩色相机
+            emStatus = GXGetEnum(g2_hDevice, GX_ENUM_PIXEL_COLOR_FILTER, &g2_i64ColorFilter);   //获取当前枚举值
+            GX_VERIFY_EXIT(emStatus);
+        }
+
+        emStatus = GXGetInt(g2_hDevice, GX_INT_PAYLOAD_SIZE, &g2_nPayloadSize);
+        GX_VERIFY(emStatus);
+
+        //Set acquisition mode
+        emStatus = GXSetEnum(g2_hDevice, GX_ENUM_ACQUISITION_MODE, GX_ACQ_MODE_CONTINUOUS);   // 设置枚举值
+        GX_VERIFY_EXIT(emStatus);
+
+        //Set trigger mode
+        emStatus = GXSetEnum(g2_hDevice, GX_ENUM_TRIGGER_MODE, GX_TRIGGER_MODE_OFF);
+        GX_VERIFY_EXIT(emStatus);
+
+        //Set buffer quantity of acquisition queue
+        uint64_t nBufferNum = ACQ_BUFFER_NUM;
+        emStatus = GXSetAcqusitionBufferNumber(g2_hDevice, nBufferNum);   // 设置采集 buffer 个数
+        GX_VERIFY_EXIT(emStatus);
+
+        //查询某功能码当前是否可写
+        //GX_DS_INT_STREAM_TRANSFER_SIZE  USB3 Vision相机传输时每个数据块的
+        bool bStreamTransferSize = false;
+        emStatus = GXIsImplemented(g2_hDevice, GX_DS_INT_STREAM_TRANSFER_SIZE, &bStreamTransferSize);
+        GX_VERIFY_EXIT(emStatus);
+
+        if(bStreamTransferSize)
+        {
+            //Set size of data transfer block
+            emStatus = GXSetInt(g2_hDevice, GX_DS_INT_STREAM_TRANSFER_SIZE, ACQ_TRANSFER_SIZE);
+            GX_VERIFY_EXIT(emStatus);
+        }
+
+        bool bStreamTransferNumberUrb = false;
+        emStatus = GXIsImplemented(g2_hDevice, GX_DS_INT_STREAM_TRANSFER_NUMBER_URB, &bStreamTransferNumberUrb);
+        GX_VERIFY_EXIT(emStatus);
+
+        if(bStreamTransferNumberUrb)
+        {
+            //Set qty. of data transfer block
+            emStatus = GXSetInt(g2_hDevice, GX_DS_INT_STREAM_TRANSFER_NUMBER_URB, ACQ_TRANSFER_NUMBER_URB);
+            GX_VERIFY_EXIT(emStatus);
+        }
+        GX_VERIFY_EXIT(emStatus);
+        //Set  Exposure
+       // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
+        emStatus = GXSetEnum(g2_hDevice,GX_ENUM_BALANCE_WHITE_AUTO,GX_BALANCE_WHITE_AUTO_CONTINUOUS);   //设 置 连 续 自 动 白 平 衡
+        emStatus = GXSetEnum(g2_hDevice, GX_ENUM_EXPOSURE_AUTO, GX_EXPOSURE_AUTO_CONTINUOUS);
+        GX_VERIFY_EXIT(emStatus);
+
+        //分配内存
+        g2_pRGBImageBuf = new unsigned char[g_nPayloadSize * 3];
+        g2_pRaw8Image = new unsigned char[g_nPayloadSize];
+
+    }
 
 }
 
@@ -208,7 +292,6 @@ int DHCamera::Read()
     emStatus = GXGetInt(g_hDevice,GX_INT_HEIGHT,&height);
     src_image.create(height,width,CV_8UC3);
 
-
     int nRet = pthread_create(&g_nAcquisitonThreadID, NULL, ProcGetImage, this);
     if(nRet != 0)
     {
@@ -220,12 +303,60 @@ int DHCamera::Read()
         g_hDevice = NULL;
         GXCloseLib();     //关闭设备库,释放资源。当停止 GxIAPI 对设备进行的所有控制之后,必须调用此接口来释放资源,与GXInitLib 对应。
 
-        printf("<Failed to create the acquisition thread, App Exit!>\n");
+        printf("<Failed to create the acquisition g_hDevice thread, App Exit!>\n");
         exit(nRet);
     }
     else
     {
-        printf("<Create the acquisition thread is successful, App Exit!>\n");
+        printf("<Create the acquisition g_hDevice thread is successful, App Exit!>\n");
+
+    }
+
+    if(g2_hDevice != NULL)
+    {
+        //Device start acquisition
+        emStatus = GXStreamOn(g2_hDevice);   // 开采,包括流开采和设备开采。  [in] g_hDevice 设备句柄
+        if(emStatus != GX_STATUS_SUCCESS)
+        {
+            //Release the memory allocated
+            // 释放已经分配的内存
+            if (g2_pRGBImageBuf != NULL)
+            {
+                delete[] g2_pRGBImageBuf;
+                g2_pRGBImageBuf = NULL;
+            }
+            GX_VERIFY_EXIT(emStatus);
+        }
+
+        int64_t width,height;
+        emStatus = GXGetInt(g2_hDevice,GX_INT_WIDTH,&width);
+        emStatus = GXGetInt(g2_hDevice,GX_INT_HEIGHT,&height);
+        src_image2.create(height,width,CV_8UC3);
+
+        int nRet = pthread_create(&g2_nAcquisitonThreadID, NULL, ProcGetImage2, this);
+        if(nRet != 0)
+        {
+            //Release the memory allocated
+            // 释放已经分配的内存
+            if (g2_pRGBImageBuf != NULL)
+            {
+                delete[] g2_pRGBImageBuf;
+                g2_pRGBImageBuf = NULL;
+            }
+
+            GXCloseDevice(g2_hDevice);
+            g2_hDevice = NULL;
+            GXCloseLib();     //关闭设备库,释放资源。当停止 GxIAPI 对设备进行的所有控制之后,必须调用此接口来释放资源,与GXInitLib 对应。
+
+            printf("<Failed to create the acquisition g2_hDevice thread, App Exit!>\n");
+            exit(nRet);
+        }
+        else
+        {
+            printf("<Create the acquisition g2_hDevice thread is successful, App Exit!>\n");
+
+        }
+
 
     }
 
@@ -251,6 +382,68 @@ int DHCamera::ProcessFrame()
     return 0;
 
 }
+//int DHCamera::Gammaprocess()
+//{
+//    //获 取 Gamma 调 节 参 数
+//    double dGammaParam;
+//    VxUint16 nLutLength;
+//    emStatus = GXGetFloat (g_hDevice,GX_FLOAT_GAMMA_PARAM, &dGammaParam);
+//    if (emStatus != GX_STATUS_SUCCESS)
+//    {
+//        return 0;
+//    }
+//    do
+//    {
+//        //获 取 Gamma 查 找 表 的 长 度
+//        VxInt32 DxStatus= DxGetGammaLut(dGammaParam, NULL, &nLutLength);
+//        if (DxStatus != DX_OK)
+//        {
+//            break;
+//        }
+//        //为 Gamma 查 找 表 申 请 空 间
+//        pGammaLut = new BYTE[nLutLength];
+//        if (pGammaLut== NULL)
+//        {
+//            DxStatus= DX_NOT_ENOUGH_SYSTEM_MEMORY;
+//            break;
+//        }
+//        //计 算 Gamma 查 找 表
+//        DxStatus = DxGetGammaLut(dGammaParam, pGammaLut, &nLutLength);
+//        if (DxStatus != DX_OK)
+//        {
+//            break;
+//        }
+
+//    }while(0);
+//    //设 置 查 找 表 失 败 , 释 放 资 源
+//    if (nStatus != DX_OK)
+//    {
+//    if (pGammaLut != NULL)
+//    {
+//    delete[] m_pGammaLut;
+//    pGammaLut = NULL;
+//    }
+//    if(pContrastLut != NULL)
+//    {
+//    delete[] pContrastLut;
+//    pContrastLut = NULL;
+//    }
+//    return;
+//    }
+//    //提 升 图 像 的 质 量
+//    DxStatus = DxImageImprovment(pInputBuffer,pOutputBuffer,nWidth,nHeight,
+//    nColorCorrectionParam, pContrastLut, pGammaLut);
+//    if (pGammaLut!= NULL)
+//    {
+//    delete []pGammaLut;
+//    pGammaLut= NULL;
+//    }
+//    if (pContrastLut!= NULL)
+//    {
+//    delete []pContrastLut;
+//    pContrastLut = NULL;
+//    }
+//}
 
 void *ImageProcess(void* image)      // 图像处理线程函数
 {
@@ -276,7 +469,7 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     socklen_t          addr_len=sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port   = htons(port_out);
-    addr.sin_addr.s_addr = inet_addr("192.168.101.163");
+    addr.sin_addr.s_addr = inet_addr("192.168.101.88");
     //pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;//创建互斥锁并初始化
     //pthread_mutex_lock(&g_ImageProcessThreadID);//对线程上锁，此时其他线程阻塞等待该线程释放锁
 
@@ -290,14 +483,8 @@ void *ImageProcess(void* image)      // 图像处理线程函数
 
             double t = (double)getTickCount();
             DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
-            //Modules_Detect.Bluebox_Detection(srcimage,Image_Point);   //输入为原始图像，输出为位姿
             t = ((double)getTickCount() - t) / getTickFrequency();
          //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
-//            for(uint i = 0 ; i < Image_Point.size();i++)
-//            {
-//                DH_camera->Modules_Detect.ImagePoint[i] = Image_Point[i];
-//            }
-
 
             double fps = 1.0/t ;
             char string[10];      // 用于存放帧率的字符串
@@ -344,8 +531,8 @@ void *ImageProcess(void* image)      // 图像处理线程函数
 
             if(DH_camera->g_ImageShowFlag)
             {
-                namedWindow("DH_camera:",CV_WINDOW_AUTOSIZE);
-                imshow("DH_camera:",srcimage);
+                namedWindow("DH_camera1:",CV_WINDOW_AUTOSIZE);
+                imshow("DH_camera1:",srcimage);
                 waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
             }
 
@@ -353,6 +540,14 @@ void *ImageProcess(void* image)      // 图像处理线程函数
         else
         {
             printf("<Image data is NULL,Please check the Image get process!>\n");
+        }
+
+        if(DH_camera->src_image2.data)
+        {
+            namedWindow("DH_camera2",CV_WINDOW_AUTOSIZE);
+            imshow("DH_camera2",DH_camera->src_image2);
+            waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
+
         }
 
     }
@@ -418,7 +613,7 @@ void *ProcGetImage(void* pParam)
             if (lEnd - lInit >= 1)
             {
 
-                printf("<Successful acquisition: FrameCount: %u Width: %d Height: %d FrameID: %lu>\n",
+                printf("<Successful  src_image1  acquisition: FrameCount: %u Width: %d Height: %d FrameID: %lu>\n",
                        ui32FrameCount, pFrameBuffer->nWidth, pFrameBuffer->nHeight, pFrameBuffer->nFrameID);
                 ui32FrameCount = 0;
 
@@ -441,7 +636,80 @@ void *ProcGetImage(void* pParam)
 }
 //  ×××××××××××××××××××××××××××××××××××××××××××××××××××  //
 
+// *****************图片获取线程******************** //
+void *ProcGetImage2(void* pParam)
+{
 
+    DHCamera *DH_camera = (DHCamera *)pParam;
+    GX_STATUS emStatus = GX_STATUS_SUCCESS;
+
+    //Thread running flag setup
+    DH_camera->g2_bAcquisitionFlag = true;
+    PGX_FRAME_BUFFER pFrameBuffer = NULL;
+
+    time_t lInit;
+    time_t lEnd;
+    uint32_t ui32FrameCount = 0;
+
+    while(DH_camera->g2_bAcquisitionFlag)
+    {
+        if(!ui32FrameCount)
+        {
+            time(&lInit);
+        }
+        // Get a frame from Queue
+        // 从队列中读取一帧
+        emStatus = GXDQBuf(DH_camera->g2_hDevice, &pFrameBuffer, 1000);   //在开始采集之后,通过此接口可以获取一副图像(零拷贝)
+        if(emStatus != GX_STATUS_SUCCESS)
+        {
+            if (emStatus == GX_STATUS_TIMEOUT)
+            {
+                continue;
+            }
+            else
+            {
+                DH_camera->GetErrorString(emStatus);
+                break;
+            }
+        }
+
+        if(pFrameBuffer->nStatus != GX_FRAME_STATUS_SUCCESS)
+        {
+            printf("<Abnormal Acquisition: Exception code: %d>\n", pFrameBuffer->nStatus);
+        }
+
+        else
+        {
+            // 图像获取成功
+            ui32FrameCount++;
+            time (&lEnd);
+
+            // Image process        DxRaw8toRGB24:该函数用于将 Bayer 图像转换为 RGB 图像。
+            DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g2_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
+            memcpy( DH_camera->src_image2.data, DH_camera->g2_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
+            // Print acquisition info each second.
+            if (lEnd - lInit >= 1)
+            {
+
+                printf("<Successful src_image2 acquisition: FrameCount: %u Width: %d Height: %d FrameID: %lu>\n",
+                       ui32FrameCount, pFrameBuffer->nWidth, pFrameBuffer->nHeight, pFrameBuffer->nFrameID);
+                ui32FrameCount = 0;
+
+            }
+
+        }
+
+        emStatus = GXQBuf(DH_camera->g2_hDevice, pFrameBuffer);     //调 用 GXQBuf 将 图 像 buf 放 回 库 中 继 续 采 图
+        if(emStatus != GX_STATUS_SUCCESS)
+        {
+
+            DH_camera->GetErrorString(emStatus);
+            break;
+        }
+
+    }
+    printf("<Acquisition thread2 Exit!>\n");
+}
 
 
 //-------------------------------------------------
@@ -493,6 +761,33 @@ int DHCamera::Stop()
     g_ImageProcessFlag = false;
     pthread_join(g_ImageProcessThreadID, NULL);
 
+
+    //Stop Acquisition thread2
+    if(g2_bAcquisitionFlag = true)
+    {
+        g2_bAcquisitionFlag = false;
+        pthread_join(g2_nAcquisitonThreadID, NULL);
+
+        //Device stop acquisition
+        emStatus = GXStreamOff(g2_hDevice);
+        if(emStatus != GX_STATUS_SUCCESS)
+        {
+            //Release the memory allocated
+            UnPreForAcquisition();
+            GX_VERIFY_EXIT(emStatus);
+        }
+
+        emStatus = GXCloseDevice(g2_hDevice);
+        if(emStatus != GX_STATUS_SUCCESS)
+        {
+            GetErrorString(emStatus);
+            g_hDevice = NULL;
+            GXCloseLib();
+            return emStatus;
+        }
+
+    }
+
     //
     destroyAllWindows();
 
@@ -525,6 +820,7 @@ int DHCamera::Stop()
         GetErrorString(emStatus);
         return emStatus;
     }
+
 
     printf("<App exit!>\n");
     return 0;

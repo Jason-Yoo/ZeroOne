@@ -26,8 +26,10 @@ public:
     uint32_t                  ui32FPS = 0;
 
     GX_STATUS                 emStatus;
+    GX_DEV_HANDLE             g_hDevice = NULL;                           ///< Device handle
+    GX_DEV_HANDLE             g2_hDevice = NULL;                           ///< Device handle
 
-    GX_DEV_HANDLE             g_hDevice = NULL;                     ///< Device handle
+    //camera first
     bool                      g_bColorFilter = false;                        ///< Color filter support flag
     int64_t                   g_i64ColorFilter = GX_COLOR_FILTER_NONE;    ///< Color filter of device
 
@@ -39,11 +41,29 @@ public:
 
     bool                      g_ImageShowFlag = false;
 
+    //camera second
+    bool                      g2_bColorFilter = false;                        ///< Color filter support flag
+    int64_t                   g2_i64ColorFilter = GX_COLOR_FILTER_NONE;    ///< Color filter of device
+
+    bool                      g2_bAcquisitionFlag = false;                    ///< Thread running flag
+    pthread_t                 g2_nAcquisitonThreadID = 2;                ///< Thread ID of Acquisition thread
+
+    bool                      g2_ImageProcessFlag = false;
+    pthread_t                 g2_ImageProcessThreadID = 3;
+
+    bool                      g2_ImageShowFlag = false;
+
+
     unsigned char*            g_pRGBImageBuf = NULL;               ///< Memory for RAW8toRGB24
     unsigned char*            g_pRaw8Image = NULL;                 ///< Memory for RAW16toRAW8
 
+    unsigned char*            g2_pRGBImageBuf = NULL;               ///< Memory for RAW8toRGB24
+    unsigned char*            g2_pRaw8Image = NULL;                 ///< Memory for RAW16toRAW8
+
 
     int64_t                   g_nPayloadSize = 0;                         ///< Payload size
+    int64_t                   g2_nPayloadSize = 0;                         ///< Payload size
+
 
     unsigned char           * pbyBuffer=NULL;
     unsigned char           * g_pRgbBuffer[2];     //处理后数据缓存区
@@ -51,9 +71,11 @@ public:
     bool                    updated;
     bool                    started=0;
     bool                    g_bSaveVedioFlag=false;
-    mutex                   mutex1;
-    IplImage                * iplImage = NULL;
+
+
     Mat                      src_image;
+    Mat                      src_image2;
+
     Point3d                 BoxPosition;
 
     // Mat_<double>            cameraMatrix;
@@ -77,6 +99,7 @@ public:
     int    Set_fps(int fps_mode);
     int    PreForAcquisition();
     int    UnPreForAcquisition();
+    int    Gammaprocess();
 
     void   GetErrorString(GX_STATUS emErrorStatus);
 
@@ -90,6 +113,7 @@ public:
 };
 
 void *ProcGetImage(void* pParam);           //图像获取线程函数
+void *ProcGetImage2(void* pParam);           //图像获取线程函数
 void *ImageProcess(void* image);            //图像处理线程函数
 
 

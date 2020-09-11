@@ -13,7 +13,6 @@ cv::Mat gamma_correction(cv::Mat img, double gamma_c, double gamma_g){
   int width = img.cols;
   int height = img.rows;
   int channel = img.channels();
-
   // output image
   cv::Mat out = cv::Mat::zeros(height, width, CV_8UC3);
 
@@ -147,7 +146,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
     vector<Mat> imgChannels;
     split(srcImage, imgChannels);
     Mat red_channel = imgChannels.at(2);
-    Mat green_channel = imgChannels.at(1);
+  //  Mat green_channel = imgChannels.at(1);
     Mat blue_channel = imgChannels.at(0);
     Mat mid_channel=blue_channel-red_channel;
 
@@ -171,9 +170,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
       int iHighV = 255;
       Mat HSVImage;
 
-        //MyGammaCorrection(srcImage , fGamma);
-      //circle(srcImage, Point(srcImage.cols/ 2, srcImage.rows / 2), 150, Scalar(255, 0, 0),200);
-      cvtColor(srcImage, HSVImage, COLOR_BGR2HSV);    //将RGB图像转化为HSV
+     cvtColor(srcImage, HSVImage, COLOR_BGR2HSV);    //将RGB图像转化为HSV
 
       inRange(HSVImage,Scalar(iLowH,iLowS,iLowV),Scalar(iHighH,iHighS,iHighV),dstImage);     //找寻在要求区间内的颜色,Binarization
       // inRange：二值化，主要是将在两个阈值内的像素值设置为白色（255），而不在阈值区间内的像素值设置为黑色（0），该功能类似于之间所讲的双阈值化操作。
@@ -182,7 +179,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
       if(Otsu(dstImage,g_Otsu))
          cout<<"ModulesDetect->Otsu process failed"<< endl;
 
-      threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);   //利用Otsu求得的阈值g_Otsu进行二值化
+  //    threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);   //利用Otsu求得的阈值g_Otsu进行二值化
 
   }
   //imshow("Otsu process ",dstImage);
