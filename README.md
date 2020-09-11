@@ -14,6 +14,18 @@ ZeroOne for image process at daheng camera
 
 2020.09.10  Fix UDP And Targrt ZeroOneVision LIBRARY 
 
+Cmakelist Example:
+
+target_link_libraries(${PROJECT_NAME}
+
+    /lib/libZeroOneVision.so
+
+    libpthread.so
+
+    libgxiapi.so
+
+    )
+
 User Init:
 
 BoxProcess Box_Process; //图像处理类定义

@@ -88,6 +88,7 @@ int main()
     bool bWaitStart = true;
     int16_t VisionMessage[23] = {0};
     Box_Process.VisualRecognition_Init(DH_Camera);    //相机初始化、图像获取、图像处理线程
+    Box_Process.GetImageshow(DH_Camera);
 
     while(bWaitStart)
     {
