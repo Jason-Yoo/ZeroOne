@@ -1,4 +1,4 @@
-system required
+System Required:
 
 ubuntu 16.04
 
@@ -6,13 +6,17 @@ opencv 3.3
 
 daheng_camera_driver
 
-Eigen 
+Eigen Library
 
-ZeroOne for image process at daheng camera 
+Updatelist:
+
+2020.03.25  ZeroOne for image process at daheng camera 
 
 2020.09.07  Add UDP For Image  Transmission
 
 2020.09.10  Fix UDP And Targrt ZeroOneVision LIBRARY 
+
+2020.09.15  Add Second Camera for process
 
 Cmakelist Example:
 
