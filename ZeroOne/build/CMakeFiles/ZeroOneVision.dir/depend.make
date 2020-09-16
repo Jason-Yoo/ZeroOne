@@ -574,11 +574,11 @@ CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o: /usr/local/include/opencv2/vi
 CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o: /usr/local/include/opencv2/videostab/stabilizer.hpp
 CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o: /usr/local/include/opencv2/videostab/wobble_suppression.hpp
 
-CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o: ../inc/arun.hpp
-CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o: ../inc/types.hpp
-CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o: ../src/math/arun.cpp
+CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o: ../inc/arun.hpp
+CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o: ../inc/types.hpp
+CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o: ../src/arun.cpp
 
-CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o: ../inc/roots.hpp
-CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o: ../inc/types.hpp
-CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o: ../src/math/roots.cpp
+CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o: ../inc/roots.hpp
+CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o: ../inc/types.hpp
+CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o: ../src/roots.cpp
 

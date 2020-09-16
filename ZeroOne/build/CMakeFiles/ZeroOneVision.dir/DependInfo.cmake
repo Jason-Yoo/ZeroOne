@@ -9,16 +9,16 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/ModulesDetect.cpp.o"
   "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/SRPnP.cpp.o"
   "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o"
-  "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o"
-  "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o"
+  "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/arun.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o"
+  "/home/nvidia/Desktop/ZeroOne/ZeroOne/src/roots.cpp" "/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../ZeroOne"
-  "../inc"
   "/usr/include/eigen3/Eigen"
+  "../inc"
   "/usr/local/include"
   "/usr/local/include/opencv"
   )

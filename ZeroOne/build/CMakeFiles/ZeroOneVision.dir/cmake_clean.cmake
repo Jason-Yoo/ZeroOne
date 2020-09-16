@@ -4,8 +4,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ZeroOneVision.dir/src/ModulesDetect.cpp.o"
   "CMakeFiles/ZeroOneVision.dir/src/SRPnP.cpp.o"
   "CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o"
-  "CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o"
-  "CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o"
+  "CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o"
+  "CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o"
   "../lib/libZeroOneVision.pdb"
   "../lib/libZeroOneVision.so"
 )

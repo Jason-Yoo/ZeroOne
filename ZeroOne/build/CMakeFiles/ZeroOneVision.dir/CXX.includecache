@@ -224,11 +224,11 @@ iostream
 SolveSRPnP.h
 -
 
-/home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/arun.cpp
 arun.hpp
 -
 
-/home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp
+/home/nvidia/Desktop/ZeroOne/ZeroOne/src/roots.cpp
 roots.hpp
 -
 complex

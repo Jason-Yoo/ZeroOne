@@ -574,11 +574,11 @@ CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.o
  /usr/local/include/opencv2/videostab/ring_buffer.hpp
  /usr/local/include/opencv2/videostab/stabilizer.hpp
  /usr/local/include/opencv2/videostab/wobble_suppression.hpp
-CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o
+CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o
  ../inc/arun.hpp
  ../inc/types.hpp
- /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp
-CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o
+ /home/nvidia/Desktop/ZeroOne/ZeroOne/src/arun.cpp
+CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o
  ../inc/roots.hpp
  ../inc/types.hpp
- /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp
+ /home/nvidia/Desktop/ZeroOne/ZeroOne/src/roots.cpp

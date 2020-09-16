@@ -574,11 +574,11 @@ CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: /usr/local/include/opencv2/videosta
 CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: /usr/local/include/opencv2/videostab/stabilizer.hpp
 CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: /usr/local/include/opencv2/videostab/wobble_suppression.hpp
 
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o: ../inc/arun.hpp
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o: ../inc/types.hpp
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o: ../src/math/arun.cpp
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o: ../inc/arun.hpp
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o: ../inc/types.hpp
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o: ../src/arun.cpp
 
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o: ../inc/roots.hpp
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o: ../inc/types.hpp
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o: ../src/math/roots.cpp
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o: ../inc/roots.hpp
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o: ../inc/types.hpp
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o: ../src/roots.cpp
 

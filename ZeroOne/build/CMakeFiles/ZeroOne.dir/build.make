@@ -57,42 +57,18 @@ include CMakeFiles/ZeroOne.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/ZeroOne.dir/flags.make
 
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: ../src/DHCamera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp
-
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp > CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i
-
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp -o CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s
-
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires:
-
-.PHONY : CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires
-
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides.build
-.PHONY : CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides
-
-CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o
-
-
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o: ../src/BoxProcess.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp
 
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp > CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp > CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.i
 
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp -o CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/BoxProcess.cpp -o CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.s
 
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o.requires:
 
@@ -105,114 +81,42 @@ CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o.provides: CMakeFiles/ZeroOne.dir/src
 CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o
 
 
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o: ../src/SRPnP.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o: ../src/DHCamera.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp
 
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp > CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp > CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.i
 
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp -o CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/DHCamera.cpp -o CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.s
 
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires:
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires:
 
-.PHONY : CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires
+.PHONY : CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires
 
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides.build
-.PHONY : CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides.build
+.PHONY : CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides
 
-CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o
-
-
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o: ../src/math/arun.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp
-
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/math/arun.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp > CMakeFiles/ZeroOne.dir/src/math/arun.cpp.i
-
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/math/arun.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/arun.cpp -o CMakeFiles/ZeroOne.dir/src/math/arun.cpp.s
-
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.requires:
-
-.PHONY : CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.requires
-
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.requires
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.provides.build
-.PHONY : CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.provides
-
-CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o
-
-
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o: ../src/math/roots.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp
-
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/math/roots.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp > CMakeFiles/ZeroOne.dir/src/math/roots.cpp.i
-
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/math/roots.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/math/roots.cpp -o CMakeFiles/ZeroOne.dir/src/math/roots.cpp.s
-
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.requires:
-
-.PHONY : CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.requires
-
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.requires
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.provides.build
-.PHONY : CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.provides
-
-CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o
-
-
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: ../src/SolveSRPnP.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp
-
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp > CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i
-
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp -o CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s
-
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires:
-
-.PHONY : CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires
-
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides.build
-.PHONY : CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides
-
-CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o
+CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o
 
 
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o: ../src/ModulesDetect.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp
 
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp > CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp > CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.i
 
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp -o CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/ModulesDetect.cpp -o CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.s
 
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o.requires:
 
@@ -225,26 +129,122 @@ CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o.provides: CMakeFiles/ZeroOne.dir/
 CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o
 
 
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o: ../src/SRPnP.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp
+
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp > CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.i
+
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SRPnP.cpp -o CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.s
+
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires:
+
+.PHONY : CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires
+
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides.build
+.PHONY : CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides
+
+CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o
+
+
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o: ../src/SolveSRPnP.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp
+
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp > CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.i
+
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/SolveSRPnP.cpp -o CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.s
+
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires:
+
+.PHONY : CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires
+
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides.build
+.PHONY : CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides
+
+CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o
+
+
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o: ../src/arun.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/ZeroOne.dir/src/arun.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/arun.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/arun.cpp
+
+CMakeFiles/ZeroOne.dir/src/arun.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/arun.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/arun.cpp > CMakeFiles/ZeroOne.dir/src/arun.cpp.i
+
+CMakeFiles/ZeroOne.dir/src/arun.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/arun.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/arun.cpp -o CMakeFiles/ZeroOne.dir/src/arun.cpp.s
+
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o.requires:
+
+.PHONY : CMakeFiles/ZeroOne.dir/src/arun.cpp.o.requires
+
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/arun.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/arun.cpp.o.provides.build
+.PHONY : CMakeFiles/ZeroOne.dir/src/arun.cpp.o.provides
+
+CMakeFiles/ZeroOne.dir/src/arun.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/arun.cpp.o
+
+
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o: CMakeFiles/ZeroOne.dir/flags.make
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o: ../src/roots.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/ZeroOne.dir/src/roots.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ZeroOne.dir/src/roots.cpp.o -c /home/nvidia/Desktop/ZeroOne/ZeroOne/src/roots.cpp
+
+CMakeFiles/ZeroOne.dir/src/roots.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ZeroOne.dir/src/roots.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/nvidia/Desktop/ZeroOne/ZeroOne/src/roots.cpp > CMakeFiles/ZeroOne.dir/src/roots.cpp.i
+
+CMakeFiles/ZeroOne.dir/src/roots.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ZeroOne.dir/src/roots.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/nvidia/Desktop/ZeroOne/ZeroOne/src/roots.cpp -o CMakeFiles/ZeroOne.dir/src/roots.cpp.s
+
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o.requires:
+
+.PHONY : CMakeFiles/ZeroOne.dir/src/roots.cpp.o.requires
+
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o.provides: CMakeFiles/ZeroOne.dir/src/roots.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/roots.cpp.o.provides.build
+.PHONY : CMakeFiles/ZeroOne.dir/src/roots.cpp.o.provides
+
+CMakeFiles/ZeroOne.dir/src/roots.cpp.o.provides.build: CMakeFiles/ZeroOne.dir/src/roots.cpp.o
+
+
 # Object files for target ZeroOne
 ZeroOne_OBJECTS = \
-"CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o" \
 "CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o" \
+"CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o" \
+"CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o" \
 "CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o" \
-"CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o" \
-"CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o" \
 "CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o" \
-"CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o"
+"CMakeFiles/ZeroOne.dir/src/arun.cpp.o" \
+"CMakeFiles/ZeroOne.dir/src/roots.cpp.o"
 
 # External object files for target ZeroOne
 ZeroOne_EXTERNAL_OBJECTS =
 
-ZeroOne: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o
 ZeroOne: CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o
-ZeroOne: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o
-ZeroOne: CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o
-ZeroOne: CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o
-ZeroOne: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o
+ZeroOne: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o
 ZeroOne: CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o
+ZeroOne: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o
+ZeroOne: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o
+ZeroOne: CMakeFiles/ZeroOne.dir/src/arun.cpp.o
+ZeroOne: CMakeFiles/ZeroOne.dir/src/roots.cpp.o
 ZeroOne: CMakeFiles/ZeroOne.dir/build.make
 ZeroOne: /usr/local/lib/libopencv_dnn.so.3.4.8
 ZeroOne: /usr/local/lib/libopencv_highgui.so.3.4.8
@@ -272,13 +272,13 @@ CMakeFiles/ZeroOne.dir/build: ZeroOne
 
 .PHONY : CMakeFiles/ZeroOne.dir/build
 
-CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires
 CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/BoxProcess.cpp.o.requires
-CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires
-CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o.requires
-CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o.requires
-CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires
+CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/DHCamera.cpp.o.requires
 CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/ModulesDetect.cpp.o.requires
+CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/SRPnP.cpp.o.requires
+CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/SolveSRPnP.cpp.o.requires
+CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/arun.cpp.o.requires
+CMakeFiles/ZeroOne.dir/requires: CMakeFiles/ZeroOne.dir/src/roots.cpp.o.requires
 
 .PHONY : CMakeFiles/ZeroOne.dir/requires
 

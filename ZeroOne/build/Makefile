@@ -332,65 +332,65 @@ src/SolveSRPnP.cpp.s:
 	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/SolveSRPnP.cpp.s
 .PHONY : src/SolveSRPnP.cpp.s
 
-src/math/arun.o: src/math/arun.cpp.o
+src/arun.o: src/arun.cpp.o
 
-.PHONY : src/math/arun.o
-
-# target to build an object file
-src/math/arun.cpp.o:
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.o
-	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.o
-.PHONY : src/math/arun.cpp.o
-
-src/math/arun.i: src/math/arun.cpp.i
-
-.PHONY : src/math/arun.i
-
-# target to preprocess a source file
-src/math/arun.cpp.i:
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.i
-	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.i
-.PHONY : src/math/arun.cpp.i
-
-src/math/arun.s: src/math/arun.cpp.s
-
-.PHONY : src/math/arun.s
-
-# target to generate assembly for a file
-src/math/arun.cpp.s:
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/arun.cpp.s
-	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/arun.cpp.s
-.PHONY : src/math/arun.cpp.s
-
-src/math/roots.o: src/math/roots.cpp.o
-
-.PHONY : src/math/roots.o
+.PHONY : src/arun.o
 
 # target to build an object file
-src/math/roots.cpp.o:
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.o
-	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.o
-.PHONY : src/math/roots.cpp.o
+src/arun.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/arun.cpp.o
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/arun.cpp.o
+.PHONY : src/arun.cpp.o
 
-src/math/roots.i: src/math/roots.cpp.i
+src/arun.i: src/arun.cpp.i
 
-.PHONY : src/math/roots.i
+.PHONY : src/arun.i
 
 # target to preprocess a source file
-src/math/roots.cpp.i:
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.i
-	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.i
-.PHONY : src/math/roots.cpp.i
+src/arun.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/arun.cpp.i
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/arun.cpp.i
+.PHONY : src/arun.cpp.i
 
-src/math/roots.s: src/math/roots.cpp.s
+src/arun.s: src/arun.cpp.s
 
-.PHONY : src/math/roots.s
+.PHONY : src/arun.s
 
 # target to generate assembly for a file
-src/math/roots.cpp.s:
-	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/math/roots.cpp.s
-	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/math/roots.cpp.s
-.PHONY : src/math/roots.cpp.s
+src/arun.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/arun.cpp.s
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/arun.cpp.s
+.PHONY : src/arun.cpp.s
+
+src/roots.o: src/roots.cpp.o
+
+.PHONY : src/roots.o
+
+# target to build an object file
+src/roots.cpp.o:
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/roots.cpp.o
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/roots.cpp.o
+.PHONY : src/roots.cpp.o
+
+src/roots.i: src/roots.cpp.i
+
+.PHONY : src/roots.i
+
+# target to preprocess a source file
+src/roots.cpp.i:
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/roots.cpp.i
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/roots.cpp.i
+.PHONY : src/roots.cpp.i
+
+src/roots.s: src/roots.cpp.s
+
+.PHONY : src/roots.s
+
+# target to generate assembly for a file
+src/roots.cpp.s:
+	$(MAKE) -f CMakeFiles/ZeroOne.dir/build.make CMakeFiles/ZeroOne.dir/src/roots.cpp.s
+	$(MAKE) -f CMakeFiles/ZeroOneVision.dir/build.make CMakeFiles/ZeroOneVision.dir/src/roots.cpp.s
+.PHONY : src/roots.cpp.s
 
 # Help Target
 help:
@@ -421,12 +421,12 @@ help:
 	@echo "... src/SolveSRPnP.o"
 	@echo "... src/SolveSRPnP.i"
 	@echo "... src/SolveSRPnP.s"
-	@echo "... src/math/arun.o"
-	@echo "... src/math/arun.i"
-	@echo "... src/math/arun.s"
-	@echo "... src/math/roots.o"
-	@echo "... src/math/roots.i"
-	@echo "... src/math/roots.s"
+	@echo "... src/arun.o"
+	@echo "... src/arun.i"
+	@echo "... src/arun.s"
+	@echo "... src/roots.o"
+	@echo "... src/roots.i"
+	@echo "... src/roots.s"
 .PHONY : help
 
 
