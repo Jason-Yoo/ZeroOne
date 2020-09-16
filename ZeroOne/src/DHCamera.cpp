@@ -651,7 +651,7 @@ void *ProcGetImage(void* pParam)
 
             // Image process        DxRaw8toRGB24:该函数用于将 Bayer 图像转换为 RGB 图像。
             DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
-           // DH_camera->Gammaprocess();
+            DH_camera->Gammaprocess();
             memcpy( DH_camera->src_image.data, DH_camera->g_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
 
             // Print acquisition info each second.
