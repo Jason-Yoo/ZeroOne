@@ -171,13 +171,12 @@ int DHCamera::Init()
     GX_VERIFY_EXIT(emStatus);
 
     //Set  GAMMA
-//    emStatus = GXSetBool(g_hDevice, GX_BOOL_GAMMA_ENABLE, true);
-//    GX_GAMMA_MODE_ENTRY nValue;
-//    nValue = GX_GAMMA_SELECTOR_USER;
-//    emStatus = GXSetEnum(g_hDevice, GX_ENUM_GAMMA_MODE, nValue);
-//    double dColorParam = 1;
-//    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_GAMMA_PARAM, dColorParam);
-
+    emStatus = GXSetBool(g_hDevice, GX_BOOL_GAMMA_ENABLE, true);
+    GX_GAMMA_MODE_ENTRY nValue;
+    nValue = GX_GAMMA_SELECTOR_USER;
+    emStatus = GXSetEnum(g_hDevice, GX_ENUM_GAMMA_MODE, nValue);
+    double dColorParam = 0.5;
+    emStatus = GXSetFloat(g_hDevice, GX_FLOAT_GAMMA_PARAM, dColorParam);
 
     //Allocate the memory for pixel format transform
     PreForAcquisition();
@@ -258,6 +257,7 @@ int DHCamera::Init()
         emStatus = GXSetEnum(g2_hDevice,GX_ENUM_BALANCE_WHITE_AUTO,GX_BALANCE_WHITE_AUTO_CONTINUOUS);   //设 置 连 续 自 动 白 平 衡
         emStatus = GXSetEnum(g2_hDevice, GX_ENUM_EXPOSURE_AUTO, GX_EXPOSURE_AUTO_CONTINUOUS);
         GX_VERIFY_EXIT(emStatus);
+
 
         //分配内存
         g2_pRGBImageBuf = new unsigned char[g_nPayloadSize * 3];
@@ -382,68 +382,109 @@ int DHCamera::ProcessFrame()
     return 0;
 
 }
-//int DHCamera::Gammaprocess()
-//{
-//    //获 取 Gamma 调 节 参 数
-//    double dGammaParam;
-//    VxUint16 nLutLength;
-//    emStatus = GXGetFloat (g_hDevice,GX_FLOAT_GAMMA_PARAM, &dGammaParam);
-//    if (emStatus != GX_STATUS_SUCCESS)
-//    {
-//        return 0;
-//    }
-//    do
-//    {
-//        //获 取 Gamma 查 找 表 的 长 度
-//        VxInt32 DxStatus= DxGetGammaLut(dGammaParam, NULL, &nLutLength);
-//        if (DxStatus != DX_OK)
-//        {
-//            break;
-//        }
-//        //为 Gamma 查 找 表 申 请 空 间
-//        pGammaLut = new BYTE[nLutLength];
-//        if (pGammaLut== NULL)
-//        {
-//            DxStatus= DX_NOT_ENOUGH_SYSTEM_MEMORY;
-//            break;
-//        }
-//        //计 算 Gamma 查 找 表
-//        DxStatus = DxGetGammaLut(dGammaParam, pGammaLut, &nLutLength);
-//        if (DxStatus != DX_OK)
-//        {
-//            break;
-//        }
+int DHCamera::Gammaprocess()
+{
 
-//    }while(0);
-//    //设 置 查 找 表 失 败 , 释 放 资 源
-//    if (nStatus != DX_OK)
-//    {
-//    if (pGammaLut != NULL)
-//    {
-//    delete[] m_pGammaLut;
-//    pGammaLut = NULL;
-//    }
-//    if(pContrastLut != NULL)
-//    {
-//    delete[] pContrastLut;
-//    pContrastLut = NULL;
-//    }
-//    return;
-//    }
-//    //提 升 图 像 的 质 量
-//    DxStatus = DxImageImprovment(pInputBuffer,pOutputBuffer,nWidth,nHeight,
-//    nColorCorrectionParam, pContrastLut, pGammaLut);
-//    if (pGammaLut!= NULL)
-//    {
-//    delete []pGammaLut;
-//    pGammaLut= NULL;
-//    }
-//    if (pContrastLut!= NULL)
-//    {
-//    delete []pContrastLut;
-//    pContrastLut = NULL;
-//    }
-//}
+
+    //获 取 Gamma 调 节 参 数
+    double dGammaParam;
+    int nLutLength;
+    unsigned char*      pGammaLut;                ///< Gamma look up table
+
+    //获 取 对 比 度 调 节 参 数
+    int64_t nContrastParam;
+    unsigned char* pContrastLut;
+    GX_STATUS GxStatus = GXGetInt (g_hDevice, GX_INT_CONTRAST_PARAM, &nContrastParam);
+    if (GxStatus != GX_STATUS_SUCCESS)
+    {
+        return 0;
+    }
+
+    emStatus = GXGetFloat (g_hDevice,GX_FLOAT_GAMMA_PARAM, &dGammaParam);
+    if (emStatus != GX_STATUS_SUCCESS)
+    {
+        return 0;
+    }
+    do
+    {
+        //获 取 Gamma 查 找 表 的 长 度
+        VxInt32 DxStatus= DxGetGammatLut(dGammaParam, NULL, &nLutLength);
+        if (DxStatus != DX_OK)
+        {
+            break;
+        }
+        //为 Gamma 查 找 表 申 请 空 间
+        pGammaLut = new unsigned char[nLutLength];
+        if (pGammaLut== NULL)
+        {
+            DxStatus= DX_NOT_ENOUGH_SYSTEM_MEMORY;
+            break;
+        }
+        //计 算 Gamma 查 找 表
+        dGammaParam = 1.5;   //想图像亮一点改大这个值
+        DxStatus = DxGetGammatLut(dGammaParam, pGammaLut, &nLutLength);
+        if (DxStatus != DX_OK)
+        {
+            break;
+        }
+        //获 取 对 比 度 查 找 表 的 长 度
+        DxStatus= DxGetContrastLut(nContrastParam, NULL, &nLutLength);
+        if (DxStatus != DX_OK)
+        {
+            break;
+        }
+        //为 对 比 度 查 找 表 申 请 空 间
+        pContrastLut = new unsigned char[nLutLength];
+        if (pContrastLut == NULL)
+        {
+            DxStatus= DX_NOT_ENOUGH_SYSTEM_MEMORY;
+            break;
+        }
+        //计 算 对 比 度 查 找 表
+        nContrastParam = 50;  //
+        DxStatus = DxGetContrastLut(nContrastParam, pContrastLut, &nLutLength);
+        if (DxStatus != DX_OK)
+        {
+            break;
+        }
+
+        //设 置 查 找 表 失 败 , 释 放 资 源
+        if (DxStatus != DX_OK)
+        {
+            if (pGammaLut != NULL)
+            {
+                delete[] pGammaLut;
+                pGammaLut = NULL;
+            }
+            if (pContrastLut!= NULL)
+            {
+                delete []pContrastLut;
+                pContrastLut = NULL;
+            }
+
+            return 0;
+
+        }
+    }while(0);
+
+    int64_t nWidth,nHeight;
+    emStatus = GXGetInt(g_hDevice,GX_INT_WIDTH,&nWidth);
+    emStatus = GXGetInt(g_hDevice,GX_INT_HEIGHT,&nHeight);
+
+    //提 升 图 像 的 质 量
+    emStatus = DxImageImprovment(g_pRGBImageBuf,g_pRGBImageBuf,nWidth,nHeight,NULL, pContrastLut, pGammaLut);
+    if (pGammaLut!= NULL)
+    {
+        delete []pGammaLut;
+        pGammaLut= NULL;
+    }
+    if (pContrastLut!= NULL)
+    {
+        delete []pContrastLut;
+        pContrastLut = NULL;
+    }
+
+}
 
 void *ImageProcess(void* image)      // 图像处理线程函数
 {
@@ -454,6 +495,8 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     DH_camera->Modules_Detect.ROI_TrackFlag = false;
   //  Modules_Detect.ROI_TrackFlag = false;
 
+    time_t lInit;
+    time_t lEnd;
 
     //*******************
     int sockfd;
@@ -476,7 +519,7 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     while(DH_camera->g_ImageProcessFlag)
     {
 
-
+       // time(&lInit);
         if(DH_camera->src_image.data)
         {
             Mat srcimage(DH_camera->src_image);
@@ -485,7 +528,7 @@ void *ImageProcess(void* image)      // 图像处理线程函数
             DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
             t = ((double)getTickCount() - t) / getTickFrequency();
          //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
-
+          //  time (&lEnd);
             double fps = 1.0/t ;
             char string[10];      // 用于存放帧率的字符串
 
@@ -608,7 +651,9 @@ void *ProcGetImage(void* pParam)
 
             // Image process        DxRaw8toRGB24:该函数用于将 Bayer 图像转换为 RGB 图像。
             DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
+           // DH_camera->Gammaprocess();
             memcpy( DH_camera->src_image.data, DH_camera->g_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
+
             // Print acquisition info each second.
             if (lEnd - lInit >= 1)
             {

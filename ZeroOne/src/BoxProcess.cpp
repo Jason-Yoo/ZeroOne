@@ -48,8 +48,8 @@ void BoxProcess::GetimagePoints(DHCamera & DH_Camera , int16_t VisionMessage[])
 
     }
     VisionMessage[19] = 1;  //01 pingfang
-    VisionMessage[20] = sum;
-    VisionMessage[21] = 0;
+    VisionMessage[20] = 0;
+    VisionMessage[21] = sum;
     VisionMessage[22] = 0x0d;
     for(uint i = 0 ; i < 23; i++)
     {

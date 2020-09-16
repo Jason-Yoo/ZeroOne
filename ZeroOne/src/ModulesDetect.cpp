@@ -857,7 +857,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
 
     Mat srcImage1;
     srcImage.copyTo(srcImage1);
-    MyGammaCorrection(srcImage1, srcImage,fGamma);
+   // MyGammaCorrection(srcImage1, srcImage,fGamma);
 
     bgr2binary(srcImage,dstImage,2);
 

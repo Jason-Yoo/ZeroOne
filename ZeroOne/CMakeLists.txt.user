@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.5.2, 2020-09-16T17:12:30. -->
+<!-- Written by QtCreator 4.5.2, 2020-09-16T19:56:02. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -164,6 +164,7 @@
     </valuelist>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguation.Title">ZeroOne</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments"></value>
+    <value type="bool" key="CMakeProjectManager.CMakeRunConfiguration.UseTerminal">true</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory"></value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/nvidia/Desktop/ZeroOne/ZeroOne/build</value>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>

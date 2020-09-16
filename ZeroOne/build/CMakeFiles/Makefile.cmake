@@ -49,5 +49,4 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/ZeroOne.dir/DependInfo.cmake"
-  "CMakeFiles/ZeroOneVision.dir/DependInfo.cmake"
   )
