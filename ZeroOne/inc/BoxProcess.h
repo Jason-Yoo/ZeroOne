@@ -26,12 +26,16 @@ class BoxProcess
 
 public:
 
+  int BoxStage;
+
   int VisualRecognition_Init(DHCamera &DH_Camera);
   void GetimagePoints(DHCamera &DH_Camera ,int16_t VisionMessage[]);
   void GetboxPosition(DHCamera &DH_Camera ,Point3d  boxPosition);
   int  GetCamareStop(DHCamera &DH_Camera);
   void GetImageshow(DHCamera &DH_Camera);
   void GetImage0ff(DHCamera &DH_Camera);
+  void SetudpAddress(DHCamera &DH_Camera,  uint32_t address);
+  int  GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float Realdistance[],float UavHeight);
 
 };
 

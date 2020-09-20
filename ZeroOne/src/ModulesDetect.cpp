@@ -9,27 +9,27 @@
 
 // gamma correction
 cv::Mat gamma_correction(cv::Mat img, double gamma_c, double gamma_g){
-  // get height and width
-  int width = img.cols;
-  int height = img.rows;
-  int channel = img.channels();
-  // output image
-  cv::Mat out = cv::Mat::zeros(height, width, CV_8UC3);
+    // get height and width
+    int width = img.cols;
+    int height = img.rows;
+    int channel = img.channels();
+    // output image
+    cv::Mat out = cv::Mat::zeros(height, width, CV_8UC3);
 
-  double val;
+    double val;
 
-  // gamma correction
-  for (int y = 0; y< height; y++){
-    for (int x = 0; x < width; x++){
-      for (int c = 0; c < channel; c++){
-          val = (double)img.at<cv::Vec3b>(y, x)[c] / 255;
+    // gamma correction
+    for (int y = 0; y< height; y++){
+        for (int x = 0; x < width; x++){
+            for (int c = 0; c < channel; c++){
+                val = (double)img.at<cv::Vec3b>(y, x)[c] / 255;
 
-          out.at<cv::Vec3b>(y, x)[c] = (uchar)(pow(val / gamma_c, 1 / gamma_g) * 255);
-      }
+                out.at<cv::Vec3b>(y, x)[c] = (uchar)(pow(val / gamma_c, 1 / gamma_g) * 255);
+            }
+        }
     }
-  }
 
-  return out;
+    return out;
 }
 
 
@@ -47,23 +47,23 @@ void MyGammaCorrection(Mat& src, Mat& dst11, float fGamma)
     const int channels = dst11.channels();
     switch(channels)
     {
-        case 3:  //彩色图的情况
-            {
+    case 3:  //彩色图的情况
+    {
 
-                MatIterator_<Vec3b> it, end;
-                for( it = dst11.begin<Vec3b>(), end = dst11.end<Vec3b>(); it != end; it++ )
-                {
-                    //(*it)[0] = pow((float)(((*it)[0])/255.0), fGamma) * 255.0;
-                    //(*it)[1] = pow((float)(((*it)[1])/255.0), fGamma) * 255.0;
-                    //(*it)[2] = pow((float)(((*it)[2])/255.0), fGamma) * 255.0;
-                    (*it)[0] = lut[((*it)[0])];
-                    (*it)[1] = lut[((*it)[1])];
-                    (*it)[2] = lut[((*it)[2])];
-                }
+        MatIterator_<Vec3b> it, end;
+        for( it = dst11.begin<Vec3b>(), end = dst11.end<Vec3b>(); it != end; it++ )
+        {
+            //(*it)[0] = pow((float)(((*it)[0])/255.0), fGamma) * 255.0;
+            //(*it)[1] = pow((float)(((*it)[1])/255.0), fGamma) * 255.0;
+            //(*it)[2] = pow((float)(((*it)[2])/255.0), fGamma) * 255.0;
+            (*it)[0] = lut[((*it)[0])];
+            (*it)[1] = lut[((*it)[1])];
+            (*it)[2] = lut[((*it)[2])];
+        }
 
-                break;
+        break;
 
-            }
+    }
     }
 }
 
@@ -121,7 +121,7 @@ int ModulesDetect::Otsu(Mat &srcImage , int &threshold)  // 输入为原图像�
             threshold = i;
         }
     }
-   // cout<<"gray threthold is "<< threshold << endl;
+    // cout<<"gray threthold is "<< threshold << endl;
     return 0;
 }
 
@@ -134,58 +134,58 @@ int ModulesDetect::Otsu(Mat &srcImage , int &threshold)  // 输入为原图像�
 ///
 int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
 {
- // cout<<"ModulesDetect->bgr2binary process is begin"<< endl;
+    // cout<<"ModulesDetect->bgr2binary process is begin"<< endl;
 
 
 
-  if (srcImage.empty())
+    if (srcImage.empty())
+        return 0;
+    if(method==1)
+    {
+        //method 1: split channels and substract
+        vector<Mat> imgChannels;
+        split(srcImage, imgChannels);
+        Mat red_channel = imgChannels.at(2);
+        //  Mat green_channel = imgChannels.at(1);
+        Mat blue_channel = imgChannels.at(0);
+        Mat mid_channel=blue_channel-red_channel;
+
+        int g_Otsu=0;
+        if(Otsu(mid_channel,g_Otsu))
+            cout<<"ModulesDetect->Otsu process failed"<< endl;
+
+        threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+    }
+
+    else
+    {
+        //蓝色的HSV范围
+        int iLowH = 100;
+        int iHighH = 124;
+
+        int iLowS = 43;
+        int iHighS = 255;
+
+        int iLowV = 46;
+        int iHighV = 255;
+        Mat HSVImage;
+
+        cvtColor(srcImage, HSVImage, COLOR_BGR2HSV);    //将RGB图像转化为HSV
+
+        inRange(HSVImage,Scalar(iLowH,iLowS,iLowV),Scalar(iHighH,iHighS,iHighV),dstImage);     //找寻在要求区间内的颜色,Binarization
+        // inRange：二值化，主要是将在两个阈值内的像素值设置为白色（255），而不在阈值区间内的像素值设置为黑色（0），该功能类似于之间所讲的双阈值化操作。
+
+        int g_Otsu=0;
+        if(Otsu(dstImage,g_Otsu))
+            cout<<"ModulesDetect->Otsu process failed"<< endl;
+
+        //    threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);   //利用Otsu求得的阈值g_Otsu进行二值化
+
+    }
+    //imshow("Otsu process ",dstImage);
+    // cout<<"ModulesDetect->bgr2binary process successful"<< endl;
+
     return 0;
-  if(method==1)
-  {
-    //method 1: split channels and substract
-    vector<Mat> imgChannels;
-    split(srcImage, imgChannels);
-    Mat red_channel = imgChannels.at(2);
-  //  Mat green_channel = imgChannels.at(1);
-    Mat blue_channel = imgChannels.at(0);
-    Mat mid_channel=blue_channel-red_channel;
-
-    int g_Otsu=0;
-    if(Otsu(mid_channel,g_Otsu))
-    cout<<"ModulesDetect->Otsu process failed"<< endl;
-
-    threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
-  }
-
- else
-  {
-      //蓝色的HSV范围
-      int iLowH = 100;
-      int iHighH = 124;
-
-      int iLowS = 43;
-      int iHighS = 255;
-
-      int iLowV = 46;
-      int iHighV = 255;
-      Mat HSVImage;
-
-     cvtColor(srcImage, HSVImage, COLOR_BGR2HSV);    //将RGB图像转化为HSV
-
-      inRange(HSVImage,Scalar(iLowH,iLowS,iLowV),Scalar(iHighH,iHighS,iHighV),dstImage);     //找寻在要求区间内的颜色,Binarization
-      // inRange：二值化，主要是将在两个阈值内的像素值设置为白色（255），而不在阈值区间内的像素值设置为黑色（0），该功能类似于之间所讲的双阈值化操作。
-
-      int g_Otsu=0;
-      if(Otsu(dstImage,g_Otsu))
-         cout<<"ModulesDetect->Otsu process failed"<< endl;
-
-  //    threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);   //利用Otsu求得的阈值g_Otsu进行二值化
-
-  }
-  //imshow("Otsu process ",dstImage);
- // cout<<"ModulesDetect->bgr2binary process successful"<< endl;
-
-  return 0;
 }
 
 ///
@@ -196,10 +196,10 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
 ///
 float ModulesDetect::GetPixelLength(Point PixelPointA, Point PixelPointB)
 {
-  float PixelLength;
-  PixelLength = powf((PixelPointA.x - PixelPointB.x), 2) + powf((PixelPointA.y - PixelPointB.y), 2);
-  PixelLength = sqrtf(PixelLength);
-  return PixelLength;
+    float PixelLength;
+    PixelLength = powf((PixelPointA.x - PixelPointB.x), 2) + powf((PixelPointA.y - PixelPointB.y), 2);
+    PixelLength = sqrtf(PixelLength);
+    return PixelLength;
 }
 
 /// \brief ModulesDetect::find_connected 连通域分析
@@ -219,8 +219,8 @@ Point ModulesDetect::find_connected(Mat &binary_img)    //无损滤波
     {
         int unit_x = stats.at<int>(j,0) ,unit_y= stats.at<int>(j,1);
         int area = stats.at<int>(j,4);
-//        int width = stats.at<int>(j,2), height = stats.at<int>(j,3);
-//        float wh_ratio = float(width) / float(height);
+        //        int width = stats.at<int>(j,2), height = stats.at<int>(j,3);
+        //        float wh_ratio = float(width) / float(height);
 
         if (unit_x==0 && unit_y == 0) //background
         {
@@ -233,7 +233,7 @@ Point ModulesDetect::find_connected(Mat &binary_img)    //无损滤波
             continue;
         }
         colors[j] = 255;
-//        tgt_lables.push_back(j);
+        //        tgt_lables.push_back(j);
     }
 
     img_color = Mat::zeros(binary_img.size(), CV_8UC1);
@@ -349,13 +349,14 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
     //参数5：定义轮廓的近似方法，CV_CHAIN_APPROX_NONE：保存物体边界上所有连续的轮廓点到contours向量内；
 
     if(contours.size()<=0)
-          return 0;
+        return 0;
 
     for (int i = 0; i < contours.size(); i++)
     {
         std::sort(contours.begin(), contours.end(), ContoursSortFun);
         break;
     }
+
     uint Maxboxnum = 0;
     if(contours.size()<=3)
         Maxboxnum = contours.size();
@@ -365,9 +366,9 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
     vector<Rect> box(contours.size()); //定义最小外接矩形集合
     for(uint i = 0; i < Maxboxnum; i++)
     {
-         box[i] = boundingRect(contours[i]);
+        box[i] = boundingRect(contours[i]);
     }
- /*   for (uint i = 0; i < Maxboxnum; i++)
+    /*   for (uint i = 0; i < Maxboxnum; i++)
     {
         LeafInfo leafInfo;
         leafInfo.ellipseRect = fitEllipse(contours[i]);  //椭圆拟合
@@ -501,20 +502,36 @@ int ModulesDetect::RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angl
     return 1;
 
 }
+float ModulesDetect::PointDistance(Point2f &Image_StartPoint ,Point2f &Image_EndPoint ,float DHcameradx, float UavHeight)
+{
+    if(DHcameradx > 0)
+    {
+        float disK = UavHeight/DHcameradx;
+        float PixelDistance01  = GetPixelLength(Image_StartPoint,Image_EndPoint);
+        float WorldDistance = PixelDistance01 * disK;
+        return WorldDistance;
+    }
+    else
+    {
+        printf("get PointDistance is error, please check");
+        return 0;
+    }
+
+}
 //The camera is parallel to the box
-int ModulesDetect::judgeBoxState(vector<Point2f> &Image_Point , float UavHeight)
+int ModulesDetect::judgeBoxState(Point2f Image_Point[] , float UavHeight)
 {
     float DHcameraDx = 736;
-    is_stand = 0;
-    is_parallel = 0;
+    is_stand = false;
+    is_parallel = false;
 
     int   BoxlengthMax =100; //100cm
     int   BoxlengthMid =50;  //50cm
-    int   BoxlengthMin =25;  //25cm
+    //  int   BoxlengthMin =25;  //25cm
 
     float disK = UavHeight/DHcameraDx;
-    float PixelDistance01  = GetPixelLength(Image_Point[0],Image_Point[1]);
-    float PixelDistance12  = GetPixelLength(Image_Point[1],Image_Point[2]);
+    float PixelDistance01  = GetPixelLength(Image_Point[1],Image_Point[2]);
+    float PixelDistance12  = GetPixelLength(Image_Point[2],Image_Point[3]);
 
     float WorldDistance = 0;
     if(PixelDistance01 > PixelDistance12)
@@ -522,10 +539,11 @@ int ModulesDetect::judgeBoxState(vector<Point2f> &Image_Point , float UavHeight)
     else
         WorldDistance  = PixelDistance12 * disK;
 
-    if( WorldDistance >= BoxlengthMax*0.9 && WorldDistance <= BoxlengthMax*1.1)
-        is_parallel = 1;
-    if( WorldDistance >= BoxlengthMid*0.9 && WorldDistance <= BoxlengthMid*1.1)
-        is_stand = 1;
+    if( WorldDistance >= BoxlengthMid*0.8 && WorldDistance <= BoxlengthMid*1.2)
+        is_stand =  true;
+    else
+        is_parallel = true;
+
     return 1;
 }
 //寻找箱子角点
@@ -536,7 +554,7 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
     Target_Roi.points(RotateRect_point);
     RotateRect_center = Point(Target_Roi.center.x, Target_Roi.center.y);
     double RotateRect_degree = Target_Roi.angle;
-   // cout << "RotateRect_degree: "  << RotateRect_degree << endl;
+    // cout << "RotateRect_degree: "  << RotateRect_degree << endl;
     //Mat RotateRect_rotm = getRotationMatrix2D(RotateRect_center, RotateRect_degree, 1.0);
 
     //use the RotateRect_point as image point
@@ -558,8 +576,8 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
     {
         Image_Point.push_back(RotateRect_point[i]);
     }
-        Image_Point.push_back(RotateRect_center);
-        Image_Point.push_back(Point((float)RotateRect_degree,0));
+    Image_Point.push_back(RotateRect_center);
+    Image_Point.push_back(Point((float)RotateRect_degree,0));
 
 
 
@@ -589,7 +607,7 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
         }
 
     }
- 
+
 
     //For ROI Image
     Rect Target_Rect = Target_Roi.boundingRect();
@@ -606,7 +624,7 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
         Target_Rect.height = srcImage.rows-Target_Rect.y-1;
     }
     //blue rect box in srcImage
-  
+
     Mat rect_check = srcImage(Target_Rect);
     Mat ROI_image;
     Mat V2Image;
@@ -627,14 +645,14 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
 
     goodFeaturesToTrack(V2Image, corners, maxcorners, qualityLevel, minDistance, Mat(), blockSize, false, k);
     //Mat():表示感兴趣区域；false:表示不用Harris角点检测
-     Point2f ROI_RotateRectCenter;
-     ROI_RotateRectCenter.x = RotateRect_center.x-Target_Rect.x;
-     ROI_RotateRectCenter.y = RotateRect_center.y-Target_Rect.y;
-     int MinDistanceLU = 1000;
-     int MinDistanceLD = 1000;
-     int MinDistanceRU = 1000;
-     int MinDistanceRD = 1000;
-     Point2f Imagepoint_corners[4];
+    Point2f ROI_RotateRectCenter;
+    ROI_RotateRectCenter.x = RotateRect_center.x-Target_Rect.x;
+    ROI_RotateRectCenter.y = RotateRect_center.y-Target_Rect.y;
+    int MinDistanceLU = 1000;
+    int MinDistanceLD = 1000;
+    int MinDistanceRU = 1000;
+    int MinDistanceRD = 1000;
+    Point2f Imagepoint_corners[4];
     //find best four points in corners
     for (unsigned i = 0; i < corners.size(); i++)
     {
@@ -706,10 +724,10 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
     for (unsigned i = 0; i <4; i++)
     {
         //cout<<"distance "<< i << " =" << distance_error[i] <<endl;
-       // cout<<"distance "<< i << " =" << Imagepoint_corners[i] <<endl;
-      //  if(distance_error[i] <= 5)
+        // cout<<"distance "<< i << " =" << Imagepoint_corners[i] <<endl;
+        //  if(distance_error[i] <= 5)
         //points not change after the distance change
-       // circle(rect_check, Imagepoint_corners[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
+        // circle(rect_check, Imagepoint_corners[i], 5, cv::Scalar(0, 0, 255), 2, 8, 0);
 
     }
 
@@ -749,21 +767,19 @@ void contrast(Mat &srcImage1,Mat &srcImage)
 ///
 int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vector<Point2f> &Image_Point)
 {
-   // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
+    // cout<<"ModulesDetect->RecognitionFailure process is begin"<< endl;
 
     Mat grayImage;
-  //  RotatedRect TargetRoi;
+    //  RotatedRect TargetRoi;
     int Targer_Flag = 0;
 
 
     if(bgr2binary(srcImage,grayImage,2))
-     cout<<"ModulesDetect->bgr2binary process failed"<< endl;
+        cout<<"ModulesDetect->bgr2binary process failed"<< endl;
     //连接连通域
     static Mat kernel_close = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1, -1));
     morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
-
     find_connected(grayImage);
-    detect_frame = grayImage;
 
     Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
     if(Targer_Flag)
@@ -782,27 +798,26 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vecto
         {
             line(srcImage, TargetRoi_Points[j], TargetRoi_Points[(j + 1) % 4], Scalar(0, 0, 255), 2, 8);  //绘制最小外接矩形每条边
         }
+
         return 1;
     }
     else
     {
-          // cout<<"Hard to find the TargetRoi,please check Get_TargrtRoi process"<< endl;
+        // cout<<"Hard to find the TargetRoi,please check Get_TargrtRoi process"<< endl;
     }
     return 0;
 }
 
 
-int ModulesDetect::dcBluebox_Detection(Mat &srcImage,vector<Point2f> &Image_Point)
+int ModulesDetect::dcBluebox_Detection(Mat &srcImage)
 {
 
-    RotatedRect TargetRoi;
-   // vector<Point2f> Image_Point;
+    RotatedRect     TargetRoi;
+    vector<Point2f> Image_Point;
     float AngleRotation;
     int d_x,d_y,Boxcenter_x,Boxcenter_y;
     String sd_x,sd_y,sBoxcenter_x,sBoxcenter_y,sAngleRotation;
 
-
-    circle(srcImage, Point(640,512), 3, Scalar(0, 255, 0), 8);
     if(RecognitionFailure(srcImage,TargetRoi,Image_Point))
     {
         Boxcenter_x = int(Image_Point[4].x);
@@ -811,9 +826,9 @@ int ModulesDetect::dcBluebox_Detection(Mat &srcImage,vector<Point2f> &Image_Poin
         line(srcImage,  Point(640,512),  Point(Image_Point[4].x, Image_Point[4].y), Scalar(0, 0, 255), 2, 8);
         d_x = int(Image_Point[4].x)-640;
         d_y = int(Image_Point[4].y)-512;
-      
+
         // solve pnp problem
-       // Calculate_RT(Image_Point, BoxPosition);
+        // Calculate_RT(Image_Point, BoxPosition);
     }
     else
     {
@@ -825,21 +840,33 @@ int ModulesDetect::dcBluebox_Detection(Mat &srcImage,vector<Point2f> &Image_Poin
 
     }
 
+    for (int j = 1; j < 5; j++)
+    {
+        ImagePoint[j]  = Point(Image_Point[j-1].x, Image_Point[j-1].y);
+        line(srcImage, Image_Point[j-1], Image_Point[(j) % 4], Scalar(0, 0, 255), 2, 8);
+    }
+    ImagePoint[0]  = Point(Boxcenter_x, Boxcenter_y);
+    ImagePoint[5]  = Point(d_x, d_y);
+    ImagePoint[6]  = Point(AngleRotation, 0);
+
     sd_x = std::to_string(d_x);
     sd_y = std::to_string(d_y);
     sBoxcenter_x = std::to_string(Boxcenter_x);
     sBoxcenter_y = std::to_string(Boxcenter_y);
     sAngleRotation = std::to_string(AngleRotation);
 
-    putText(srcImage, "BoxCT",  Point2f(50, 100 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, sBoxcenter_x, Point2f(200, 100 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, sBoxcenter_y, Point2f(340, 100 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, "d_x",  Point2f(50, 150 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, sd_x,   Point2f(340, 150 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, "d_y",  Point2f(50, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, sd_y,   Point2f(340, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, "Angle",  Point2f(50, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-    putText(srcImage, sAngleRotation,   Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+
+    circle(srcImage, Point(640,512), 3, Scalar(0, 255, 0), 8);
+    putText(srcImage, "Angle",  Point2f(50, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, sAngleRotation,   Point2f(340, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, "BoxCT",  Point2f(50, 150 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, sBoxcenter_x, Point2f(200, 150 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, sBoxcenter_y, Point2f(340, 150 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, "d_x",  Point2f(50, 200 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, sd_x,   Point2f(340, 200 ), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, "d_y",  Point2f(50, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+    putText(srcImage, sd_y,   Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+
 
 
     return 0;
@@ -857,7 +884,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
 
     Mat srcImage1;
     srcImage.copyTo(srcImage1);
-   // MyGammaCorrection(srcImage1, srcImage,fGamma);
+    // MyGammaCorrection(srcImage1, srcImage,fGamma);
 
     bgr2binary(srcImage,dstImage,2);
 
@@ -931,7 +958,7 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
             angle=std::to_string(float(angle_rotation));
 
             putText(srcImage, "angle", Point2f(100, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
-            putText(srcImage, angle,  Point2f(250, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+            putText(srcImage, angle,  Point2f(300, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
 
             putText(srcImage, "z_s",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
             putText(srcImage, z_s_x,  Point2f(200, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
@@ -949,17 +976,17 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
             putText(srcImage, y_x_x,  Point2f(200, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
             putText(srcImage, y_x_y,  Point2f(340, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "zx",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_x,  Point2f(200, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_y,  Point2f(340, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "center",  Point2f(50, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_x,     Point2f(200, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_y,     Point2f(340, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "d_x",  Point2f(200, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_x,  Point2f(340, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdx",  Point2f(100, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_x,     Point2f(300, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "d_y",  Point2f(200, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_y,  Point2f(340, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdy",  Point2f(100, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_y,     Point2f(300, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-           }
+        }
         else
         {
             String angle1;
@@ -985,18 +1012,17 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
             putText(srcImage, y_x_x,  Point2f(200, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
             putText(srcImage, y_x_y,  Point2f(340, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "zx",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_x,  Point2f(200, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_y,  Point2f(340, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "center",  Point2f(50, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_x,     Point2f(200, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_y,     Point2f(340, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "d_x",  Point2f(200, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_x,  Point2f(340, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdx",  Point2f(100, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_x,     Point2f(300, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "d_y",  Point2f(200, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_y,  Point2f(340, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdy",  Point2f(100, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_y,     Point2f(300, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-      }
-
+        }
         for (int j = 1; j < 5; j++)
         {
             ImagePoint[j]  = Point(rect[j-1].x, rect[j-1].y);

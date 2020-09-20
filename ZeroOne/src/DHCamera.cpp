@@ -7,8 +7,8 @@
 #include "DHCamera.h"
 #include <stdlib.h>
 #include<stdio.h>
-typedef unsigned char byte;
 
+typedef unsigned char byte;
 
 // *************UDP头文件×××××××××××× //
 #include<sys/select.h>
@@ -33,6 +33,7 @@ typedef unsigned char byte;
 
 #define PIXFMT_CVT_FAIL             -1             ///< PixelFormatConvert fail
 #define PIXFMT_CVT_SUCCESS          0              ///< PixelFormatConvert success
+#define _IP_MARK "."
 
 
 
@@ -45,15 +46,15 @@ DHCamera::DHCamera()
 
 
     //相机内参数
-//    Mat_<double> cameraMatrix(3, 3);
-//    double fx = 736.1196;
-//    double fy = 739.3896;
-//    double Cx = 648.7056;
-//    double Cy = 512.9957;
-//    cameraMatrix << fx, 0, Cx, 0, fy, Cy, 0, 0, 1;
-//    //畸变系数;
-//    Mat_<double> distCoeffs(1, 5);
-//    distCoeffs << -0.2972, 0.0742, 0.00000, -0.00000, 0.00000;
+    //    Mat_<double> cameraMatrix(3, 3);
+    //    double fx = 736.1196;
+    //    double fy = 739.3896;
+    //    double Cx = 648.7056;
+    //    double Cy = 512.9957;
+    //    cameraMatrix << fx, 0, Cx, 0, fy, Cy, 0, 0, 1;
+    //    //畸变系数;
+    //    Mat_<double> distCoeffs(1, 5);
+    //    distCoeffs << -0.2972, 0.0742, 0.00000, -0.00000, 0.00000;
 }
 
 //   ××××××××××××相机初始化××××××××××××××××××××××   //
@@ -165,7 +166,7 @@ int DHCamera::Init()
 
     GX_VERIFY_EXIT(emStatus);
     //Set  Exposure
-   // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
+    // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
     emStatus = GXSetEnum(g_hDevice,GX_ENUM_BALANCE_WHITE_AUTO,GX_BALANCE_WHITE_AUTO_CONTINUOUS);   //设 置 连 续 自 动 白 平 衡
     emStatus = GXSetEnum(g_hDevice, GX_ENUM_EXPOSURE_AUTO, GX_EXPOSURE_AUTO_CONTINUOUS);
     GX_VERIFY_EXIT(emStatus);
@@ -253,7 +254,7 @@ int DHCamera::Init()
         }
         GX_VERIFY_EXIT(emStatus);
         //Set  Exposure
-       // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
+        // emStatus = GXSetFloat(g_hDevice, GX_FLOAT_EXPOSURE_TIME, 12000.0000);
         emStatus = GXSetEnum(g2_hDevice,GX_ENUM_BALANCE_WHITE_AUTO,GX_BALANCE_WHITE_AUTO_CONTINUOUS);   //设 置 连 续 自 动 白 平 衡
         emStatus = GXSetEnum(g2_hDevice, GX_ENUM_EXPOSURE_AUTO, GX_EXPOSURE_AUTO_CONTINUOUS);
         GX_VERIFY_EXIT(emStatus);
@@ -485,15 +486,37 @@ int DHCamera::Gammaprocess()
     }
 
 }
+//int转换成IP
+string INTtoIP(uint32_t num)
+{
+
+    string strRet = "";
+    for (int i=0;i<4;i++)
+    {
+        uint32_t tmp=(num>>((3-i)*8))&0xFF;
+
+        char chBuf[8] = "";
+        // _itoa_s(tmp, chBuf, 10);
+        //chBuf = std::to_string(tmp);
+        sprintf(chBuf, "%d", tmp);
+        strRet += chBuf;
+        if (i < 3)
+        {
+            strRet += _IP_MARK;
+        }
+    }
+
+    return strRet;
+}
 
 void *ImageProcess(void* image)      // 图像处理线程函数
 {
     DHCamera *DH_camera = (DHCamera *)image;
-   // ModulesDetect        Modules_Detect;
+    // ModulesDetect        Modules_Detect;
     //Thread running flag setup
     DH_camera->g_ImageProcessFlag = true;      //线程运行标志启动
     DH_camera->Modules_Detect.ROI_TrackFlag = false;
-  //  Modules_Detect.ROI_TrackFlag = false;
+    //  Modules_Detect.ROI_TrackFlag = false;
 
     time_t lInit;
     time_t lEnd;
@@ -512,14 +535,22 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     socklen_t          addr_len=sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port   = htons(port_out);
-    addr.sin_addr.s_addr = inet_addr("192.168.101.88");
+    addr.sin_addr.s_addr = inet_addr("192.168.101.180");
+    //if(DH_camera->udpAddress != NULL )
+    //{
+    //addr.sin_addr.s_addr = inet_addr(DH_camera->udpAddress);
+    //}
+    //string adress = INTtoIP(addr.sin_addr.s_addr);
+    //    string adress = "192.168.101.180";
+    //    printf("set udp adress success %s\n",adress);
+
     //pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;//创建互斥锁并初始化
     //pthread_mutex_lock(&g_ImageProcessThreadID);//对线程上锁，此时其他线程阻塞等待该线程释放锁
 
     while(DH_camera->g_ImageProcessFlag)
     {
 
-       // time(&lInit);
+        // time(&lInit);
         if(DH_camera->src_image.data)
         {
             Mat srcimage(DH_camera->src_image);
@@ -527,8 +558,8 @@ void *ImageProcess(void* image)      // 图像处理线程函数
             double t = (double)getTickCount();
             DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
             t = ((double)getTickCount() - t) / getTickFrequency();
-         //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
-          //  time (&lEnd);
+            //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
+            //  time (&lEnd);
             double fps = 1.0/t ;
             char string[10];      // 用于存放帧率的字符串
 
@@ -543,8 +574,16 @@ void *ImageProcess(void* image)      // 图像处理线程函数
                     1.8,                      // 字体大小
                     cv::Scalar(0, 0, 255));   // 字体颜色（B,G,R）
 
+            putText(srcimage, "RealDx",  Point2f(100, 500), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            String srealdistancex = std::to_string(DH_camera->realdistance[1]);
+            putText(srcimage, srealdistancex,  Point2f(300, 500), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            t = (double)getTickCount();
+            putText(srcimage, "RealDy",  Point2f(100, 550), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            String srealdistancey = std::to_string(DH_camera->realdistance[2]);
+            putText(srcimage, srealdistancey,  Point2f(300, 550), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+
+
+
             Mat tupian ;
             char sendData[65535];
             std::vector<uchar> imgData;
@@ -655,7 +694,7 @@ void *ProcGetImage(void* pParam)
             memcpy( DH_camera->src_image.data, DH_camera->g_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
 
             // Print acquisition info each second.
-            if (lEnd - lInit >= 1)
+            if (lEnd - lInit >= 2)
             {
 
                 printf("<Successful  src_image1  acquisition: FrameCount: %u Width: %d Height: %d FrameID: %lu>\n",
@@ -733,7 +772,7 @@ void *ProcGetImage2(void* pParam)
             DxRaw8toRGB24((void*)pFrameBuffer->pImgBuf, DH_camera->g2_pRGBImageBuf,pFrameBuffer->nWidth,pFrameBuffer->nHeight,RAW2RGB_NEIGHBOUR,DX_PIXEL_COLOR_FILTER(BAYERBG),false);
             memcpy( DH_camera->src_image2.data, DH_camera->g2_pRGBImageBuf,pFrameBuffer->nHeight*pFrameBuffer->nWidth*3);
             // Print acquisition info each second.
-            if (lEnd - lInit >= 1)
+            if (lEnd - lInit >= 2)
             {
 
                 printf("<Successful src_image2 acquisition: FrameCount: %u Width: %d Height: %d FrameID: %lu>\n",

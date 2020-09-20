@@ -24,12 +24,15 @@ public:
 
     uint32_t                  ui32DeviceNum = 0;
     uint32_t                  ui32FPS = 0;
+    //unsigned char             udpAddress = NULL;
 
     GX_STATUS                 emStatus;
     GX_DEV_HANDLE             g_hDevice = NULL;                           ///< Device handle
     GX_DEV_HANDLE             g2_hDevice = NULL;                           ///< Device handle
 
     //camera first
+    float                     DHcamera1dx = 736;
+    float                     realdistance[5];
     bool                      g_bColorFilter = false;                        ///< Color filter support flag
     int64_t                   g_i64ColorFilter = GX_COLOR_FILTER_NONE;    ///< Color filter of device
 
