@@ -504,7 +504,7 @@ int ModulesDetect::RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angl
 }
 float ModulesDetect::PointDistance(Point2f &Image_StartPoint ,Point2f &Image_EndPoint ,float DHcameradx, float UavHeight)
 {
-    if(DHcameradx > 0)
+    if(DHcameradx > 0 && UavHeight > 0)
     {
         float disK = UavHeight/DHcameradx;
         float PixelDistance01  = GetPixelLength(Image_StartPoint,Image_EndPoint);
@@ -513,7 +513,7 @@ float ModulesDetect::PointDistance(Point2f &Image_StartPoint ,Point2f &Image_End
     }
     else
     {
-        printf("get PointDistance is error, please check");
+        printf("<Get PointDistance error, please check UavHeight>\n");
         return 0;
     }
 

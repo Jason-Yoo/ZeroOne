@@ -31,7 +31,7 @@ public:
     GX_DEV_HANDLE             g2_hDevice = NULL;                           ///< Device handle
 
     //camera first
-    float                     DHcamera1dx = 736;
+    float                     DHcamera1dx = 960;
     float                     realdistance[5];
     bool                      g_bColorFilter = false;                        ///< Color filter support flag
     int64_t                   g_i64ColorFilter = GX_COLOR_FILTER_NONE;    ///< Color filter of device
@@ -76,8 +76,11 @@ public:
     bool                    g_bSaveVedioFlag=false;
 
 
-    Mat                      src_image;
-    Mat                      src_image2;
+    Mat                      src_image; // camera 1
+    Mat                      src_image2; //Camera 2
+
+    Point2f                 DH_StartPoint;
+    Point2f                 DH_EndPoint;
 
     Point3d                 BoxPosition;
 
@@ -104,14 +107,16 @@ public:
     int    UnPreForAcquisition();
     int    Gammaprocess();
 
+
     void   GetErrorString(GX_STATUS emErrorStatus);
+    void   DH_Camera();
 
 
 
     GX_STATUS GX_VERIFY(GX_STATUS emStatus);
     GX_STATUS GX_VERIFY_EXIT(GX_STATUS emStatus);
 
-    DHCamera();
+
 
 };
 

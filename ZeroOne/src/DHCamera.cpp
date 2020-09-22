@@ -37,12 +37,21 @@ typedef unsigned char byte;
 
 
 
-DHCamera::DHCamera()
+void DHCamera::DH_Camera()
 {
 
     g_pRgbBuffer[0] = NULL;
     g_pRgbBuffer[1] = NULL;
     updated = false;
+
+    for(uint i = 0;i < 5;i++)
+    {
+        realdistance [i] = 0;
+    }
+
+    DH_StartPoint = Point(0,0);
+    DH_EndPoint   = Point(0,0);
+
 
 
     //相机内参数
@@ -392,6 +401,8 @@ int DHCamera::Gammaprocess()
     int nLutLength;
     unsigned char*      pGammaLut;                ///< Gamma look up table
 
+    VxInt64 nColorCorrectionParam  = 0;
+
     //获 取 对 比 度 调 节 参 数
     int64_t nContrastParam;
     unsigned char* pContrastLut;
@@ -473,7 +484,7 @@ int DHCamera::Gammaprocess()
     emStatus = GXGetInt(g_hDevice,GX_INT_HEIGHT,&nHeight);
 
     //提 升 图 像 的 质 量
-    emStatus = DxImageImprovment(g_pRGBImageBuf,g_pRGBImageBuf,nWidth,nHeight,NULL, pContrastLut, pGammaLut);
+    emStatus = DxImageImprovment(g_pRGBImageBuf,g_pRGBImageBuf,nWidth,nHeight, nColorCorrectionParam, pContrastLut, pGammaLut);
     if (pGammaLut!= NULL)
     {
         delete []pGammaLut;
@@ -582,6 +593,13 @@ void *ImageProcess(void* image)      // 图像处理线程函数
             String srealdistancey = std::to_string(DH_camera->realdistance[2]);
             putText(srcimage, srealdistancey,  Point2f(300, 550), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
+            if(DH_camera->DH_EndPoint.x != 0)
+            {
+                DH_camera->DH_StartPoint = DH_camera->Modules_Detect.ImagePoint[0];
+                circle(srcimage, DH_camera->DH_EndPoint, 3, Scalar(79, 79, 79), 8);
+                line(srcimage, DH_camera->DH_StartPoint,  DH_camera->DH_EndPoint , Scalar(0, 0, 255), 2, 8);
+               // line(srcimage, Point(1219,542) , Point(1176,1020), Scalar(0, 0, 255), 2, 8);
+            }
 
 
             Mat tupian ;

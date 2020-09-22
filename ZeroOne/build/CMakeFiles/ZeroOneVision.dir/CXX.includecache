@@ -89,12 +89,6 @@ opencv2/video/tracking.hpp
 ../inc/opencv2/video/tracking.hpp
 opencv2/highgui/highgui.hpp
 ../inc/opencv2/highgui/highgui.hpp
-opencv2/imgproc/types_c.h
--
-opencv2/highgui/highgui.hpp
--
-opencv2/highgui/highgui_c.h
--
 SolveSRPnP.h
 -
 
