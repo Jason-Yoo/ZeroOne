@@ -20,6 +20,8 @@ Updatelist:
 
 2020.09.20  Fix Bug and Add Caculate realdistance
 
+2020.09.22  Delete useless files
+
 Cmakelist Example:
 
 target_link_libraries(${PROJECT_NAME}
@@ -42,7 +44,7 @@ int16_t VisionMessage[20] = {0};  //用于获取图像处理结果  具体查看
 
 float   Realdistance[5] = {0}; //获取世界坐标系里的距离
 
-Point2f EndPoint  = Point2f(640,512);  //图像坐标系中心
+Point2f EndPoint  = Point2f(583,733);  
 
 User API:
 
@@ -54,5 +56,5 @@ Box_Process.GetimagePoints(DH_Camera, VisionMessage); //获取处理后的数据
 
 Box_Process.GetCamareStop(DH_Camera);     	      //关闭相机及图像处理线程
 
-BoxProcess::GetRealdistance(DH_Camera , Point2f EndPoint, float Realdistance[],float UavHeight); //获取实际距离
+Box_Process.GetRealdistance(DH_Camera ,EndPoint,Realdistance,UavHeight); //获取实际距离
 
