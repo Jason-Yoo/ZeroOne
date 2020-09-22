@@ -53,7 +53,7 @@ public:
     int  dcBluebox_Detection(Mat &srcImage);
     float GetPixelLength(Point PixelPointA, Point PixelPointB);
     Point find_connected(Mat &binary_img);
-    int  Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );
+    int  Get_TargetRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi );
     int  Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vector<Point2f> &Image_Point);
     int  RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angle);
     int  judgeBoxState(Point2f Image_Point[] , float UavHeight);

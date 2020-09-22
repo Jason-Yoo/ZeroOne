@@ -48,11 +48,8 @@ void DHCamera::DH_Camera()
     {
         realdistance [i] = 0;
     }
-
     DH_StartPoint = Point(0,0);
     DH_EndPoint   = Point(0,0);
-
-
 
     //相机内参数
     //    Mat_<double> cameraMatrix(3, 3);
@@ -528,10 +525,6 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     DH_camera->g_ImageProcessFlag = true;      //线程运行标志启动
     DH_camera->Modules_Detect.ROI_TrackFlag = false;
     //  Modules_Detect.ROI_TrackFlag = false;
-
-    time_t lInit;
-    time_t lEnd;
-
     //*******************
     int sockfd;
     int port_out = 12322;
@@ -557,15 +550,14 @@ void *ImageProcess(void* image)      // 图像处理线程函数
 
     //pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;//创建互斥锁并初始化
     //pthread_mutex_lock(&g_ImageProcessThreadID);//对线程上锁，此时其他线程阻塞等待该线程释放锁
-
     while(DH_camera->g_ImageProcessFlag)
     {
 
         // time(&lInit);
         if(DH_camera->src_image.data)
         {
-            Mat srcimage(DH_camera->src_image);
-
+            Mat srcimage;
+            DH_camera->src_image.copyTo(srcimage);
             double t = (double)getTickCount();
             DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
             t = ((double)getTickCount() - t) / getTickFrequency();

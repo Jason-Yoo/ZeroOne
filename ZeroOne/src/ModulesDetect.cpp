@@ -74,8 +74,6 @@ static inline bool ContoursSortFun(vector<cv::Point> contour1, vector<cv::Point>
 
 }
 
-
-
 int ModulesDetect::Otsu(Mat &srcImage , int &threshold)  // 输入为原图像，输出为阈值
 {
 
@@ -179,7 +177,7 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
         if(Otsu(dstImage,g_Otsu))
             cout<<"ModulesDetect->Otsu process failed"<< endl;
 
-        //    threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);   //利用Otsu求得的阈值g_Otsu进行二值化
+         threshold(dstImage, dstImage, g_Otsu*0.5, 255, CV_THRESH_BINARY);   //利用Otsu求得的阈值g_Otsu进行二值化
 
     }
     //imshow("Otsu process ",dstImage);
@@ -334,20 +332,17 @@ void  SortContourPoint(vector<vector<Point>> inputContours, vector<vector<Point>
 
 }
 
-int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi )  //返回蓝色占比最高的矩形框
+int ModulesDetect::Get_TargetRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &TargetRoi )  //返回蓝色占比最高的矩形框
 {
     //find Ins_ROI
     vector<vector<Point>> contours;   //每一组Point点集就是一个轮廓
     vector<Vec4i> hierarcy;           //矩形集合
-
-
     findContours(grayImage, contours, hierarcy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE); //找出所有轮廓 包括轮廓关系
     //参数1：grayImage二值图像，参数2：contours定义为“vector<vector<Point>> contours”，是一个双重向量
     //向量内每个元素保存了一组由连续的Point构成的点的集合的向量，每一组点集就是一个轮廓，有多少轮廓，contours就有多少元素
     //参数3：hierarchy定义为“vector<Vec4i> hierarchy，向量hierarchy内的元素和轮廓向量contours内的元素是一一对应的，向量的容量相同
     //参数4：定义轮廓的检索模式，CV_RETR_EXTERNAL：只检测最外围轮廓，包含在外围轮廓内的内围轮廓被忽略；
     //参数5：定义轮廓的近似方法，CV_CHAIN_APPROX_NONE：保存物体边界上所有连续的轮廓点到contours向量内；
-
     if(contours.size()<=0)
         return 0;
 
@@ -356,19 +351,17 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
         std::sort(contours.begin(), contours.end(), ContoursSortFun);
         break;
     }
-
-    uint Maxboxnum = 0;
-    if(contours.size()<=3)
+    uint Maxboxnum = 3;
+    if(contours.size() <= 3)
         Maxboxnum = contours.size();
-    else
-        Maxboxnum = 3;
-
-    vector<Rect> box(contours.size()); //定义最小外接矩形集合
+    vector<Rect> box(Maxboxnum); //定义最小外接矩形集合
     for(uint i = 0; i < Maxboxnum; i++)
     {
         box[i] = boundingRect(contours[i]);
     }
-    /*   for (uint i = 0; i < Maxboxnum; i++)
+
+/*
+    for (uint i = 0; i < contours.size(); i++)
     {
         LeafInfo leafInfo;
         leafInfo.ellipseRect = fitEllipse(contours[i]);  //椭圆拟合
@@ -393,7 +386,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
         }
 
         float w_div_h = leafInfo.chang / leafInfo.kuan;
-        if (w_div_h > 2)
+        if (w_div_h > 3)
         {
             continue;
         }
@@ -408,7 +401,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
         box[i] = boundingRect(contours[i]);
 
     }
-    */
+*/
 
     Mat ImageRoi;
     int numOfblue = 0;            //记录颜色的像素点
@@ -456,7 +449,7 @@ int ModulesDetect::Get_TargrtRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
             Max_bluenum = i;
         }
     }
-    if(Max_bluerate >= 0.4)
+    if(Max_bluerate >= 0.3)
     {
         //  printf("The rate:%.2f%%\n", Max_bluerate * 100);
         TargetRoi = minAreaRect(Mat(contours[Max_bluenum]));
@@ -771,7 +764,7 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vecto
 
     Mat grayImage;
     //  RotatedRect TargetRoi;
-    int Targer_Flag = 0;
+    int Target_Flag = 0;
 
 
     if(bgr2binary(srcImage,grayImage,2))
@@ -781,8 +774,8 @@ int ModulesDetect::RecognitionFailure(Mat &srcImage,RotatedRect &TargetRoi,vecto
     morphologyEx(grayImage, grayImage, MORPH_DILATE, kernel_close);
     find_connected(grayImage);
 
-    Targer_Flag = Get_TargrtRoi(srcImage,grayImage,TargetRoi);
-    if(Targer_Flag)
+    Target_Flag = Get_TargetRoi(srcImage,grayImage,TargetRoi);
+    if(Target_Flag)
     {
         //find image points
         Get_ConerPoint(srcImage, TargetRoi, Image_Point);
@@ -820,12 +813,19 @@ int ModulesDetect::dcBluebox_Detection(Mat &srcImage)
 
     if(RecognitionFailure(srcImage,TargetRoi,Image_Point))
     {
+
         Boxcenter_x = int(Image_Point[4].x);
         Boxcenter_y = int(Image_Point[4].y);
         AngleRotation = float(Image_Point[5].x);
         line(srcImage,  Point(640,512),  Point(Image_Point[4].x, Image_Point[4].y), Scalar(0, 0, 255), 2, 8);
         d_x = int(Image_Point[4].x)-640;
         d_y = int(Image_Point[4].y)-512;
+
+        for (int j = 1; j < 5; j++)
+        {
+            ImagePoint[j]  = Point(Image_Point[j-1].x, Image_Point[j-1].y);
+            line(srcImage, Image_Point[j-1], Image_Point[(j) % 4], Scalar(0, 0, 255), 2, 8);
+        }
 
         // solve pnp problem
         // Calculate_RT(Image_Point, BoxPosition);
@@ -840,11 +840,6 @@ int ModulesDetect::dcBluebox_Detection(Mat &srcImage)
 
     }
 
-    for (int j = 1; j < 5; j++)
-    {
-        ImagePoint[j]  = Point(Image_Point[j-1].x, Image_Point[j-1].y);
-        line(srcImage, Image_Point[j-1], Image_Point[(j) % 4], Scalar(0, 0, 255), 2, 8);
-    }
     ImagePoint[0]  = Point(Boxcenter_x, Boxcenter_y);
     ImagePoint[5]  = Point(d_x, d_y);
     ImagePoint[6]  = Point(AngleRotation, 0);
@@ -867,8 +862,6 @@ int ModulesDetect::dcBluebox_Detection(Mat &srcImage)
     putText(srcImage, "d_y",  Point2f(50, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
     putText(srcImage, sd_y,   Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-
-
     return 0;
 }
 
@@ -877,13 +870,9 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
 
     //*******************input test code**************************
 
-    //Mat src = srcImage.clone();
     Mat dstImage;
-    float fGamma = 1.8;
-
-
-    Mat srcImage1;
-    srcImage.copyTo(srcImage1);
+   //Mat srcImage1;
+   // srcImage.copyTo(srcImage1);
     // MyGammaCorrection(srcImage1, srcImage,fGamma);
 
     bgr2binary(srcImage,dstImage,2);
