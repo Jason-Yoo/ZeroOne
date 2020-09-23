@@ -902,7 +902,8 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
 
             break;
         }
-
+        int area = contourArea(contours[0]);
+        if( area <= 300) return 0;
         box[0] = minAreaRect(Mat(contours[0]));
         boundRect[0] = boundingRect(Mat(contours[0]));
         circle(srcImage, Point(box[0].center.x, box[0].center.y), 3, Scalar(0, 255, 0), 8);
@@ -949,31 +950,32 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
             putText(srcImage, "angle", Point2f(100, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
             putText(srcImage, angle,  Point2f(300, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "z_s",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
-            putText(srcImage, z_s_x,  Point2f(200, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
-            putText(srcImage, z_s_y,  Point2f(340, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+//            putText(srcImage, "z_s",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_s_x,  Point2f(200, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_s_y,  Point2f(340, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "z_x",  Point2f(100, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, z_x_x,  Point2f(200, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, z_x_y,  Point2f(340, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, "z_x",  Point2f(100, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_x_x,  Point2f(200, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_x_y,  Point2f(340, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "y_s",  Point2f(100, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_s_x,  Point2f(200, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_s_y,  Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, "y_s",  Point2f(100, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_s_x,  Point2f(200, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_s_y,  Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "y_x",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_x_x,  Point2f(200, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_x_y,  Point2f(340, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, "y_x",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_x_x,  Point2f(200, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_x_y,  Point2f(340, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "center",  Point2f(50, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_x,     Point2f(200, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_y,     Point2f(340, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "center",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_x,     Point2f(300, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_y,     Point2f(400, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "imgdx",  Point2f(100, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_x,     Point2f(300, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdx",  Point2f(100, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_x,     Point2f(400, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "imgdy",  Point2f(100, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_y,     Point2f(300, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdy",  Point2f(100, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_y,     Point2f(400, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+
 
         }
         else
@@ -983,33 +985,34 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
             angle_rotation = box[0].angle; //负数，顺时针旋
             angle1=std::to_string(float(angle_rotation));
             putText(srcImage, "angle1", Point2f(100, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
-            putText(srcImage, angle1,  Point2f(250, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+            putText(srcImage, angle1,  Point2f(300, 100), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "z_s",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
-            putText(srcImage, z_s_x,  Point2f(200, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
-            putText(srcImage, z_s_y,  Point2f(340, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+//            putText(srcImage, "z_s",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_s_x,  Point2f(200, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_s_y,  Point2f(340, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "z_x",  Point2f(100, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, z_x_x,  Point2f(200, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, z_x_y,  Point2f(340, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, "z_x",  Point2f(100, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_x_x,  Point2f(200, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, z_x_y,  Point2f(340, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "y_s",  Point2f(100, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_s_x,  Point2f(200, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_s_y,  Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, "y_s",  Point2f(100, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_s_x,  Point2f(200, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_s_y,  Point2f(340, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "y_x",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_x_x,  Point2f(200, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, y_x_y,  Point2f(340, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, "y_x",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_x_x,  Point2f(200, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+//            putText(srcImage, y_x_y,  Point2f(340, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "center",  Point2f(50, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_x,     Point2f(200, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, zx_y,     Point2f(340, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "center",  Point2f(100, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_x,     Point2f(300, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, zx_y,     Point2f(400, 150), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "imgdx",  Point2f(100, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_x,     Point2f(300, 400), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdx",  Point2f(100, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_x,     Point2f(400, 200), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
 
-            putText(srcImage, "imgdy",  Point2f(100, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            putText(srcImage, sd_y,     Point2f(300, 450), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
+            putText(srcImage, "imgdy",  Point2f(100, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+            putText(srcImage, sd_y,     Point2f(400, 250), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.0, Scalar(0,0,255),2,8);
+
 
         }
         for (int j = 1; j < 5; j++)
@@ -1020,6 +1023,8 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
         ImagePoint[0]  = Point(box[0].center.x, box[0].center.y);
         ImagePoint[5]  = Point(d_x, d_y);
         ImagePoint[6]  = Point(angle_rotation, 0);
+
+        return 1;
 
     }
     return 0;

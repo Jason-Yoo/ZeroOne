@@ -49,15 +49,20 @@ void BoxProcess::GetimagePoints(DHCamera & DH_Camera , int16_t VisionMessage[])
         //   cout<<"imagePoints "<< i << " =" << DH_Camera.Modules_Detect.ImagePoint[i] <<endl;
 
     }
+
     VisionMessage[num-1] = BoxStage;  //01 pingfang
-    VisionMessage[num] = 0xFF;  //01 pingfang
+    VisionMessage[num] = 0xFF;
+
+    VisionMessage[10] = DH_Camera.realdistance[1];  //real dx
+    VisionMessage[11] = DH_Camera.realdistance[2];  //real dy
+
     // VisionMessage[20] = 0;
     // VisionMessage[21] = sum;
     // VisionMessage[22] = 0x0d;
-    // for(uint i = 0 ; i < num+1; i++)
-    // {
-    //      cout<<"VisionMessage "<< i << " =" << int16_t(VisionMessage[i]) <<endl;
-    // }
+//     for(uint i = 0 ; i < num+1; i++)
+//     {
+//          cout<<"VisionMessage "<< i << " =" << int16_t(VisionMessage[i]) <<endl;
+//     }
 }
 int  BoxProcess::GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float Realdistance[],float UavHeight)
 {
@@ -70,9 +75,9 @@ int  BoxProcess::GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float 
     Realdistance[1] = DH_Camera.Modules_Detect.PointDistance(startpoint,offset_X,DH_Camera.DHcamera1dx,UavHeight);
     Realdistance[2] = DH_Camera.Modules_Detect.PointDistance(startpoint,offset_Y,DH_Camera.DHcamera1dx,UavHeight);
 
-    DH_Camera.realdistance[0] = Realdistance[0];
-    DH_Camera.realdistance[1] = Realdistance[1];
-    DH_Camera.realdistance[2] = Realdistance[2];
+    DH_Camera.realdistance[0] = Realdistance[0]*100;// m 2 cm
+    DH_Camera.realdistance[1] = Realdistance[1]*100;
+    DH_Camera.realdistance[2] = Realdistance[2]*100;
 
     DH_Camera.Modules_Detect.judgeBoxState(DH_Camera.Modules_Detect.ImagePoint,UavHeight);
 

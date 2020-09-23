@@ -540,13 +540,6 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     addr.sin_family = AF_INET;
     addr.sin_port   = htons(port_out);
     addr.sin_addr.s_addr = inet_addr("192.168.101.180");
-    //if(DH_camera->udpAddress != NULL )
-    //{
-    //addr.sin_addr.s_addr = inet_addr(DH_camera->udpAddress);
-    //}
-    //string adress = INTtoIP(addr.sin_addr.s_addr);
-    //    string adress = "192.168.101.180";
-    //    printf("set udp adress success %s\n",adress);
 
     //pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;//创建互斥锁并初始化
     //pthread_mutex_lock(&g_ImageProcessThreadID);//对线程上锁，此时其他线程阻塞等待该线程释放锁
@@ -557,9 +550,10 @@ void *ImageProcess(void* image)      // 图像处理线程函数
         if(DH_camera->src_image.data)
         {
             Mat srcimage;
+            int boxdetecFlag = 0;
             DH_camera->src_image.copyTo(srcimage);
             double t = (double)getTickCount();
-            DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
+            boxdetecFlag = DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
             t = ((double)getTickCount() - t) / getTickFrequency();
             //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
             //  time (&lEnd);
@@ -577,22 +571,24 @@ void *ImageProcess(void* image)      // 图像处理线程函数
                     1.8,                      // 字体大小
                     cv::Scalar(0, 0, 255));   // 字体颜色（B,G,R）
 
-            putText(srcimage, "RealDx",  Point2f(100, 500), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            String srealdistancex = std::to_string(DH_camera->realdistance[1]);
-            putText(srcimage, srealdistancex,  Point2f(300, 500), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-
-            putText(srcimage, "RealDy",  Point2f(100, 550), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-            String srealdistancey = std::to_string(DH_camera->realdistance[2]);
-            putText(srcimage, srealdistancey,  Point2f(300, 550), CV_FONT_HERSHEY_COMPLEX_SMALL, 1.8, Scalar(0,0,255),2,8);
-
-            if(DH_camera->DH_EndPoint.x != 0)
+            if(boxdetecFlag)
             {
-                DH_camera->DH_StartPoint = DH_camera->Modules_Detect.ImagePoint[0];
-                circle(srcimage, DH_camera->DH_EndPoint, 3, Scalar(79, 79, 79), 8);
-                line(srcimage, DH_camera->DH_StartPoint,  DH_camera->DH_EndPoint , Scalar(0, 0, 255), 2, 8);
-               // line(srcimage, Point(1219,542) , Point(1176,1020), Scalar(0, 0, 255), 2, 8);
-            }
+                putText(srcimage, "RealDx",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
+                String srealdistancex = std::to_string(DH_camera->realdistance[1]);
+                putText(srcimage, srealdistancex,  Point2f(350, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
 
+                putText(srcimage, "RealDy",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
+                String srealdistancey = std::to_string(DH_camera->realdistance[2]);
+                putText(srcimage, srealdistancey,  Point2f(350, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
+
+                if(DH_camera->DH_EndPoint.x != 0)
+                {
+                    DH_camera->DH_StartPoint = DH_camera->Modules_Detect.ImagePoint[0];
+                    circle(srcimage, DH_camera->DH_EndPoint, 3, Scalar(79, 79, 79), 8);
+                    line(srcimage, DH_camera->DH_StartPoint,  DH_camera->DH_EndPoint , Scalar(0, 0, 255), 2, 8);
+                    // line(srcimage, Point(1219,542) , Point(1176,1020), Scalar(0, 0, 255), 2, 8);
+                }
+            }
 
             Mat tupian ;
             char sendData[65535];
