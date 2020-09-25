@@ -69,11 +69,16 @@ int  BoxProcess::GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float 
     Point2f startpoint = DH_Camera.Modules_Detect.ImagePoint[0];
     Point2f offset_X  = Point2f(EndPoint.x,startpoint.y);
     Point2f offset_Y  = Point2f(startpoint.x,EndPoint.y);
+    int  Pointdx =  startpoint.x - EndPoint.x;
+    int  Pointdy =  startpoint.y - EndPoint.y;
     DH_Camera.DH_EndPoint   = EndPoint;
 
     Realdistance[0] = DH_Camera.Modules_Detect.PointDistance(startpoint,EndPoint,DH_Camera.DHcamera1dx,UavHeight);
     Realdistance[1] = DH_Camera.Modules_Detect.PointDistance(startpoint,offset_X,DH_Camera.DHcamera1dx,UavHeight);
     Realdistance[2] = DH_Camera.Modules_Detect.PointDistance(startpoint,offset_Y,DH_Camera.DHcamera1dx,UavHeight);
+
+    if(Pointdx < 0)  Realdistance[1] = 0 - Realdistance[1];
+    if(Pointdy < 0)  Realdistance[2] = 0 - Realdistance[2];
 
     DH_Camera.realdistance[0] = Realdistance[0]*100;// m 2 cm
     DH_Camera.realdistance[1] = Realdistance[1]*100;
@@ -82,9 +87,11 @@ int  BoxProcess::GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float 
     DH_Camera.Modules_Detect.judgeBoxState(DH_Camera.Modules_Detect.ImagePoint,UavHeight);
 
     if( DH_Camera.Modules_Detect.is_parallel)
-        BoxStage = 1;
+        BoxStage = 0x10;
     if( DH_Camera.Modules_Detect.is_stand)
-        BoxStage = 0;   
+        BoxStage = 0x00;
+    if( DH_Camera.Modules_Detect.is_parallel &&  DH_Camera.Modules_Detect.wholebox)
+        BoxStage = 0x11;
 }
 void BoxProcess::GetboxPosition(DHCamera & DH_Camera , Point3d boxPosition)
 {
@@ -121,7 +128,8 @@ int main()
     bool bWaitStart = true;
     int16_t VisionMessage[23] = {0};
     float   distance[10] = {0};
-    Point2f EndPoint  = Point2f(1141,784);
+  //  Point2f EndPoint  = Point2f(1141,784);
+    Point2f EndPoint  = Point2f(640,512);
 
     Box_Process.VisualRecognition_Init(DH_Camera);    //相机初始化、图像获取、图像处理线程
     Box_Process.GetImageshow(DH_Camera);
@@ -138,12 +146,11 @@ int main()
         case 's':
         case 'S':
             Box_Process.GetimagePoints(DH_Camera, VisionMessage);
-            Box_Process.GetRealdistance(DH_Camera,EndPoint,distance,31);
+            Box_Process.GetRealdistance(DH_Camera,EndPoint,distance,3);
             break;
         default:
             break;
         }
-
 
     }
     Box_Process.GetCamareStop(DH_Camera);

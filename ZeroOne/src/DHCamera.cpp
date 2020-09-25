@@ -573,13 +573,6 @@ void *ImageProcess(void* image)      // 图像处理线程函数
 
             if(boxdetecFlag)
             {
-                putText(srcimage, "RealDx",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
-                String srealdistancex = std::to_string(DH_camera->realdistance[1]);
-                putText(srcimage, srealdistancex,  Point2f(350, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
-
-                putText(srcimage, "RealDy",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
-                String srealdistancey = std::to_string(DH_camera->realdistance[2]);
-                putText(srcimage, srealdistancey,  Point2f(350, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
 
                 if(DH_camera->DH_EndPoint.x != 0)
                 {
@@ -589,6 +582,15 @@ void *ImageProcess(void* image)      // 图像处理线程函数
                     // line(srcimage, Point(1219,542) , Point(1176,1020), Scalar(0, 0, 255), 2, 8);
                 }
             }
+
+            putText(srcimage, "RealDx",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
+            String srealdistancex = std::to_string(DH_camera->realdistance[1]);
+            putText(srcimage, srealdistancex,  Point2f(350, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
+
+            putText(srcimage, "RealDy",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
+            String srealdistancey = std::to_string(DH_camera->realdistance[2]);
+            putText(srcimage, srealdistancey,  Point2f(350, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
+
 
             Mat tupian ;
             char sendData[65535];

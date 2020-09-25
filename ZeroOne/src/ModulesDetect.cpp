@@ -517,6 +517,8 @@ int ModulesDetect::judgeBoxState(Point2f Image_Point[] , float UavHeight)
     float DHcameraDx = 736;
     is_stand = false;
     is_parallel = false;
+    wholebox = false;
+
 
     int   BoxlengthMax =100; //100cm
     int   BoxlengthMid =50;  //50cm
@@ -526,8 +528,20 @@ int ModulesDetect::judgeBoxState(Point2f Image_Point[] , float UavHeight)
     float PixelDistance01  = GetPixelLength(Image_Point[1],Image_Point[2]);
     float PixelDistance12  = GetPixelLength(Image_Point[2],Image_Point[3]);
 
+    float WorldDistance01 = PixelDistance01 * disK;
+    float WorldDistance12 = PixelDistance12 * disK;
+
+    float Boxarea = WorldDistance01 * WorldDistance12;
+
+    if(Boxarea > 0.4 && Boxarea < 0.6)
+    {
+        wholebox = true;
+    }
+
     float WorldDistance = 0;
+
     if(PixelDistance01 > PixelDistance12)
+
         WorldDistance  = PixelDistance01 * disK;
     else
         WorldDistance  = PixelDistance12 * disK;

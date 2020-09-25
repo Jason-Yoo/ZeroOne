@@ -44,6 +44,7 @@ public:
 
 
     bool     is_stand,is_parallel;
+    bool     wholebox;
 
     int bgr2binary(Mat &srcImage, Mat &dstImage, int method);
     int Otsu(Mat &srcImage , int &threshold );

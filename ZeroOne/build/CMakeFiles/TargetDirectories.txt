@@ -1,0 +1,8 @@
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/install/strip.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/install/local.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOne.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/ZeroOneVision.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/edit_cache.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/rebuild_cache.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/list_install_components.dir
+/home/nvidia/Desktop/ZeroOne/ZeroOne/build/CMakeFiles/install.dir
