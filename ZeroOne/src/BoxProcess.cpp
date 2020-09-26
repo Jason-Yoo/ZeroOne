@@ -92,6 +92,9 @@ int  BoxProcess::GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float 
         BoxStage = 0x00;
     if( DH_Camera.Modules_Detect.is_parallel &&  DH_Camera.Modules_Detect.wholebox)
         BoxStage = 0x11;
+    if( DH_Camera.Modules_Detect.is_stand &&  DH_Camera.Modules_Detect.wholebox)
+        BoxStage = 0x01;
+
 }
 void BoxProcess::GetboxPosition(DHCamera & DH_Camera , Point3d boxPosition)
 {
