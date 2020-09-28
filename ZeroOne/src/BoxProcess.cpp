@@ -77,8 +77,8 @@ int  BoxProcess::GetRealdistance(DHCamera & DH_Camera , Point2f EndPoint, float 
     Realdistance[1] = DH_Camera.Modules_Detect.PointDistance(startpoint,offset_X,DH_Camera.DHcamera1dx,UavHeight);
     Realdistance[2] = DH_Camera.Modules_Detect.PointDistance(startpoint,offset_Y,DH_Camera.DHcamera1dx,UavHeight);
 
-    if(Pointdx < 0)  Realdistance[1] = 0 - Realdistance[1];
-    if(Pointdy < 0)  Realdistance[2] = 0 - Realdistance[2];
+    if(Pointdx < 0)  Realdistance[1] = 0 - Realdistance[1]-0.19;
+    if(Pointdy < 0)  Realdistance[2] = 0 - Realdistance[2]+0.10;
 
     DH_Camera.realdistance[0] = Realdistance[0]*100;// m 2 cm
     DH_Camera.realdistance[1] = Realdistance[1]*100;

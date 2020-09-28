@@ -58,6 +58,7 @@ public:
     int  Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vector<Point2f> &Image_Point);
     int  RotatePoint(Point2f &ptSrc, Point2f &ptRotation, double &angle);
     int  judgeBoxState(Point2f Image_Point[] , float UavHeight);
+    int  Get_CirclesPoint(Mat &srcImage , Point Circles_Center);
     float PointDistance(Point2f &Image_StartPoint ,Point2f &Image_EndPoint ,float DHcameradx, float UavHeight);
 
     struct LeafInfo

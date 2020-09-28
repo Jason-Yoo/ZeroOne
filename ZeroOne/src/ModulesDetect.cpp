@@ -141,20 +141,22 @@ int ModulesDetect::bgr2binary(Mat &srcImage, Mat &dstImage, int method)
     if(method==1)
     {
         //method 1: split channels and substract
-        vector<Mat> imgChannels;
-        split(srcImage, imgChannels);
-        Mat red_channel = imgChannels.at(2);
+//        vector<Mat> imgChannels;
+//        split(srcImage, imgChannels);
+//        Mat red_channel = imgChannels.at(2);
         //  Mat green_channel = imgChannels.at(1);
-        Mat blue_channel = imgChannels.at(0);
-        Mat mid_channel=blue_channel-red_channel;
+//        Mat blue_channel = imgChannels.at(0);
+//        Mat mid_channel=blue_channel-red_channel;
+        Mat GrayImage;
+        cvtColor(srcImage, GrayImage, COLOR_BGR2GRAY);
 
         int g_Otsu=0;
-        if(Otsu(mid_channel,g_Otsu))
+        if(Otsu(GrayImage,g_Otsu))
             cout<<"ModulesDetect->Otsu process failed"<< endl;
 
-        threshold(mid_channel, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+        threshold(GrayImage, dstImage, g_Otsu, 255, CV_THRESH_BINARY);
+        return 1;
     }
-
     else
     {
         //蓝色的HSV范围
@@ -449,13 +451,18 @@ int ModulesDetect::Get_TargetRoi(Mat &srcImage ,Mat &grayImage ,RotatedRect &Tar
             Max_bluenum = i;
         }
     }
-    if(Max_bluerate >= 0.3)
+    if(Max_bluerate >= 0.5)
     {
         //  printf("The rate:%.2f%%\n", Max_bluerate * 100);
         TargetRoi = minAreaRect(Mat(contours[Max_bluenum]));
         //   ImageRoi = srcImage(Rect(box[Max_bluenum].x, box[Max_bluenum].y, box[Max_bluenum].width, box[Max_bluenum].height));
         //   imshow("ImageRoi",ImageRoi);
         return 1;
+    }
+    else
+    {
+         TargetRoi = minAreaRect(Mat(contours[0]));
+
     }
     return 0;
 }
@@ -558,6 +565,51 @@ int ModulesDetect::judgeBoxState(Point2f Image_Point[] , float UavHeight)
 
     return 1;
 }
+int ModulesDetect::Get_CirclesPoint(Mat &srcImage , Point Circles_Center)
+{
+    Mat dstImage;
+    if (srcImage.empty())
+        return 0;
+
+   // bgr2binary(srcImage,dstImage,1);
+    cvtColor(srcImage, dstImage, COLOR_BGR2GRAY);
+//    Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));
+//    erode(dstImage, dstImage, element);
+
+    vector<Vec3f>circles;
+    HoughCircles(dstImage,circles,CV_HOUGH_GRADIENT,1,10,110,70,0,0);
+
+    if(circles.size() > 0)
+    {
+        int Maxradius = 0;
+        uint  Maxnum  = 0;
+        for(uint i=0 ; i < circles.size() ;i++)
+        {
+            if(circles[i][2] > Maxradius)
+            {
+              Maxradius = cvRound(circles[i][2]);
+              Maxnum = i;
+            }
+        }
+        //参数定义
+        Point center(cvRound(circles[Maxnum][0]), cvRound(circles[Maxnum][1]));
+        int   radius = cvRound(circles[Maxnum][2]);
+        //绘制圆心
+        circle(srcImage, center, 3, Scalar(0,255,0), -1, 8, 0 );
+        //绘制圆轮廓
+        circle(srcImage, center, radius, Scalar(0,0,255), 3, 8, 0 );
+
+        Circles_Center = center;
+
+        return 1;
+    }
+    else
+    {
+        Circles_Center = Point(0,0);
+    }
+    return 0;
+
+}
 //寻找箱子角点
 int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vector<Point2f> &Image_Point)
 {
@@ -599,10 +651,6 @@ int  ModulesDetect::Get_ConerPoint(Mat &srcImage, RotatedRect &Target_Roi, vecto
     {
         Image_Point.push_back(Point((float)Target_Roi.angle,0));
     }
-
-
-
-
 
     Point2f Rotation_p[4];
     Point2f Rotation_pr[4];// for a new line
@@ -936,6 +984,34 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
         if( area <= 300) return 0;
         box[0] = minAreaRect(Mat(contours[0]));
         boundRect[0] = boundingRect(Mat(contours[0]));
+
+
+        Rect Target_Rect = boundRect[0];
+        if(Target_Rect.x < 0) Target_Rect.x = 0;
+        if(Target_Rect.y < 0) Target_Rect.y = 0;
+        if(Target_Rect.x+Target_Rect.width >= srcImage.cols)
+        {
+            Target_Rect.width = srcImage.cols-Target_Rect.x-1;
+        }
+        if(Target_Rect.y+Target_Rect.height >= srcImage.rows)
+        {
+            Target_Rect.height = srcImage.rows-Target_Rect.y-1;
+        }
+        //blue rect box in srcImage
+        Mat rect_check = srcImage(Target_Rect);
+        Mat ROI_image;
+        rect_check.copyTo(ROI_image);
+        Point Circles_Center;
+        Get_CirclesPoint(ROI_image,Circles_Center);
+        Circles_Center.x = Circles_Center.x + Target_Rect.x;
+        Circles_Center.y = Circles_Center.y + Target_Rect.y;
+        //绘制圆心
+        circle(srcImage, Circles_Center, 3, Scalar(0,255,0), -1, 8, 0 );
+
+
+        namedWindow("Get_CirclesPoint:",CV_WINDOW_AUTOSIZE);
+        imshow("Get_CirclesPoint:",ROI_image);
+
         circle(srcImage, Point(box[0].center.x, box[0].center.y), 3, Scalar(0, 255, 0), 8);
         circle(srcImage, Point(640,512), 3, Scalar(0, 255, 0), 8);
         box[0].points(rect);
@@ -1045,6 +1121,9 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
 
 
         }
+
+
+
         for (int j = 1; j < 5; j++)
         {
             ImagePoint[j]  = Point(rect[j-1].x, rect[j-1].y);

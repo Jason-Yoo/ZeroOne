@@ -16,14 +16,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -g -O0")
 
 #设置库文件文件输出目录
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+#set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 ##递归获取目录下所有的C文件
-file(GLOB_RECURSE c_files ${PROJECT_SOURCE_DIR}/src/*.cpp)
+#file(GLOB_RECURSE c_files ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 ##生成动态库
-add_library(ZeroOneVision  SHARED  ${c_files})
-INSTALL (TARGETS ZeroOneVision ZeroOneVision LIBRARY DESTINATION lib)
+#add_library(ZeroOneVision  SHARED  ${c_files})
+#INSTALL (TARGETS ZeroOneVision ZeroOneVision LIBRARY DESTINATION lib)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
