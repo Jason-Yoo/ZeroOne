@@ -113,6 +113,9 @@ public:
 
 
 
+
+
+
     GX_STATUS GX_VERIFY(GX_STATUS emStatus);
     GX_STATUS GX_VERIFY_EXIT(GX_STATUS emStatus);
 
@@ -124,7 +127,7 @@ void *ProcGetImage(void* pParam);           //图像获取线程函数
 void *ProcGetImage2(void* pParam);           //图像获取线程函数
 void *ImageProcess(void* image);            //图像处理线程函数
 
-
+void imageUDP(Mat srcimage, int sockfd, struct sockaddr_in addr);
 
 //void bgr2binary(Mat &srcImage, Mat &dstImage, int method);//lingai
 //void Otsu(Mat &srcImage , int &threshold) ;//lingai

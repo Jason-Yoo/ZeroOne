@@ -1009,8 +1009,8 @@ int ModulesDetect::Bluebox_Detection(Mat &srcImage)
         circle(srcImage, Circles_Center, 3, Scalar(0,255,0), -1, 8, 0 );
 
 
-        namedWindow("Get_CirclesPoint:",CV_WINDOW_AUTOSIZE);
-        imshow("Get_CirclesPoint:",ROI_image);
+//        namedWindow("Get_CirclesPoint:",CV_WINDOW_AUTOSIZE);
+//        imshow("Get_CirclesPoint:",ROI_image);
 
         circle(srcImage, Point(box[0].center.x, box[0].center.y), 3, Scalar(0, 255, 0), 8);
         circle(srcImage, Point(640,512), 3, Scalar(0, 255, 0), 8);

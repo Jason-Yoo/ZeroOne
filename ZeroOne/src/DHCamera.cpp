@@ -279,6 +279,40 @@ int DHCamera::Uninit()
 
 }
 
+void imageUDP(Mat srcimage, int sockfd, struct sockaddr_in addr)
+{
+    socklen_t          addr_len=sizeof(addr);
+
+    Mat tupian ;
+    char sendData[65535];
+    std::vector<uchar> imgData;
+    vector<int> quality;
+    int imgSize;
+
+    //resize(srcimage, tupian ,cv::Size(480, 320));
+    resize(srcimage, tupian ,cv::Size(320, 256));
+    quality.push_back(CV_IMWRITE_JPEG_CHROMA_QUALITY);
+    quality.push_back(10);
+    imencode(".jpg",tupian, imgData,quality);
+    imgSize = imgData.size();
+    if(imgSize <= 65535)
+    {
+        for (int i = 0; i != imgSize; ++i)
+        {
+            sendData[i] = imgData[i];
+        }
+        //发送编码后的图像
+        sendto(sockfd, sendData, imgSize, 0, (sockaddr*)&addr, addr_len);
+    }
+    else
+    {
+        cout<<"imgSize = "<<  imgSize  << endl;
+    }
+    memset(&sendData,0,sizeof(sendData));
+}
+
+
+
 
 //  *****************开始获取图像************************   //
 int DHCamera::Read()
@@ -539,104 +573,91 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     socklen_t          addr_len=sizeof(addr);
     addr.sin_family = AF_INET;
     addr.sin_port   = htons(port_out);
-    addr.sin_addr.s_addr = inet_addr("192.168.101.180");
+    addr.sin_addr.s_addr = inet_addr("192.168.101.119");
+
+    int imageFlag = 1;  //0代表传图1,1代表传图2,2代表什么都不做
+    Mat srcimage;
+
+
 
     //pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;//创建互斥锁并初始化
     //pthread_mutex_lock(&g_ImageProcessThreadID);//对线程上锁，此时其他线程阻塞等待该线程释放锁
     while(DH_camera->g_ImageProcessFlag)
     {
 
-        // time(&lInit);
-        if(DH_camera->src_image.data)
+        if(imageFlag == 0)
         {
-            Mat srcimage;
-            int boxdetecFlag = 0;
-            DH_camera->src_image.copyTo(srcimage);
-            double t = (double)getTickCount();
-            boxdetecFlag = DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
-            t = ((double)getTickCount() - t) / getTickFrequency();
-            //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
-            //  time (&lEnd);
-            double fps = 1.0/t ;
-            char string[10];      // 用于存放帧率的字符串
-
-            //sprintf(string, "%.2f", DH_camera->ui32FPS); // 帧率保留两位小数
-            sprintf(string, "%.2f", fps); // 帧率保留两位小数
-            std::string fpsString("FPS:");
-            fpsString += string; // 在"FPS:"后加入帧率数值字符串
-            putText(srcimage,               // 图像矩阵
-                    fpsString,                // string型文字内容
-                    Point(20, 50),         // 文字坐标，以左下角为原点
-                    CV_FONT_HERSHEY_COMPLEX_SMALL, // 字体类型
-                    1.8,                      // 字体大小
-                    cv::Scalar(0, 0, 255));   // 字体颜色（B,G,R）
-
-            if(boxdetecFlag)
+            if(DH_camera->src_image.data)
             {
-
-                if(DH_camera->DH_EndPoint.x != 0)
-                {
-                    DH_camera->DH_StartPoint = DH_camera->Modules_Detect.ImagePoint[0];
-                    circle(srcimage, DH_camera->DH_EndPoint, 3, Scalar(79, 79, 79), 8);
-                    line(srcimage, DH_camera->DH_StartPoint,  DH_camera->DH_EndPoint , Scalar(0, 0, 255), 2, 8);
-                    // line(srcimage, Point(1219,542) , Point(1176,1020), Scalar(0, 0, 255), 2, 8);
-                }
-            }
-
-            putText(srcimage, "RealDx",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
-            String srealdistancex = std::to_string(DH_camera->realdistance[1]);
-            putText(srcimage, srealdistancex,  Point2f(350, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
-
-            putText(srcimage, "RealDy",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
-            String srealdistancey = std::to_string(DH_camera->realdistance[2]);
-            putText(srcimage, srealdistancey,  Point2f(350, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
-
-
-            Mat tupian ;
-            char sendData[65535];
-            std::vector<uchar> imgData;
-            vector<int> quality;
-            int imgSize;
-
-            //resize(srcimage, tupian ,cv::Size(480, 320));
-            resize(srcimage, tupian ,cv::Size(320, 256));
-            quality.push_back(CV_IMWRITE_JPEG_CHROMA_QUALITY);
-            quality.push_back(10);
-            imencode(".jpg",tupian, imgData,quality);
-            imgSize = imgData.size();
-            if(imgSize <= 65535)
-            {
-                for (int i = 0; i != imgSize; ++i)
-                {
-                    sendData[i] = imgData[i];
-                }
-                //发送编码后的图像
-                sendto(sockfd, sendData, imgSize, 0, (sockaddr*)&addr, addr_len);
+                DH_camera->src_image.copyTo(srcimage);
             }
             else
             {
-                cout<<"imgSize = "<<  imgSize  << endl;
+                printf("<Image data1 is NULL,Please check the Image get process!>\n");
             }
-            memset(&sendData,0,sizeof(sendData));
 
-            if(DH_camera->g_ImageShowFlag)
+        }
+
+        if(imageFlag == 1)
+        {
+            if(DH_camera->src_image2.data)
             {
-                namedWindow("DH_camera1:",CV_WINDOW_AUTOSIZE);
-                imshow("DH_camera1:",srcimage);
-                waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
+                DH_camera->src_image2.copyTo(srcimage);
             }
-
+            else
+            {
+                printf("<Image data2 is NULL,Please check the Image get process!>\n");
+            }
         }
-        else
-        {
-            printf("<Image data is NULL,Please check the Image get process!>\n");
-        }
 
-        if(DH_camera->src_image2.data)
+        while(imageFlag == 2)
         {
-            namedWindow("DH_camera2",CV_WINDOW_AUTOSIZE);
-            imshow("DH_camera2",DH_camera->src_image2);
-            waitKey(1);  //waitKey(1)将显示一个框架。1毫秒后，显示将自动关闭。
+            cout << "waitting imageFlag equal 0 or 1" << endl;
+        }
+        if(srcimage.data)
+        {
+
+             int boxdetecFlag = 0;
+             double t = (double)getTickCount();
+             boxdetecFlag = DH_camera->Modules_Detect.Bluebox_Detection(srcimage);   //输入为原始图像，输出为位姿
+             t = ((double)getTickCount() - t) / getTickFrequency();
+             //   cout<<"Bluebox_Detection time = "<< t*1000 << "ms" << endl;
+             //  time (&lEnd);
+             double fps = 1.0/t ;
+             char string[10];      // 用于存放帧率的字符串
+
+             //sprintf(string, "%.2f", DH_camera->ui32FPS); // 帧率保留两位小数
+             sprintf(string, "%.2f", fps); // 帧率保留两位小数
+             std::string fpsString("FPS:");
+             fpsString += string; // 在"FPS:"后加入帧率数值字符串
+             putText(srcimage,               // 图像矩阵
+                     fpsString,                // string型文字内容
+                     Point(20, 50),         // 文字坐标，以左下角为原点
+                     CV_FONT_HERSHEY_COMPLEX_SMALL, // 字体类型
+                     1.8,                      // 字体大小
+                     cv::Scalar(0, 0, 255));   // 字体颜色（B,G,R）
+
+             if(boxdetecFlag)
+             {
+
+                 if(DH_camera->DH_EndPoint.x != 0)
+                 {
+                     DH_camera->DH_StartPoint = DH_camera->Modules_Detect.ImagePoint[0];
+                     circle(srcimage, DH_camera->DH_EndPoint, 3, Scalar(79, 79, 79), 8);
+                     line(srcimage, DH_camera->DH_StartPoint,  DH_camera->DH_EndPoint , Scalar(0, 0, 255), 2, 8);
+                     // line(srcimage, Point(1219,542) , Point(1176,1020), Scalar(0, 0, 255), 2, 8);
+                 }
+             }
+
+             putText(srcimage, "RealDx",  Point2f(100, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
+             String srealdistancex = std::to_string(DH_camera->realdistance[1]);
+             putText(srcimage, srealdistancex,  Point2f(350, 300), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
+
+             putText(srcimage, "RealDy",  Point2f(100, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.2, Scalar(0,0,255),2,8);
+             String srealdistancey = std::to_string(DH_camera->realdistance[2]);
+             putText(srcimage, srealdistancey,  Point2f(350, 350), CV_FONT_HERSHEY_COMPLEX_SMALL, 2.5, Scalar(0,0,255),2,8);
+
+             imageUDP(srcimage, sockfd, addr);
 
         }
 
@@ -644,6 +665,9 @@ void *ImageProcess(void* image)      // 图像处理线程函数
     close(sockfd);
     printf("<ImageProcess thread Exit!>\n");
 }
+
+
+
 
 
 // ××××××××××××××××××××××××××××××××××× //
